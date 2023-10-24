@@ -90,23 +90,24 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <a href="{{ Route('backend.admin.edit',['id'=>$item->id]) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="bi bi-toggles"></i>
-                                    </a>
 
                                     @if(Auth::guard('backend')->user()->can(['edit_admins']))
-                                    <a href="{{ Route('backend.admin.edit',['id'=>$item->id]) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
+                                        @if(Auth::guard('backend')->user()->id == $item->id || Auth::guard('backend')->user()->id == 6 )
+                                            <a href="{{ Route('backend.admin.edit',['id'=>$item->id]) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        @endif
                                     @endif
 
                                     @if(Auth::guard('backend')->user()->can(['delete_admin']))
-                                        @if(Auth::guard('backend')->user()->id != 6)
-                                            <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Xóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm deleteAction">
-                                                <i class="bi bi-trash"></i>
-                                                <!--end::Svg Icon-->
-                                                {{ Auth::guard('backend')->user()->id }}
-                                            </a>
+                                        @if(Auth::guard('backend')->user()->id == 6)
+                                                @if(Auth::guard('backend')->user()->id != $item->id)
+                                                    <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Xóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm deleteAction">
+                                                        <i class="bi bi-trash"></i>
+                                                        <!--end::Svg Icon-->
+                                                        {{ Auth::guard('backend')->user()->id }}
+                                                    </a>
+                                                @endif
                                         @endif
                                     @endif
 

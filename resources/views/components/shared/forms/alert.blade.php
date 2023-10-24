@@ -1,0 +1,4 @@
+<div>
+    ffffffffffffffffff
+    {{ $message }}
+</div>

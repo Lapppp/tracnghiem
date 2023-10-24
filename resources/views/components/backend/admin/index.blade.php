@@ -101,10 +101,12 @@
                                     @endif
 
                                     @if(Auth::guard('backend')->user()->can(['delete_admin']))
-                                    <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Xóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm deleteAction">
-                                        <i class="bi bi-trash"></i>
-                                        <!--end::Svg Icon-->
-                                    </a>
+                                        @if(Auth::guard('backend')->user()->id != 6)
+                                            <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Xóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm deleteAction">
+                                                <i class="bi bi-trash"></i>
+                                                <!--end::Svg Icon-->
+                                            </a>
+                                        @endif
                                     @endif
 
                                 </td>

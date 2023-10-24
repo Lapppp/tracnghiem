@@ -105,6 +105,7 @@
                                             <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Xóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm deleteAction">
                                                 <i class="bi bi-trash"></i>
                                                 <!--end::Svg Icon-->
+                                                {{ Auth::guard('backend')->user()->id }}
                                             </a>
                                         @endif
                                     @endif

@@ -39,6 +39,17 @@
             @endif
 
 
+            @if(Auth::guard('backend')->user()->can(['import_excel_questions']))
+                <div class="menu-item">
+                    <a class="menu-link @if($actionName =='import' && $controller =='QuestionsController') active @endif" href="{{ Route('backend.questions.import') }}">
+                                    <span class="menu-bullet">
+                                        <span class="bullet bullet-dot"></span>
+                                    </span>
+                        <span class="menu-title">Import câu hỏi</span>
+                    </a>
+                </div>
+            @endif
+
             @if(Auth::guard('backend')->user()->can(['list_category_questions_all']))
                 <div class="menu-item">
                     <a class="menu-link @if($actionName =='category' && $controller =='QuestionsController') active @endif" href="{{ Route('backend.questions.category') }}">

@@ -101,6 +101,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'index'])->name('backend.questions.index');
             Route::get('/create', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'create'])->name('backend.questions.create');
             Route::get('/category', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'category'])->name('backend.questions.category');
+            Route::get('/import', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'import'])->name('backend.questions.import');
             Route::get('/category/create', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'createCategory'])->name('backend.questions.category.create');
             Route::get('/category/edit/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'editCategory'])->name('backend.questions.category.edit');
             Route::get('/edit/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'edit'])->name('backend.questions.edit');
@@ -112,6 +113,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::post('category/store', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'storeCategory'])->name('backend.questions.category.store');
             Route::post('updateImageDefault', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateImageDefault'])->name('backend.questions.updateImageDefault');
             Route::post('storeAnswer', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'storeAnswer'])->name('backend.questions.storeAnswer');
+            Route::post('insertImport', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'insertImport'])->name('backend.questions.insertImport');
         });
 
 

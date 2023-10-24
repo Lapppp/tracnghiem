@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Quiz;
 
+use App\Helpers\ArrayHelper;
+use App\Http\Requests\Backend\Quiz\QuestionsImportRequest;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use App\Enums\Modules\ModuleType;
 use App\Enums\Posts\PostStatusType;
 use App\Helpers\PaginationHelper;
@@ -28,14 +31,15 @@ class QuestionsController extends BackendController
 {
 
     private $data = [];
-    protected $postRepository, $categoryRepository, $imageRepository,$answerRepository;
+    protected $postRepository, $categoryRepository, $imageRepository, $answerRepository;
 
     public function __construct(
-        PostRepository $postRepository,
+        PostRepository     $postRepository,
         CategoryRepository $categoryRepository,
-        ImageRepository $imageRepository,
-        AnswerRepository $answerRepository
-    ) {
+        ImageRepository    $imageRepository,
+        AnswerRepository   $answerRepository
+    )
+    {
 
         parent::__construct();
         $this->data['title'] = 'Câu hỏi';
@@ -72,7 +76,7 @@ class QuestionsController extends BackendController
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.questions.index').'?'.Arr::query($params);
+        $url = route('backend.questions.index') . '?' . Arr::query($params);
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
         return view('components.backend.quiz.questions.index', $this->data);
@@ -94,13 +98,13 @@ class QuestionsController extends BackendController
         $params['slug'] = Str::slug($params['name']);
         $answers = $params['answers'] ?? [];
         $post = $this->postRepository->create($params);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Server đang bận không thể tạo');
         }
 
         // Thêm câu trả lời
-        if ( !empty($answers) ) {
-            foreach ( $answers as $key => $answer ) {
+        if (!empty($answers)) {
+            foreach ($answers as $key => $answer) {
                 $aAnswer = [
                     'is_correct' => $params['myAnswer'] == $key ? 1 : 0,
                     'description' => $answer
@@ -110,20 +114,20 @@ class QuestionsController extends BackendController
         }
 
 
-        if ( $request->hasfile('files') ) {
+        if ($request->hasfile('files')) {
             $n = count($request->file('files'));
             $date = date('Y/m/d');
-            foreach ( $request->file('files') as $key => $file ) {
-                $path = $file->store('products/'.$date);
+            foreach ($request->file('files') as $key => $file) {
+                $path = $file->store('products/' . $date);
                 $aImage = $file->hashName();
                 $photo = new Image();
-                $photo->url = $date.'/'.$aImage;
+                $photo->url = $date . '/' . $aImage;
                 $photo->is_default = ($key == $n - 1) ? 1 : 0;
                 $photo->filename = $file->getClientOriginalName();
                 $post->image()->save($photo);
-                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
-                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
-                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
 
                 // size height 165
                 $img = ImageIntervention::make($pathOld);
@@ -146,7 +150,7 @@ class QuestionsController extends BackendController
     {
         $post = $this->postRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $this->data['isEdit'] = 1;
@@ -162,7 +166,7 @@ class QuestionsController extends BackendController
         $params['category_id'] = $params['category_id'] ?? 0;
         $params['updated_at'] = date('Y-m-d H:i:s');
         $post = $this->postRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
@@ -171,30 +175,30 @@ class QuestionsController extends BackendController
         $answers = $params['answers'] ?? [];
 
         // Thêm câu trả lời
-        if ( !empty($answers) ) {
-            foreach ( $answers as $key => $answer ) {
+        if (!empty($answers)) {
+            foreach ($answers as $key => $answer) {
                 //$answerInfo = $this->answerRepository->getByQuestion($post->id,$key);
                 $aAnswer = [
                     'is_correct' => $params['myAnswer'] == $key ? 1 : 0,
                     'description' => $answer,
-                    'updated_at'=>date('Y-m-d H:i:s')
+                    'updated_at' => date('Y-m-d H:i:s')
                 ];
                 $post->answers()->createMany([$aAnswer]);
             }
         }
 
-        if ( $request->hasfile('files') ) {
+        if ($request->hasfile('files')) {
 
             $images = $post->image()->get();
-            if ( count($images) > 0 ) {
-                foreach ( $images as $item ) {
+            if (count($images) > 0) {
+                foreach ($images as $item) {
                     $deleteFile = $item->url ?? null;
-                    if ( !empty($deleteFile) ) {
-                        $fileUnlink = Str::of('/'.$deleteFile)->basename();
-                        @unlink(public_path('storage/products/'.$deleteFile));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_'.$fileUnlink,
+                    if (!empty($deleteFile)) {
+                        $fileUnlink = Str::of('/' . $deleteFile)->basename();
+                        @unlink(public_path('storage/products/' . $deleteFile));
+                        @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_' . $fileUnlink,
                                 $deleteFile)));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_50x50_'.$fileUnlink,
+                        @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_50x50_' . $fileUnlink,
                                 $deleteFile)));
                     }
                     $item->delete();
@@ -203,13 +207,13 @@ class QuestionsController extends BackendController
 
             $n = count($request->file('files'));
             $date = date('Y/m/d');
-            foreach ( $request->file('files') as $key => $file ) {
-                $file->store('products/'.$date);
+            foreach ($request->file('files') as $key => $file) {
+                $file->store('products/' . $date);
                 $aImage = $file->hashName();
 
-                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
-                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
-                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
 
                 // size height 165
                 $img = ImageIntervention::make($pathOld);
@@ -226,7 +230,7 @@ class QuestionsController extends BackendController
                 $img->save($fileNewSize);
 
                 $photo = new Image();
-                $photo->url = $date.'/'.$aImage;
+                $photo->url = $date . '/' . $aImage;
                 $photo->is_default = ($key == $n - 1) ? 1 : 0;
                 $photo->filename = $file->getClientOriginalName();
                 $post->image()->save($photo);
@@ -239,20 +243,20 @@ class QuestionsController extends BackendController
     public function destroy($id)
     {
         $post = $this->postRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return ResponseHelper::error('Không tìm thấy câu hỏi');
         }
 
         $images = $post->image()->get();
-        if ( count($images) > 0 ) {
-            foreach ( $images as $item ) {
+        if (count($images) > 0) {
+            foreach ($images as $item) {
                 $deleteFile = $item->url ?? null;
-                if ( !empty($deleteFile) ) {
-                    $fileUnlink = Str::of('/'.$deleteFile)->basename();
-                    @unlink(public_path('storage/products/'.$deleteFile));
-                    @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_'.$fileUnlink,
+                if (!empty($deleteFile)) {
+                    $fileUnlink = Str::of('/' . $deleteFile)->basename();
+                    @unlink(public_path('storage/products/' . $deleteFile));
+                    @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_' . $fileUnlink,
                             $deleteFile)));
-                    @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_50x50_'.$fileUnlink,
+                    @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_50x50_' . $fileUnlink,
                             $deleteFile)));
                 }
                 $item->delete();
@@ -275,7 +279,7 @@ class QuestionsController extends BackendController
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
 
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.questions.category').'?'.Arr::query($params);
+        $url = route('backend.questions.category') . '?' . Arr::query($params);
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
         return view('components.backend.quiz.questions.category', $this->data);
     }
@@ -296,7 +300,7 @@ class QuestionsController extends BackendController
         $params['module_id'] = ModuleType::Quiz;
         $params['slug'] = $params['name'] ?? '';
         $post = $this->categoryRepository->create($params);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.category')->with('error', 'Server đang bận không thể tạo');
         }
 
@@ -309,7 +313,7 @@ class QuestionsController extends BackendController
         $params['status'] = 1;
         $params['slug'] = $params['name'] ?? '';
         $post = $this->categoryRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.category')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
@@ -321,7 +325,7 @@ class QuestionsController extends BackendController
     {
         $post = $this->categoryRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.questions.category')->with('error', 'Không tìm thấy dữ liệu');
         }
         $this->data['isEdit'] = 1;
@@ -334,7 +338,7 @@ class QuestionsController extends BackendController
     public function destroyCategory($id)
     {
         $category = $this->categoryRepository->getByID($id);
-        if ( !$category ) {
+        if (!$category) {
             return ResponseHelper::error('Không tìm thấy tài khoản');
         }
         $category->posts()->delete();
@@ -347,7 +351,7 @@ class QuestionsController extends BackendController
         $id = $request->post_id ?? 0;
         $image_id = $request->image_id ?? 0;
         $post = $this->postRepository->getByID($id);
-        if ( $post ) {
+        if ($post) {
             $post->image()->update(['is_default' => 0]);
             $image = $this->imageRepository->getByID($image_id);
             $image->is_default = 1;
@@ -358,14 +362,14 @@ class QuestionsController extends BackendController
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function storeAnswer(Request $request): \Illuminate\Http\JsonResponse
     {
         $id = $request->post_id ?? 0;
         $post = $this->postRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return ResponseHelper::error('Không tìm thấy tài khoản');
         }
         $insert = ['is_correct' => 0];
@@ -374,6 +378,75 @@ class QuestionsController extends BackendController
         $this->data['alphabet'] = StringHelper::convertToLetter($count);
         $html = view('components.backend.quiz.questions.ajaxanswer', $this->data)->render();
         //$data = [];
-        return ResponseHelper::success('Đã xóa thành công',['jsonResult'=>$html]);
+        return ResponseHelper::success('Đã xóa thành công', ['jsonResult' => $html]);
+    }
+
+    public function import(Request $request)
+    {
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        return view('components.backend.quiz.questions.import', $this->data);
+    }
+
+    public function insertImport(QuestionsImportRequest $request)
+    {
+        $params = $request->all();
+        $excelMimes = [
+            'text/xls',
+            'text/xlsx',
+            'application/excel',
+            'application/vnd.msexcel',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+
+        $file = $_FILES['file'];
+        $type = $_FILES['file']['type'];
+        if ($request->hasfile('file') && in_array($type, $excelMimes)) {
+
+            $reader = new Xlsx();
+            $spreadsheet = $reader->load($file['tmp_name']);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $list = [];
+            foreach ($worksheet->getRowIterator() as $k => $row) {
+                if ($k > 2) {
+                    $r = [];
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(FALSE);
+                    foreach ($cellIterator as $cell) {
+                        $r[] = $cell->getValue();
+                    }
+                    if (!ArrayHelper::arrayHasEmptyValue($r)) {
+                        $list[] = $r;
+                    }
+                }
+            }
+
+            $collection = collect($list);
+            $grouped = $collection->groupBy(function ($item, $key) {
+                return $item[12];
+            });
+            $ls = $grouped->toArray();
+            $params['category_id'] = $params['category_id'] ?? 0;
+            $params['module_id'] = ModuleType::Quiz;
+            foreach ($ls as $k => $value) {
+                $question_name = $value[0][1];
+                $params['name'] = $question_name;
+                $params['slug'] = Str::slug($params['name']);
+                $post = $this->postRepository->create($params);
+                foreach ($value as $m => $val) {
+                    if ($m > 0) {
+                        $name = trim($val[2]);
+                        $answer = $val[11] ?? 0;
+                        $aAnswer = [
+                            'is_correct' => $answer,
+                            'description' => $name
+                        ];
+                        $post->answers()->createMany([$aAnswer]);
+                    }
+                }
+            }
+        }
+
+        return ResponseHelper::success('Đã import thành công');
     }
 }

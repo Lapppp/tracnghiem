@@ -430,7 +430,9 @@ class QuestionsController extends BackendController
             $params['module_id'] = ModuleType::Quiz;
             foreach ($ls as $k => $value) {
                 $question_name = $value[0][1];
+                $params['code'] = $value[0][12];
                 $params['name'] = $question_name;
+                $params['status'] = PostStatusType::Deactivated;
                 $params['slug'] = Str::slug($params['name']);
                 $post = $this->postRepository->create($params);
                 foreach ($value as $m => $val) {

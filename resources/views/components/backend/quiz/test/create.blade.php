@@ -129,23 +129,12 @@
                     </div>
 
 
+                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#kt_modal_2">
+                        Thêm câu hỏi vào bài kiểm tra
+                    </button>
+
                 <div class="d-flex flex-column mb-8" id="list-answers">
-                    <label class="fs-6 fw-bold mb-2">Danh sách câu hỏi</label>
-
-                    <select class="form-select form-select-solid select2-hidden-accessible"
-                            data-control="select2" data-hide-search="false" data-placeholder="Chọn câu hỏi"
-                            multiple="multiple"
-                            data-allow-clear="true"
-                            name="questions[]" id="questions" data-select2-id="select2-data-10-gou13" tabindex="-1" aria-hidden="true">
-                        @foreach ($questions as $key => $value)
-                            @if((!empty($posts) && in_array($value,old('questions', !empty($posts) ? explode(',',$posts->questions) : ''))) || in_array($value->id,$questions_select))
-                                <option value="{{ $value->id }}" selected="selected">{{ $value->name ?? '' }}</option>
-                            @else
-                                <option value="{{ $value->id }}">{{ $value->name ?? '' }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-
+                    <input name="questions" id="questions" type="hidden" value="{{ $questions_select }}">
                 </div>
                 <div class="d-flex flex-column mb-8">
                     <label class="fs-6 fw-bold mb-2">Nội dung diễn giải</label>
@@ -288,9 +277,115 @@
 
     </div>
 
+
+    <div class="modal bg-body fade" tabindex="-1" id="kt_modal_2">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content shadow-none">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 border-end" style="min-height: 500px">
+                                <form class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="questions_name" class="form-label">Tên câu hỏi hoặc mã câu hỏi</label>
+                                        <input type="text" class="form-control" placeholder="Nhập tên câu hỏi hoặc mã câu hỏi" id="questions_name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="category_id_search" class="form-label">Danh mục</label>
+                                        <select id="category_id_search" class="form-select">
+                                            <option value="0" selected>chọn danh mục</option>
+                                            @foreach ($category as $key => $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ old('category_id', !empty($posts) ? $posts->category_id : '') == $value->id ? 'selected' : '' }}>
+                                                    {{ $value->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-primary" id="searchQuestion">Tìm kiếm</button>
+                                    </div>
+                                    <p class="fw-bold mb-0" id="showResult" style="display: none">Kết quả tìm kiếm</p>
+                                    <hr class="mb-0" id="showResultHR" style="display: none">
+                                    <ul class="list-group list-group-flush" id="showListSearchQuestion"></ul>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-bold">DANH SÁCH CÂU HỎI ĐÃ CHỌN</p>
+                                <hr>
+                                <ul class="list-group list-group-flush" id="showListChoseQuestion">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
+
+                //<i class="bi bi-bookmark-x"></i>
+
+                $(document).on('click', '.addQuestion', function(event) {
+                    let question_id = $(this).data('id');
+                    let question_name = $(this).data('name');
+                    let find  = $("ul#showListChoseQuestion").find("[data-id='" + question_id + "']").data('id');
+                    if(!find) {
+                        let strQuestion = `<li class="list-group-item d-flex justify-content-between align-items-center" id="showHideQuestion_${question_id}">${question_name}
+                                        <button type="button" class="btn btn-danger btn-sm deleteQuestion" data-question="deleteQuestion" data-id="${question_id}">
+                                            <i class="bi bi-bookmark-x"></i> Xóa
+                                        </button>
+                                    </li>`;
+
+                        $("ul#showListChoseQuestion").append(strQuestion);
+                    }
+                    getListQuestionChose();
+
+                });
+
+                $(document).on('click', '#searchQuestion', function(event) {
+                    let questions_name = $('#questions_name').val();
+                    let category_id = $('#category_id_search').val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ Route('backend.test.search.question') }}',
+                        dataType: 'json',
+                        data: {
+                            "_token": token,
+                            search: questions_name,
+                            category_id: category_id
+                        },
+                        success: function(json) {
+                            $('#showResult').show()
+                            $('#showResultHR').show()
+                           $('#showListSearchQuestion').html(json.data.jsonResult);
+                        }
+                    });
+                });
+
+                $(document).on('click', '.deleteQuestion', function(event) {
+                    let id = $(this).data("id");
+                    Swal.fire({
+                        title: 'Bạn có muốn xóa không?',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: `Đóng`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            $('#showHideQuestion_'+id).remove();
+                            getListQuestionChose();
+                        }
+                    })
+
+                });
 
 
                 $(document).on('click', '.updateImage', function(event) {
@@ -333,7 +428,39 @@
                     $('#myAnswer').val(id);
                 });
 
+                $('#kt_modal_2').on('shown.bs.modal', function () {
 
+                    let questions = $('#questions').val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ Route('backend.test.load.question') }}',
+                        dataType: 'json',
+                        data: {
+                            "_token": token,
+                            questions: questions
+                        },
+                        success: function(json) {
+                            $('ul#showListChoseQuestion').html(json.data.jsonResult);
+                            getListQuestionChose()
+                        }
+                    });
+
+                });
+
+                function getListQuestionChose() {
+                    // $.each($("button[data-question='" + current +"']"), function (index, item) {
+                    //
+                    // });
+                    var lsId = [];
+                    $.each($("button[data-question='deleteQuestion']"), function (index, item) {
+                        let id = $(this).data('id');
+                        lsId.push(id);
+                    });
+
+                    $('#questions').val(lsId);
+
+                }
                 function slugVietNamese(str, separator) {
                     str = str
                         .toLowerCase()

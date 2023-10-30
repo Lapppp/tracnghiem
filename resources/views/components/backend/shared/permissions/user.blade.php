@@ -20,9 +20,9 @@
                 <div class="menu-item">
                     <a class="menu-link @if($actionName =='index' && $controller =='UserController' ) active @endif "
                        href="{{ Route('backend.users.index') }}">
-                                                                <span class="menu-bullet">
-                                                                    <span class="bullet bullet-dot"></span>
-                                                                </span>
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
                         <span class="menu-title">Danh sách</span>
                     </a>
                 </div>
@@ -31,13 +31,26 @@
                 <div class="menu-item">
                     <a class="menu-link @if($actionName =='create' && $controller =='UserController') active @endif "
                        href="{{ Route('backend.users.create') }}">
-                                                                <span class="menu-bullet">
-                                                                    <span class="bullet bullet-dot"></span>
-                                                                </span>
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
                         <span class="menu-title">Tạo tài khoản mới</span>
                     </a>
                 </div>
             @endif
+
+                @if(Auth::guard('backend')->user()->can(['create_user']))
+                    <div class="menu-item">
+                        <a class="menu-link @if($actionName =='import' && $controller =='UserController') active @endif "
+                           href="{{ Route('backend.users.import') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Import Khách hàng</span>
+                        </a>
+                    </div>
+                @endif
+
         </div>
     </div>
 @endif

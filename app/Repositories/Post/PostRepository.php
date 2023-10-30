@@ -24,6 +24,7 @@ class PostRepository extends BaseRepository
             'category_id' => [],
             'not_in_category_id' => [],
             'module_id' => [],
+            'post_id' => [],
             'options' => [],
             'position' => [],
             'search' => null,
@@ -50,6 +51,7 @@ class PostRepository extends BaseRepository
 
         if ( !empty($params['search']) ) {
             $result->where(Post::TABLE . '.name', 'LIKE', '%' . $params['search'] . '%');
+            $result->orWhere(Post::TABLE . '.code', 'LIKE', '%' . $params['search'] . '%');
         }
 
         if ( !empty($params['status']) && is_array($params['status']) ) {
@@ -60,7 +62,9 @@ class PostRepository extends BaseRepository
             $result->whereIn(Post::TABLE . '.options', $params['options']);
         }
 
-
+        if ( !empty($params['post_id']) && is_array($params['post_id']) ) {
+            $result->whereIn(Post::TABLE . '.id', $params['post_id']);
+        }
 
         if ( !empty($params['module_id']) && is_array($params['module_id']) ) {
             $result->whereIn(Post::TABLE . '.module_id', $params['module_id']);
@@ -113,6 +117,10 @@ class PostRepository extends BaseRepository
             $result->orderBy(Post::TABLE . '.'.$params['sort'], 'desc');
         }else{
             $result->orderBy(Post::TABLE . '.id', 'desc');
+        }
+
+        if(!empty($params['debug'])){
+            echo $result->toSql();
         }
 
         return empty($limit) ? $result->get() : $result->paginate($limit);

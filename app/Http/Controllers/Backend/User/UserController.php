@@ -10,6 +10,7 @@ use App\Helpers\PaginationHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\BackendController;
 use App\Http\Requests\Backend\User\UserRequest;
+use App\Http\Requests\Backend\User\UsersImportRequest;
 use App\Models\Images\Image;
 use App\Repositories\Departments\DepartmentRepository;
 use App\Repositories\Region\RegionRepository;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image as ImageIntervention;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -429,6 +431,47 @@ class UserController extends BackendController
                 'admin_id' => $params['admin_id'],
                 'type' => $params['type'],
             ]);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        return view('components.backend.user.import', $this->data);
+    }
+    public function insertImport(UsersImportRequest $request) {
+        $params = $request->all();
+        $excelMimes = [
+            'text/xls',
+            'text/xlsx',
+            'application/excel',
+            'application/vnd.msexcel',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+
+        $file = $_FILES['file'];
+        $type = $_FILES['file']['type'];
+        if ($request->hasfile('file') && in_array($type, $excelMimes)) {
+            $reader = new Xlsx();
+            $spreadsheet = $reader->load($file['tmp_name']);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $users = $worksheet->toArray();
+            unset($users[0]);
+            foreach ($users as $key => $user) {
+                $p = [
+                    'name'=>$user[1] ?? '',
+                    'email'=>$user[2]?? 0,
+                    'status'=>1,
+                    'password'=>Hash::make($user[3]),
+                ];
+                $checkUser = $this->userRepository->getEmail($p['email']);
+                if(!$checkUser) {
+                    $this->userRepository->create($p);
+                }else {
+                    $checkUser->update($p);
+                }
+            }
+
         }
     }
 }

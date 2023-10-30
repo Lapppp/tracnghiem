@@ -432,7 +432,7 @@ class QuestionsController extends BackendController
                 $question_name = $value[0][1];
                 $params['code'] = $value[0][12];
                 $params['name'] = $question_name;
-                $params['status'] = PostStatusType::Deactivated;
+                $params['status'] = PostStatusType::Approved;
                 $params['slug'] = Str::slug($params['name']);
                 $post = $this->postRepository->create($params);
                 foreach ($value as $m => $val) {

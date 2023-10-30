@@ -37,6 +37,27 @@
                 </div>
                 <!--end::Input group-->
 
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Mã câu hỏi (dùng tìm kiếm nhanh)</span>
+                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
+                               data-bs-original-title="Mã câu hỏi (dùng tìm kiếm nhanh)"
+                               aria-label="Specify a target name for future usage and reference"></i>
+                        </label>
+                        <!--end::Label-->
+                        <input type="text" class="form-control form-control-solid" placeholder="Nhập mã câu hỏi"
+                               name="code" id="code" value="{{ old('code', !empty($posts) ? $posts->code : '') }}">
+                        @if ($errors->has('code'))
+                            <div class="fv-plugins-message-container invalid-feedback">
+                                <div data-field="code" data-validator="notEmpty">{{ $errors->first('code') }}</div>
+                            </div>
+                        @endif
+
+                    </div>
+                    <!--end::Input group-->
+
 
                 <!--begin::Input group-->
                 <div class="row g-9 mb-8">

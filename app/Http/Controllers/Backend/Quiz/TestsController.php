@@ -74,7 +74,7 @@ class TestsController extends BackendController
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
         $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
             null);
-        $this->data['questions_select'] = [];
+        $this->data['questions_select'] = '';
         return view('components.backend.quiz.test.create', $this->data);
     }
 
@@ -82,13 +82,14 @@ class TestsController extends BackendController
     {
         $params = $request->all();
         $questions = $params['questions'] ?? null;
-        $params['questions'] = !empty($params['questions']) ? implode(',', $params['questions']) : '';
+        $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post =  $this->testRepository->create($params);
         if ( !$post ) {
             return redirect()->route('backend.test.index')->with('error', 'Server đang bận không thể tạo');
         }
 
         if(!empty($questions)) {
+            $questions = explode(',',$params['questions']);
             foreach ( $questions as  $question ) {
                 $insert = [
                     'post_id' => $question
@@ -144,7 +145,7 @@ class TestsController extends BackendController
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
         $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
             null);
-        $this->data['questions_select'] = !empty($post->questions) ? explode(',', $post->questions) : [];
+        $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
         return view('components.backend.quiz.test.create', $this->data);
     }
 
@@ -152,7 +153,7 @@ class TestsController extends BackendController
     {
         $params = $request->all();
         $questions = $params['questions'] ?? null;
-        $params['questions'] = !empty($params['questions']) ? implode(',', $params['questions']) : '';
+        $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post = $this->testRepository->getByID($id);
         if ( !$post ) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
@@ -161,6 +162,7 @@ class TestsController extends BackendController
         $post->testquestions()->delete();
 
         if(!empty($questions)) {
+            $questions = explode(',',$params['questions']);
             foreach ( $questions as  $question ) {
                 $insert = [
                     'post_id' => $question
@@ -231,5 +233,32 @@ class TestsController extends BackendController
         $post->delete();
 
         return ResponseHelper::success('Đã xóa thành công');
+    }
+
+    public function searchQuestion(Request $request) {
+        $search =  $request->search ?? null;
+        $category_id =  $request->category_id ?? null;
+        $params  = [
+            'module_id'=>[ModuleType::Quiz],
+            'category_id'=>!empty($category_id) ? [$category_id] : [] ,
+            'search'=>$search,
+            'debug'=>0
+        ];
+        $posts = $this->postRepository->getAll($params);
+        $this->data['questions'] = $posts;
+        $html = view('components.backend.quiz.test.questions', $this->data)->render();
+        return ResponseHelper::success('thành công', ['jsonResult' => $html]);
+    }
+
+    public function loadQuestion(Request $request) {
+        $questions =  $request->questions ?? null;
+        $params  = [
+            'post_id'=>!empty($questions) ? explode(',',$questions) : [] ,
+            'debug'=>0
+        ];
+        $posts = $this->postRepository->getAll($params);
+        $this->data['questions'] = $posts;
+        $html = view('components.backend.quiz.test.load_questions', $this->data)->render();
+        return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 }

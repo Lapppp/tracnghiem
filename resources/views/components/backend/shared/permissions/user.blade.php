@@ -39,7 +39,7 @@
                 </div>
             @endif
 
-                @if(Auth::guard('backend')->user()->can(['create_user']))
+                @if(Auth::guard('backend')->user()->can(['import_user']))
                     <div class="menu-item">
                         <a class="menu-link @if($actionName =='import' && $controller =='UserController') active @endif "
                            href="{{ Route('backend.users.import') }}">

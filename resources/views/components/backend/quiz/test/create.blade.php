@@ -432,19 +432,21 @@
 
                     let questions = $('#questions').val();
                     let token = $("meta[name='csrf-token']").attr("content");
-                    $.ajax({
-                        type: 'POST',
-                        url: '{{ Route('backend.test.load.question') }}',
-                        dataType: 'json',
-                        data: {
-                            "_token": token,
-                            questions: questions
-                        },
-                        success: function(json) {
-                            $('ul#showListChoseQuestion').html(json.data.jsonResult);
-                            getListQuestionChose()
-                        }
-                    });
+                    if(questions.trim().length > 0) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ Route('backend.test.load.question') }}',
+                            dataType: 'json',
+                            data: {
+                                "_token": token,
+                                questions: questions
+                            },
+                            success: function(json) {
+                                $('ul#showListChoseQuestion').html(json.data.jsonResult);
+                                getListQuestionChose()
+                            }
+                        });
+                    }
 
                 });
 

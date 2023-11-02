@@ -103,9 +103,9 @@
                     <!--end::Input group-->
 
 
-                    
+
                     <!--begin::Input group-->
-                    <div class="d-flex flex-stack mb-8 pt-0 pb-15">
+                    <div class="d-flex flex-stack mb-2 pt-0 pb-15">
                         <!--begin::Label-->
                         <div class="me-5">
                             <label class="fs-6 fw-bold">Trạng thái</label>
@@ -113,6 +113,8 @@
                         </div>
                         <!--end::Label-->
                         <!--begin::Switch-->
+
+
                         <label class="form-check form-switch form-check-custom form-check-solid">
                             <input class="form-check-input" type="checkbox" id="status" name="status"
                                    value="{{ !empty($admin) ? $admin->status : 0 }}"
@@ -124,6 +126,11 @@
                     </div>
                     <!--end::Input group-->
 
+
+                    <div class="d-flex flex-column mb-8">
+                        <label class="fs-6 fw-bold mb-2">Ghi chú khách hàng</label>
+                        <textarea class="form-control form-control-solid" rows="5" name="description" placeholder="Nhập nội dung ngắn">{{ old('description',!empty($admin) ? $admin->description : '') }}</textarea>
+                    </div>
 
                     <!--begin::Input group-->
                     <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
@@ -162,32 +169,11 @@
         <script type="text/javascript">
             $(document).ready(function() {
 
-                let code = $('#code').val();
-                if(code.trim().length <=0) {
-                    let addCode = $('#region_id').find(':selected').data('code')+''+getRandomNum(3)
-                    $('#code').val(addCode);
-                }
-
-                $("#region_id").on("select2:select", function (e){
-                    var data = e.params.data;
-                    let addCode = $('#region_id').find(':selected').data('code')+''+getRandomNum(3)
-                    let code = $('#code').val();
-
-                    @if($isEdit == 1)
-                        if(code.trim().length <=0) {
-                            $('#code').val(addCode);
-                        }
-                     @else
-                         $('#code').val(addCode);
-                    @endif
-                })
-
-
                 $('[name="birthday"]').flatpickr({
                     dateFormat: "d-m-Y",
                 });
-                $(document).on('click', '#status', function(){
 
+                $(document).on('click', '#status', function(){
                     if ($(this).is(":checked")) {
                         $(this).val(1);
                     } else {

@@ -51,6 +51,7 @@ class User extends Authenticatable implements JWTSubject
         'reset_password',
         'expiry_date',
         'vip',
+        'description',
     ];
 
     /**

@@ -111,7 +111,6 @@
                         <script src={{ url('ckeditor/ckeditor.js') }}></script>
                         <script>
                             CKEDITOR.replace( 'description', {
-
                                 filebrowserBrowseUrl: '{{ asset('ckfinder/ckfinder.html') }}',
                                 filebrowserImageBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Images&mymy=1') }}',
                                 filebrowserFlashBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Flash') }}',

@@ -192,12 +192,14 @@ class UserController extends BackendController
         }
 
 
+        /*
         $department_id = $params['department_id'] ?? 0;
         $department = $this->departmentRepository->getById($department_id);
         $manager = $department->manager()->first();
-
+        */
 
         //Nếu khác phòng ban trước đó
+        /*
         if ($department_id != $admin->department_id) {
             $checkManager = $this->userAdminDepartmentRepository->checkUserAdminManagerDepartment(
                 [
@@ -231,9 +233,10 @@ class UserController extends BackendController
                     }
                 }
             }
-        }
+        }*/
 
         // cùng phòng trước đó
+        /*
         if ($department_id == $admin->department_id) {
             $checkManager = $this->userAdminDepartmentRepository->checkUserAdminManagerDepartment(
                 [
@@ -256,10 +259,9 @@ class UserController extends BackendController
                 ]);
             }
 
-        }
+        } */
 
         $admin->update($params);
-
         if ($request->hasfile('image')) {
 
             $images = $admin->image()->get();

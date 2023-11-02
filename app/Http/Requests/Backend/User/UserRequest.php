@@ -29,8 +29,7 @@ class UserRequest extends FormRequest
         $rules = [
             'name' => 'bail|required|max:255',
             'phone' => 'required|unique:users,phone' . $id . '|digits:10',
-            'email' => 'bail|required|email|unique:users,email' . $id . '|max:100',
-            'department_id' => 'bail|required',
+            'email' => 'bail|required|email|unique:users,email' . $id . '|max:100'
         ];
         $rules['password'] = 'bail|required|string|min:6|max:20|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/';
         if (request()->isMethod('put')) {
@@ -57,7 +56,6 @@ class UserRequest extends FormRequest
             'phone.required' => 'Vui lòng nhập số điện thoại',
             'phone.digits' => 'Số điện thoại phải là dạng 10 chữ số',
             'phone.unique' => 'Số điện thoại đã có người dùng. Vui lòng chọn số khác',
-            'department_id.required' => 'Vui lòng chọn trưởng phòng.',
         ];
     }
 

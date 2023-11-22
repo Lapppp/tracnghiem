@@ -52,6 +52,7 @@ class User extends Authenticatable implements JWTSubject
         'expiry_date',
         'vip',
         'description',
+        'permission_category',
     ];
 
     /**

@@ -341,7 +341,7 @@ class QuestionsController extends BackendController
         if (!$category) {
             return ResponseHelper::error('Không tìm thấy tài khoản');
         }
-        $category->posts()->delete();
+        //$category->posts()->delete();
         $category->delete();
         return ResponseHelper::success('Đã xóa thành công');
     }

@@ -124,22 +124,48 @@
                             <li class="header__menu--items style2">
                                 <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ?? '' }} </a>
                             </li>
-                            <li class="header__menu--items style2">
-                                <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
-                                    <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
-                                         height="7.41" viewBox="0 0 12 7.41">
-                                        <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
-                                              transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
-                                    </svg>
-                                </a>
-                                <ul class="header__sub--menu">
-                                    @foreach($menuCategory as $menu)
-                                        <li class="header__sub--menu__items">
-                                            <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </li>
+
+                            @if(Auth::guard('web')->user())
+                                @if(!empty(Auth::guard('web')->user()->permission_category))
+                                    <li class="header__menu--items style2">
+                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
+                                            <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
+                                                 height="7.41" viewBox="0 0 12 7.41">
+                                                <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
+                                                      transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
+                                            </svg>
+                                        </a>
+                                        <ul class="header__sub--menu">
+                                            @foreach($menuCategory as $menu)
+                                                @if(in_array($menu->id,explode(',',Auth::guard('web')->user()->permission_category)))
+                                                    <li class="header__sub--menu__items">
+                                                        <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
+                                                    </li>
+                                                @endif
+
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                 @endif
+                            @else
+                                    <li class="header__menu--items style2">
+                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
+                                            <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
+                                                 height="7.41" viewBox="0 0 12 7.41">
+                                                <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
+                                                      transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7"/>
+                                            </svg>
+                                        </a>
+                                        <ul class="header__sub--menu">
+                                            @foreach($menuCategory as $menu)
+                                                <li class="header__sub--menu__items">
+                                                    <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                            @endif
+
                             <li class="header__menu--items style2 d-none d-xl-block">
                                 <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$MeoThucChung->id,'name'=>Str::slug($MeoThucChung->name.'', '-').'.html']) }}">{{ $MeoThucChung->name ?? '' }} </a>
                             </li>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\User;
 
 use App\Enums\Departments\UsersAdminDepartmentStatusType;
+use App\Enums\Modules\ModuleType;
 use App\Enums\Roles\RoleType;
 use App\Enums\Users\ExpiryDateType;
 use App\Enums\Users\UserGenderType;
@@ -12,6 +13,7 @@ use App\Http\Controllers\BackendController;
 use App\Http\Requests\Backend\User\UserRequest;
 use App\Http\Requests\Backend\User\UsersImportRequest;
 use App\Models\Images\Image;
+use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Departments\DepartmentRepository;
 use App\Repositories\Region\RegionRepository;
 use App\Repositories\Users\UserAdminDepartmentRepository;
@@ -33,12 +35,14 @@ class UserController extends BackendController
     protected $regionRepository;
     protected $departmentRepository;
     protected $userAdminDepartmentRepository;
+    protected $categoryRepository;
 
     public function __construct(
         UserRepository $userRepository,
         RegionRepository $regionRepository,
         DepartmentRepository $departmentRepository,
-        UserAdminDepartmentRepository $userAdminDepartmentRepository
+        UserAdminDepartmentRepository $userAdminDepartmentRepository,
+        CategoryRepository $categoryRepository
     ) {
         parent::__construct();
         $this->data['genders'] = [
@@ -49,6 +53,7 @@ class UserController extends BackendController
         $this->regionRepository = $regionRepository;
         $this->departmentRepository = $departmentRepository;
         $this->userAdminDepartmentRepository = $userAdminDepartmentRepository;
+        $this->categoryRepository = $categoryRepository;
         $this->data['vip'] = ExpiryDateType::getExpiryDate();
     }
 
@@ -94,6 +99,11 @@ class UserController extends BackendController
         $this->data['role_select'] = [];
         $this->data['regions'] = $this->regionRepository->getAll([]);
         $this->data['departments'] = $this->departmentRepository->getAll([]);
+        $this->data['category_parents'] = $this->categoryRepository->getAll([
+            'module_id' => [ModuleType::Quiz], 'parent_id' => [0]
+        ]);
+        $this->data['permission_category'] = [];
+
         return view('components.backend.user.create', $this->data);
     }
 
@@ -104,7 +114,7 @@ class UserController extends BackendController
         $params['username'] = $params['phone'] ?? 0;
         $department_id = $params['department_id'] ?? 0;
         $params['password'] = Hash::make($params['password']);
-
+        $params['permission_category'] = !empty($params['permission_category']) ? implode(',',$params['permission_category']) : '';
         $admin = $this->userRepository->create($params);
         if (!$admin) {
             return redirect()->route('backend.users.index')->with('error', 'Server đang bận không thể tạo tài khoản được');
@@ -165,6 +175,12 @@ class UserController extends BackendController
         $this->data['isEdit'] = 1;
         $this->data['roles'] = Role::all()->where('guard_name', 'web');
         $this->data['role_select'] = $admin->getRoleNames()->toArray();
+
+        $this->data['category_parents'] = $this->categoryRepository->getAll([
+            'module_id' => [ModuleType::Quiz], 'parent_id' => [0]
+        ]);
+        $this->data['permission_category'] = !empty($admin->permission_category) ? explode(',',$admin->permission_category) : [];
+
         return view('components.backend.user.create', $this->data);
     }
 
@@ -190,7 +206,7 @@ class UserController extends BackendController
         if (empty($request->password)) {
             unset($params['password']);
         }
-
+        $params['permission_category'] = !empty($params['permission_category']) ? implode(',',$params['permission_category']) : '';
 
         /*
         $department_id = $params['department_id'] ?? 0;
@@ -320,11 +336,20 @@ class UserController extends BackendController
         }
 
         $vip = $request->vip;
+        $number = $request->number ?? 0;
         $currentTime = date('Y-m-d H:i:s');
         $strVip = "+".$vip." days";
+        if($vip == ExpiryDateType::Days_customize) {
+            $currentTime =  date('Y-m-d H:i:s',strtotime($request->date));
+            $strVip = $number." days";
+        }
         $expiry_date = date("Y-m-d H:i:s",strtotime($strVip, strtotime($currentTime)));
         $admin->update(['vip'=>$request->vip,'expiry_date'=>$expiry_date]);
-        return ResponseHelper::success('Cập nhật thành công');
+        $data = [
+            'showTime'=>$expiry_date,
+            'id'=>$id
+        ];
+        return ResponseHelper::success('Cập nhật thành công',$data);
     }
 
     public function search(Request $request)

@@ -16,6 +16,7 @@ final class ExpiryDateType extends Enum
     const Days_six_months =   180;
     const Days_nine_months =   270;
     const Days_year = 365;
+    const Days_customize = 99;
 
     /**
      * @return string[]
@@ -29,6 +30,7 @@ final class ExpiryDateType extends Enum
             self::Days_six_months=>'VIP 180 Days',
             self::Days_nine_months=>'VIP 270 Days',
             self::Days_year=>'VIP 365 Days',
+            self::Days_customize=>'Customize',
         ];
 
     }

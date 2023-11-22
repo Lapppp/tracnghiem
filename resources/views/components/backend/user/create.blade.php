@@ -35,7 +35,7 @@
                     <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                            <span class="required">Điện thoại</span>
+                            <span>Điện thoại</span>
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Nhập điện thoại của bạn để sau này đăng nhập vào hệ thống" aria-label="Specify a target name for future usage and reference"></i>
                         </label>
                         <!--end::Label-->
@@ -123,6 +123,25 @@
                             <span class="form-check-label fw-bold text-muted">Chọn/Không chọn</span>
                         </label>
                         <!--end::Switch-->
+                    </div>
+                    <!--end::Input group-->
+
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Phân quyền sử dụng danh mục bài kiểm tra</span>
+                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Phân quyền sử dụng danh mục bài kiểm tra" aria-label="Specify a target name for future usage and reference"></i>
+                        </label>
+                        <!--end::Label-->
+                        <select class="form-select form-select-solid select2-hidden-accessible" data-control="select2" data-hide-search="true" data-placeholder="Chọn danh mục" name="permission_category[]" data-select2-id="select2-data-10-gou1" tabindex="-1" aria-hidden="true" multiple="multiple">
+                            <option value="" data-select2-id="select2-data-10-gou1">Chọn danh mục...</option>
+                            @foreach ($category_parents as $key => $permissionVal)
+                                <option value="{{ $permissionVal->id }}" @if (in_array(old('permission_category', $permissionVal->id),$permission_category)) selected="selected" @endif>{{ $permissionVal->name ?? '' }}</option>
+                            @endforeach
+                        </select>
+
                     </div>
                     <!--end::Input group-->
 

@@ -28,7 +28,7 @@ class UserRequest extends FormRequest
         $id = $this->id ? ',' . $this->id : null;
         $rules = [
             'name' => 'bail|required|max:255',
-            'phone' => 'required|unique:users,phone' . $id . '|digits:10',
+            'phone' => 'nullable|unique:users,phone' . $id . '|digits:10',
             'email' => 'bail|required|email|unique:users,email' . $id . '|max:100'
         ];
         $rules['password'] = 'bail|required|string|min:6|max:20|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/';

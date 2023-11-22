@@ -96,9 +96,9 @@
 
                                 <td>
                                     @if($item->expiry_date)
-                                        <span class="badge badge-light-primary fs-7 fw-bold">{{ date('Y-m-d H:i:s',strtotime($item->expiry_date))}}</span>
+                                        <span class="badge badge-light-primary fs-7 fw-bold" id="showTime_{{ $item->id }}">{{ date('Y-m-d H:i:s',strtotime($item->expiry_date))}}</span>
                                     @else
-                                        <span class="badge badge-light-danger fs-7 fw-bold">---</span>
+                                        <span class="badge badge-light-danger fs-7 fw-bold" id="showTime_{{ $item->id }}">---</span>
                                     @endif
                                 </td>
 
@@ -254,29 +254,162 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="showVip" data-bs-backdrop="static" data-bs-focus="false" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Thông tin tùy chọn VIP</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <div class="py-5">
+                        <div class="rounded border p-10">
+                            <div class="mb-5">
+                                <label for="kt_datepicker_3" class="form-label">Chọn ngày bắt đầu</label>
+                                <input class="form-control form-control-solid flatpickr-input" placeholder="Chọn ngày và chọn thời gian" id="kt_datepicker_3" type="text" readonly="readonly">
+                            </div>
+
+                            <div class="mb-0">
+                                <label for="numberDate" class="form-label">Chọn số ngày</label>
+                                <input class="form-control form-control-solid " placeholder="Nhập số ngày(âm hoặc dương)" value="15" id="numberDate" type="number">
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input id="user_id_vip" value="0" type="hidden">
+                    <button type="button" class="btn btn-primary" id="updateVipCustomize">Cập nhật</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
 
+                $("#kt_datepicker_3").flatpickr({
+                    dateFormat: "d-m-Y H:i:ss",
+                });
 
-                $(document).on('click','select.updateVIP',function(event) {
+
+                $(document).on('click','#updateVipCustomize',function(event) {
+                    let date = $('#kt_datepicker_3').val();
+                    let number = $('#numberDate').val();
+                    let id  = $('#user_id_vip').val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    let data = {
+                        id:id,
+                        date:date,
+                        number:number,
+                        vip:99,
+                        _token:token
+                    };
+
+                    if(date.trim().length <= 0) {
+                        $('#kt_datepicker_3').focus();
+                        return false;
+                    }else if(number.trim().length <= 0){
+                        $('#numberDate').focus();
+                    }else {
+
+                        $.ajax({
+                            url: baseUrl+"/users/updateVip/"+id,
+                            type: 'POST',
+                            data: data,
+                            success: function (json) {
+                                $('#showVip').modal('hide');
+                                let timerInterval
+                                Swal.fire({
+                                    title: 'Cập nhật thành công!',
+                                    html: 'Sẽ đóng sau <b></b> milliseconds.',
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                        const b = Swal.getHtmlContainer().querySelector('b')
+                                        timerInterval = setInterval(() => {
+                                            b.textContent = Swal.getTimerLeft()
+                                        }, 100)
+                                    },
+                                    willClose: () => {
+                                        clearInterval(timerInterval)
+                                    }
+                                }).then((result) => {
+                                    /* Read more about handling dismissals below */
+                                    if (result.dismiss === Swal.DismissReason.timer) {
+                                        $('#showTime_'+json.data.id).html(json.data.showTime)
+
+                                    }
+                                })
+
+                            }
+                        });
+
+                    }
+
+                });
+
+
+                $(document).on('change','select.updateVIP',function(event) {
                     let vip = $(this).val();
                     let id = $(this).find('option:selected').attr("data-id");
                     let token = $("meta[name='csrf-token']").attr("content");
+                    $('#user_id_vip').val(id);
                     let data = {
                         id:id,
                         vip:vip,
                         _token:token
                     };
                     if(vip.length > 0) {
-                        $.ajax({
-                            url: baseUrl+"/users/updateVip/"+id,
-                            type: 'POST',
-                            data: data,
-                            success: function (json) {
+                        if(vip != 99) {
+                            $.ajax({
+                                url: baseUrl+"/users/updateVip/"+id,
+                                type: 'POST',
+                                data: data,
+                                success: function (json) {
 
-                            }
-                        });
+                                    let timerInterval
+                                    Swal.fire({
+                                        title: 'Cập nhật thành công!',
+                                        html: 'Sẽ đóng sau <b></b> milliseconds.',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        didOpen: () => {
+                                            Swal.showLoading()
+                                            const b = Swal.getHtmlContainer().querySelector('b')
+                                            timerInterval = setInterval(() => {
+                                                b.textContent = Swal.getTimerLeft()
+                                            }, 100)
+                                        },
+                                        willClose: () => {
+                                            clearInterval(timerInterval)
+                                        }
+                                    }).then((result) => {
+                                        /* Read more about handling dismissals below */
+                                        if (result.dismiss === Swal.DismissReason.timer) {
+                                            $('#showTime_'+json.data.id).html(json.data.showTime)
+                                        }
+                                    })
+
+                                }
+                            });
+                        }else {
+                            $('#showVip').modal('show');
+                        }
                     }
 
                 });

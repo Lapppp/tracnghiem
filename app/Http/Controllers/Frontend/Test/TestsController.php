@@ -114,7 +114,9 @@ class TestsController extends FrontendController
         $this->data['checkUserTest'] = [];
         if($user) {
             $this->data['checkTest']  = $this->testUsersRepository->getUserTest([
-                'user_id' => $user->id, 'test_id' => $test->id, 'question_id' => $this->data['question']->id
+                'user_id' => $user->id,
+                'test_id' => $test->id,
+                'question_id' => $this->data['question']->id
             ]);
 
             $this->data['checkUserTest']  = $this->testUsersTestsRepository->checkUserTest([
@@ -127,9 +129,10 @@ class TestsController extends FrontendController
         return view('components.frontend.tests.show', $this->data);
     }
 
-    public function next(Request $request): \Illuminate\Http\JsonResponse
+    public function next(Request $request)
     {
         $user = Auth::guard('web')->user();
+
         $test_id = $request->test_id ?? 0;
         $question_id = $request->question_id ?? 0;
         $answer_id = $request->answer_id ?? 0;
@@ -166,7 +169,7 @@ class TestsController extends FrontendController
                 return ResponseHelper::error('Bạn đã hết thời gian trải nghiệm. Vui lòng liên hệ với admin để gia hạn', null, 405);
             }else {
                 $currentTime = date('Y-m-d H:i:s');
-                if(strtotime($expiry_date) > strtotime($currentTime)) {
+                if(strtotime($expiry_date) < strtotime($currentTime)) {
                     return ResponseHelper::error('Bạn đã hết thời gian trải nghiệm. Vui lòng liên hệ với admin để gia hạn', null, 405);
                 }
             }
@@ -176,9 +179,10 @@ class TestsController extends FrontendController
         $this->data['AllTest'] = $test->testAllquestions()->get();
         $this->data['question'] = $test->nextTestAllquestions($pivot_id);
 
+
         $html = 'xemketqua';
 
-        $checkUserTest = 0;
+        $checkUserTestId = 0;
         if(!empty($this->data['question'])) {
             $this->data['total'] = count($this->data['AllTest']);
             $this->data['answers'] = $this->data['question']->answers()->get();
@@ -186,15 +190,22 @@ class TestsController extends FrontendController
             $this->data['checkTest']  = $this->testUsersRepository->getUserTest([
                 'user_id' => $user->id, 'test_id' => $test->id, 'question_id' => $this->data['question']->id
             ]);
-            $checkUserTest  = $this->testUsersTestsRepository->checkUserTest([
-                'test_id'=>$test->id,
-                'user_id'=>$user->id
-            ]);
-            $checkUserTest = $checkUserTest->id;
+
+           // print_r($this->data);
+           // dd($checkUserTestId);
             $html = view('components.frontend.tests.next', $this->data)->render();
         }
 
-        return ResponseHelper::success('Thành công', ['responseJson' => $html,'tesyusertest_id'=>$checkUserTest]);
+        if($user){
+            $p = [
+                'test_id'=>$test->id,
+                'user_id'=>$user->id
+            ];
+            $checkUserTest  = $this->testUsersTestsRepository->checkUserTest( $p);
+            $checkUserTestId = $checkUserTest->id;
+        }
+
+        return ResponseHelper::success('Thành công', ['responseJson' => $html,'tesyusertest_id'=>$checkUserTestId]);
     }
 
     public function previous(Request $request)
@@ -236,7 +247,7 @@ class TestsController extends FrontendController
                 return ResponseHelper::error('Bạn đã hết thời gian trải nghiệm. Vui lòng liên hệ với admin để gia hạn', null, 405);
             }else {
                 $currentTime = date('Y-m-d H:i:s');
-                if(strtotime($expiry_date) > strtotime($currentTime)) {
+                if(strtotime($expiry_date) < strtotime($currentTime)) {
                     return ResponseHelper::error('Bạn đã hết thời gian trải nghiệm. Vui lòng liên hệ với admin để gia hạn', null, 405);
                 }
             }
@@ -326,7 +337,9 @@ class TestsController extends FrontendController
             $test_id_test = $checkUserTest->id ?? 0;
 
             $checkTest = $this->testUsersRepository->getUserTest([
-                'user_id' => $user->id, 'test_id' => $test->id, 'question_id' => $question_id
+                'user_id' => $user->id,
+                'test_id' => $test->id,
+                'question_id' => $question_id
             ]);
 
             if ( !$checkTest ) {
@@ -345,6 +358,7 @@ class TestsController extends FrontendController
                     'is_correct' => $answer_id,
                     'is_correct_temp' => 0,
                     'test_id' => $test->id,
+                    'user_id'=>$user->id,
                     'updated_at' => date('Y-m-d H:i:s'),
                     'test_id_test' => $test_id_test
                 ]);

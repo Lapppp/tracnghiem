@@ -133,9 +133,11 @@
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
                             <span>Phân quyền sử dụng danh mục bài kiểm tra</span>
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Phân quyền sử dụng danh mục bài kiểm tra" aria-label="Specify a target name for future usage and reference"></i>
+                            <span id="selectAll" class="badge badge-primary ms-2" style="cursor: pointer"> Chọn tất cả </span>
+                            <span id="deselectAll" class="badge badge-primary ms-2" style="cursor: pointer"> Hủy tất cả </span>
                         </label>
                         <!--end::Label-->
-                        <select class="form-select form-select-solid select2-hidden-accessible" data-control="select2" data-hide-search="true" data-placeholder="Chọn danh mục" name="permission_category[]" data-select2-id="select2-data-10-gou1" tabindex="-1" aria-hidden="true" multiple="multiple">
+                        <select class="form-select form-select-solid select2-hidden-accessible" data-control="select2" data-hide-search="true" data-placeholder="Chọn danh mục" id="permission_category" name="permission_category[]" data-select2-id="select2-data-10-gou1" tabindex="-1" aria-hidden="true" multiple="multiple">
                             <option value="" data-select2-id="select2-data-10-gou1">Chọn danh mục...</option>
                             @foreach ($category_parents as $key => $permissionVal)
                                 <option value="{{ $permissionVal->id }}" @if (in_array(old('permission_category', $permissionVal->id),$permission_category)) selected="selected" @endif>{{ $permissionVal->name ?? '' }}</option>
@@ -187,6 +189,17 @@
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
+
+                $(document).on('click','#selectAll',function(){
+                    $("#permission_category > option").prop("selected", true);
+                    $("#permission_category").trigger("change");
+                });
+
+                $(document).on('click','#deselectAll',function(){
+                    $("#permission_category > option").prop("selected", false);
+                    $("#permission_category").trigger("change");
+                });
+
 
                 $('[name="birthday"]').flatpickr({
                     dateFormat: "d-m-Y",

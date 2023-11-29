@@ -188,6 +188,7 @@
                                     </a>
                                     <ul class="header__sub--menu">
                                         <li class="header__sub--menu__items">
+                                            <a href="{{ Route('frontend.users.change') }}" class="header__sub--menu__link">Thông tin cá nhân</a>
                                             <a href="{{ Route('frontend.users.index') }}" class="header__sub--menu__link">Xem bài thi</a>
                                             <a href="{{ Route('frontend.user.logout') }}" class="header__sub--menu__link">Thoát</a>
                                         </li>
@@ -315,6 +316,7 @@
                                     </a>
                                     <ul class="header__sub--menu">
                                         <li class="header__sub--menu__items">
+                                            <a href="{{ Route('frontend.users.change') }}" class="header__sub--menu__link">Thông tin cá nhân</a>
                                             <a href="{{ Route('frontend.users.index') }}" class="header__sub--menu__link">Xem bài thi</a>
                                             <a href="{{ Route('frontend.user.logout') }}" class="header__sub--menu__link">Thoát</a>
                                         </li>
@@ -374,6 +376,7 @@
                             <a class="offcanvas__menu_item" href="#"><b>{{ Auth::guard('web')->user()->name ?? '' }}</a>
                             <ul class="offcanvas__sub_menu">
                                 <li class="offcanvas__sub_menu_li">
+                                    <a href="{{ Route('frontend.users.change') }}" class="offcanvas__sub_menu_item">Thông tin cá nhân</a>
                                     <a href="{{ Route('frontend.users.index') }}" class="offcanvas__sub_menu_item">Xem bài thi</a>
                                     <a href="{{ Route('frontend.user.logout') }}" class="offcanvas__sub_menu_item">Thoát</a>
                                 </li>

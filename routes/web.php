@@ -188,6 +188,7 @@ Route::prefix('users')->group(function () {
     Route::post('/update', [\App\Http\Controllers\Frontend\User\UserController::class, 'update'])->name('frontend.users.update');
     Route::post('/addFavorite', [\App\Http\Controllers\Frontend\User\UserController::class, 'addFavorite'])->name('frontend.users.addFavorite');
     Route::post('/removeFavorite', [\App\Http\Controllers\Frontend\User\UserController::class, 'removeFavorite'])->name('frontend.users.removeFavorite');
+    Route::get('/change', [\App\Http\Controllers\Frontend\User\UserController::class, 'change'])->name('frontend.users.change');
 });
 
 

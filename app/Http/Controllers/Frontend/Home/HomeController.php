@@ -56,12 +56,27 @@ class HomeController extends FrontendController
     public function  index(Request $request) {
 
         $this->data['banners'] = $this->bannerRepository->getAll(['status'=>[1]],3);
-        $this->data['news'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News]],16);
-        $this->data['featured'] = $this->testRepository->getAll(['module_id'=>[ModuleType::Quiz],'position'=>[2]],25);
-        $this->data['trending'] = $this->testRepository->getAll(['module_id'=>[ModuleType::Quiz],'position'=>[3]],25);
-        $this->data['newarrival'] = $this->testRepository->getAll(['module_id'=>[ModuleType::Quiz],'position'=>[1]],25);
+        $aFeatured = [
+            'module_id'=>[ModuleType::Quiz],
+            'position'=>[2],
+            'status'=>[1]
+        ];
 
+        $aTrending = [
+            'module_id'=>[ModuleType::Quiz],
+            'position'=>[3],
+            'status'=>[1]
+        ];
+        $aNewarrival = [
+            'module_id'=>[ModuleType::Quiz],
+            'position'=>[1],
+            'status'=>[1]
+        ];
 
+        $this->data['news'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'status'=>[1]],16);
+        $this->data['featured'] = $this->testRepository->getAll($aFeatured,25);
+        $this->data['trending'] = $this->testRepository->getAll($aTrending,25);
+        $this->data['newarrival'] = $this->testRepository->getAll($aNewarrival,25);
         return view('components.frontend.home.tests.index',$this->data);
     }
 

@@ -8,6 +8,7 @@ use App\Helpers\ResponseHelper;
 use App\Helpers\StringHelper;
 use App\Http\Requests\Frontend\User\StoreUserForgotPasswordRequest;
 use App\Http\Requests\Frontend\User\StoreUserResetPasswordRequest;
+use App\Http\Requests\Frontend\User\UpdateChangeUserRequest;
 use App\Http\Requests\Frontend\User\UpdateUserRequest;
 use App\Jobs\SendEmailJob;
 use App\Repositories\Orders\OrderRepository;
@@ -41,6 +42,7 @@ class UserController extends FrontendController
         UserRepository $userRepository
     ) {
         $this->data['title'] = 'User';
+        $this->userRepository  = $userRepository;
         parent::__construct();
     }
 
@@ -60,6 +62,37 @@ class UserController extends FrontendController
         $this->data['pager'] = PaginationHelper::Pagination($total, $perPage, $page, $url);
 
         return view('components.frontend.users.index', $this->data);
+    }
+
+    public function change(Request $request) {
+        $user = Auth::guard('web')->user();
+        if ( !$user ) {
+            return redirect(Route('frontend.home.index'));
+        }
+        $this->data['user'] = $user;
+        return view('components.frontend.users.edit', $this->data);
+    }
+
+    public function update(UpdateChangeUserRequest $request) {
+        $user = Auth::guard('web')->user();
+        $params = $request->all();
+        $params['name'] = ucwords($params['name']) ?? '';
+        $params['password'] = Hash::make($params['password']);
+        $userUpdate = $this->userRepository->getByID($user->id);
+        if ($userUpdate) {
+            $update = [
+                'name'=>$params['name'],
+                'email'=>$params['email'],
+            ];
+
+            if(!empty($params['password_confirmation'])) {
+                $update['password'] = $params['password'];
+            }
+
+            $userUpdate->update($update);
+            return ResponseHelper::success('Thành công');
+        }
+        return ResponseHelper::error('Server đang bận không thể tạo tài khoản được');
     }
 
 }

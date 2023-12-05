@@ -17,5 +17,6 @@ class TestUser extends Model
         'is_correct',
         'is_correct_temp',
         'test_id_test',
+        'order_by',
     ];
 }

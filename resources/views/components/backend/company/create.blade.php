@@ -122,6 +122,22 @@
                     </div>
 
 
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2" for="files">
+                            <span>Chọn tập tin Logo kích thước 157x36 </span>
+                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
+                               data-bs-original-title="chọn file hình ảnh từ máy tính"
+                               aria-label="Specify a target name for future usage and reference"></i>
+                        </label>
+                        <!--end::Label-->
+                        <input class="form-control" type="file" id="files" name="files[]" multiple="multiple"
+                               accept="image/*">
+
+                    </div>
+                    <!--end::Input group-->
+
                     <div class="text-end">
                     <button type="reset" id="kt_modal_new_target_cancel" class="btn btn-light me-3">Nhập lại</button>
                     <button type="submit" id="kt_modal_new_target_submit" class="btn btn-primary">

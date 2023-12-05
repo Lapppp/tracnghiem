@@ -149,6 +149,48 @@ class TestsController extends BackendController
         return view('components.backend.quiz.test.create', $this->data);
     }
 
+
+    public function question($id)
+    {
+        $post = $this->testRepository->getByID($id);
+        $this->data['posts'] = $post;
+        if ( !$post ) {
+            return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+
+        $this->data['questions'] = $post->testAllquestions()->get();
+        $html = view('components.backend.quiz.test.sortQuestions', $this->data)->render();
+        return ResponseHelper::success('thành công', ['jsonResult' => $html]);
+    }
+
+    public function updateSortQuestion(Request $request,$id)
+    {
+        $post = $this->testRepository->getByID($id);
+        $this->data['posts'] = $post;
+        if ( !$post ) {
+            return ResponseHelper::error('thất bại',null,404);
+        }
+
+
+        $aQuestions = $request->questions?? [];
+
+        $sort = $request->sortQuestions ?? [];
+        $aQuestionsId = [];
+        if(!empty($aQuestions)) {
+            foreach ($aQuestions as $key => $question_id) {
+                $aQuestionsId[$question_id] = [
+                    'order_by' => $sort[$key],
+                    'post_id' => $question_id
+                ];
+            }
+        }
+        if(!empty($aQuestionsId)) {
+            $post->testAllquestions()->sync($aQuestionsId,false);
+        }
+
+        return ResponseHelper::success('thành công');
+    }
+
     public function update(TestsCreateRequest $request, $id)
     {
         $params = $request->all();

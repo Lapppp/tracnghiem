@@ -46,9 +46,16 @@ class Test extends Model
          return $this->hasMany(TestQuestions::class,'test_id','id');
     }
 
+    public function testquestionSort($question_id = 0)
+    {
+        return $this->hasMany(TestQuestions::class,'test_id','id')
+            ->where('post_id',$question_id);
+    }
+
     public function testAllquestions()
     {
-        return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')->withPivot('id');
+        return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
+            ->withPivot(['id','order_by'])->orderBy('test_questions.order_by','asc');
     }
 
     public function nextTestAllquestions($id)

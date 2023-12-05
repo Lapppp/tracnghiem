@@ -395,6 +395,8 @@ Route::prefix('adminkiwi')->group(function () {
             Route::post('/load-question', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'loadQuestion'])->name('backend.test.load.question');
             Route::post('/store', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'store'])->name('backend.test.store');
             Route::get('/edit/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'edit'])->name('backend.test.edit');
+            Route::get('/question/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'question'])->name('backend.test.question');
+            Route::post('/updateSortQuestion/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'updateSortQuestion'])->name('backend.test.updateSortQuestion');
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'update'])->name('backend.test.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'destroy'])->name('backend.test.destroy');
         });

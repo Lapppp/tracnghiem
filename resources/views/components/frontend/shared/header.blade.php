@@ -5,10 +5,15 @@
             <div class="header__topbar--inner d-flex align-items-center justify-content-between">
                 <div class="header__shipping">
                     <ul class="header__shipping--wrapper d-flex">
-                        <li class="header__shipping--text text-white">Chào mừng bạn đến với Kiwi trắc nghiệm Online</li>
-                        <li class="header__shipping--text text-white d-sm-2-none"><img
-                                class="header__shipping--text__icon" src="{{ asset('/frontend/') }}/assets/img/icon/email.png" alt="email-icon">
-                            <a class="header__shipping--text__link" href="mailto:demo@gmail.com">demo@gmail.com</a></li>
+                        <li class="header__shipping--text text-white">Chào mừng bạn đến với website trắc nghiệm online</li>
+                        <li class="header__shipping--text text-white d-sm-2-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15.568" height="15.128"
+                                 viewBox="0 0 31.568 31.128">
+                                <path id="ic_phone_forwarded_24px"
+                                      d="M26.676,16.564l7.892-7.782L26.676,1V5.669H20.362v6.226h6.314Zm3.157,7a18.162,18.162,0,0,1-5.635-.887,1.627,1.627,0,0,0-1.61.374l-3.472,3.424a23.585,23.585,0,0,1-10.4-10.257l3.472-3.44a1.48,1.48,0,0,0,.395-1.556,17.457,17.457,0,0,1-.9-5.556A1.572,1.572,0,0,0,10.1,4.113H4.578A1.572,1.572,0,0,0,3,5.669,26.645,26.645,0,0,0,29.832,32.128a1.572,1.572,0,0,0,1.578-1.556V25.124A1.572,1.572,0,0,0,29.832,23.568Z"
+                                      transform="translate(-3 -1)" fill="currentColor"/>
+                            </svg>
+                            <a class="header__shipping--text__link" href="tel:+084{{ $menuSupport->hotline ?? '' }}">{{ $menuSupport->hotline ?? '' }}</a></li>
                     </ul>
                 </div>
 
@@ -29,8 +34,14 @@
                     </a>
                 </div>
                 <div class="main__logo">
-                    <h1 class="main__logo--title"><a class="main__logo--link" href="{{ Route('frontend.home.index') }}"><img
-                                class="main__logo--img" src="{{ asset('/frontend/') }}/assets/img/logo/nav-log.png" alt="logo-img"></a></h1>
+                    <h1 class="main__logo--title">
+
+                            @if($footerCompany->default() && $footerCompany->default()['url'])
+                                <a class="main__logo--link" href="{{ Route('frontend.home.index') }}">
+                                    <img class="main__logo--img" src="{{ str_replace(Str::of($footerCompany->default()['url'])->basename(),'thumb_'.Str::of($footerCompany->default()['url'])->basename(),asset('storage/products/'.$footerCompany->default()['url'])) }}" alt="logo-img">
+                                </a>
+                            @endif
+                    </h1>
                 </div>
                 <div class="header__search--widget header__sticky--none d-none d-lg-block">
                     <form class="d-flex header__search--form" action="{{ Route('frontend.tests.index') }}">
@@ -337,9 +348,14 @@
     <div class="offcanvas__header">
         <div class="offcanvas__inner">
             <div class="offcanvas__logo">
-                <a class="offcanvas__logo_link" href="index.html">
-                    <img src="{{ asset('/frontend/') }}/assets/img/logo/nav-log.png" alt="Grocee Logo" width="158" height="36">
-                </a>
+
+                @if($footerCompany->default() && $footerCompany->default()['url'])
+                    <a class="offcanvas__logo_link" href="{{ Route('frontend.home.index') }}">
+                        <img src="{{ str_replace(Str::of($footerCompany->default()['url'])->basename(),'thumb_'.Str::of($footerCompany->default()['url'])->basename(),asset('storage/products/'.$footerCompany->default()['url'])) }}" alt="Grocee Logo" width="158" height="36">
+                    </a>
+
+                @endif
+
                 <button class="offcanvas__close--btn" data-offcanvas>close</button>
             </div>
             <nav class="offcanvas__menu">

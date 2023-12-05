@@ -63,23 +63,24 @@ class TestsController extends FrontendController
         $url = route('frontend.tests.index').'?'.Arr::query($params);
         $this->data['pager'] = PaginationHelper::Pagination($total, $perPage, $page, $url);
 
+
         return view('components.frontend.tests.index', $this->data);
     }
 
     public function category(Request $request, $id = 0)
     {
-
+        $user = Auth::guard('web')->user();
         $params = $request->only(['page', 'category_id']);
         $category_id = $id ?? 0;
         $category = $this->categoryRepository->getByID($category_id);
         if(!$category) {
             return redirect()->route('frontend.home.index');
         }
-
         $p = [
             'status' => [1],
             'category_id' => [$category_id]
         ];
+
         $post = $this->testRepository->getAll($p,18);
         $this->data['tests'] = $post;
         $this->data['category'] = $category;
@@ -96,6 +97,16 @@ class TestsController extends FrontendController
         View::share('author', 'Kiwi');
         View::share('imageSeo', '');
 
+         if($user){
+             $permission = !empty($user->permission_category) ? explode(',',$user->permission_category) : [];
+             if(empty($permission)) {
+                 return view('components.frontend.tests.permissioncategory', $this->data);
+             }else {
+                 if(!in_array($category_id,$permission)) {
+                     return view('components.frontend.tests.permissioncategory', $this->data);
+                 }
+             }
+         }
         return view('components.frontend.tests.category', $this->data);
     }
 
@@ -287,6 +298,11 @@ class TestsController extends FrontendController
         $test = $this->testRepository->getById($test_id);
         $question = $this->postRepository->getById($question_id);
         $answer = $this->answerRepository->getById($answer_id);
+        $sort = $test->testquestionSort($question_id)->get()->first();
+        $correct_answer = $question->answerCorrect()->get()->first();
+
+
+
         if ( !$test ) {
             return ResponseHelper::error('Thất bại');
         }
@@ -349,18 +365,20 @@ class TestsController extends FrontendController
                     'test_id' => $test->id,
                     'question_id' => $question_id,
                     'is_correct' => $answer_id,
-                    'is_correct_temp' => 0,
+                    'is_correct_temp' => $correct_answer->id ==  $answer->id ? 1 : 0,
                     'test_id_test' => $test_id_test,
+                    'order_by' => $sort->order_by,
                 ];
                 $this->testUsersRepository->create($aInsert);
             } else {
                 $checkTest->update([
                     'is_correct' => $answer_id,
-                    'is_correct_temp' => 0,
+                    'is_correct_temp' => $correct_answer->id ==  $answer->id ? 1 : 0,
                     'test_id' => $test->id,
                     'user_id'=>$user->id,
                     'updated_at' => date('Y-m-d H:i:s'),
-                    'test_id_test' => $test_id_test
+                    'test_id_test' => $test_id_test,
+                    'order_by' => $sort->order_by
                 ]);
             }
 
@@ -382,6 +400,8 @@ class TestsController extends FrontendController
 
         $questions = $testUserTest->questions()->get();
         $this->data['questions'] = $questions ;//$test->testAllquestions()->get();
+        $this->data['questionsCorrect'] = $testUserTest->questionsCorrect()->count() ;//$test->testAllquestions()->get();
+
         $this->data['test'] =$test;
         return view('components.frontend.tests.result', $this->data);
     }

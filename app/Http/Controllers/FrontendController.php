@@ -82,6 +82,8 @@ class FrontendController extends BaseController
         View::share('menuCategory', $menuCategory);
 
 
+        $menuSupport = Support::find(1);
+        View::share('menuSupport', $menuSupport);
 
         $detect = new MobileDetectHelper();
         $isMobile = 0 ;

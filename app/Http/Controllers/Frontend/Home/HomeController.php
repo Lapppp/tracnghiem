@@ -67,6 +67,7 @@ class HomeController extends FrontendController
             'position'=>[3],
             'status'=>[1]
         ];
+
         $aNewarrival = [
             'module_id'=>[ModuleType::Quiz],
             'position'=>[1],

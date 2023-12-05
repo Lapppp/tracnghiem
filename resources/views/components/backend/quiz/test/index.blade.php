@@ -112,6 +112,8 @@
                                             </a>
                                         @endif
 
+                                        <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 showSortModal" data-bs-toggle="tooltip" data-bs-placement="top" title="Sắp xếp"><i class="bi bi-sort-numeric-down"></i></a>
+
                                         @if (Auth::guard('backend')->user()->can(['test_delete']))
                                             <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}"
                                                 data-bs-placement="top" title="Xóa"
@@ -148,6 +150,7 @@
         <!--begin::Body-->
     </div>
 
+    @include('components.backend.quiz.test.modalSort')
 
     <x-slot name="javascript">
         <script type="text/javascript">
@@ -209,6 +212,105 @@
                         }
                     })
                 });
+
+
+                $(document).on('click', '.showSortModal', function(event) {
+                    event.preventDefault();
+                    let test_id = $(this).data('id');
+                    $('#test_id').val(test_id);
+                    $('#staticBackdrop').modal('show')
+                });
+
+
+                $(document).on('click', '#updateSortQuestion', function(event) {
+
+                    let id =  $('#test_id').val();
+                    var sorts = [];
+                    var question_id = [];
+                    let loading = $('#updateSortQuestion');
+
+                    let str =`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Vui lòng đợi...</span>`;
+                    loading.attr('disabled','disabled');
+                    loading.html(str);
+
+                    $("input[data-change='on'][name='sortQuestions[]']").each(function(){
+                        let sortItem = $(this).val();
+                        sorts.push(sortItem);
+                    });
+
+                    $("input[data-change='on'][name='question_id[]']").each(function(){
+                        let qs = $(this).val();
+                        question_id.push(qs);
+                    });
+
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    let data = {
+                        "id": id,
+                        "_token": token,
+                        "sortQuestions": sorts,
+                        "questions": question_id
+                    };
+
+                    $.ajax({
+                        url: baseUrl + "/test/updateSortQuestion/" + id,
+                        type: 'POST',
+                        data:data ,
+                        success: function (json) {
+                            loading.removeAttr('disabled');
+                            loading.html('Cập nhật')
+
+
+                            let timerInterval;
+                            Swal.fire({
+                                title: "Đã cập nhật thành công",
+                                html: "Sẽ tự đóng sau <b></b> milliseconds.",
+                                timer: 2000,
+                                icon: "success",
+                                allowOutsideClick:false,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                    const timer = Swal.getPopup().querySelector("b");
+                                    timerInterval = setInterval(() => {
+                                        timer.textContent = `${Swal.getTimerLeft()}`;
+                                    }, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then((result) => {
+                                /* Read more about handling dismissals below */
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    $('#staticBackdrop').modal('hide')
+                                }
+                            });
+
+
+                        }
+                    });
+                });
+
+
+                $('#staticBackdrop').on('shown.bs.modal', function () {
+                    let id =  $('#test_id').val();
+                   // $('#showContenQuestion')
+
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        url: baseUrl + "/test/question/" + id,
+                        type: 'GET',
+                        data: {
+                            "id": id,
+                            "_token": token,
+                        },
+                        success: function (json) {
+                            $('#showContenQuestion').html(json.data.jsonResult)
+                        }
+                    });
+
+                })
+
 
             });
         </script>

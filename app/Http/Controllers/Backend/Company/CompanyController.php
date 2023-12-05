@@ -7,9 +7,11 @@ use App\Helpers\PaginationHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\BackendController;
 use App\Http\Requests\Backend\Company\StoreCompanyRequest;
+use App\Models\Images\Image;
 use App\Repositories\Companies\CompanyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Intervention\Image\Facades\Image as ImageIntervention;
 
 class CompanyController extends BackendController
 {
@@ -65,6 +67,36 @@ class CompanyController extends BackendController
             return redirect()->route('backend.company.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
+
+        if ( $request->hasfile('files') ) {
+            $n = count($request->file('files'));
+            $date = date('Y/m/d');
+            foreach ( $request->file('files') as $key => $file ) {
+                $file->store('products/'.$date);
+                $aImage = $file->hashName();
+                $photo = new Image();
+                $photo->url = $date.'/'.$aImage;
+                $photo->is_default = ($key == $n - 1) ? 1 : 0;
+                $photo->filename = $file->getClientOriginalName();
+                $post->image()->save($photo);
+                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
+                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
+                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+
+                // size height 165
+                $img = ImageIntervention::make($pathOld);
+                $img->fit(157, 36, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNew);
+
+                // size height 50
+                $img->fit(50, 50, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNewSize);
+            }
+        }
 
         return redirect()->route('backend.company.index')->with('success', 'Đã cập nhật thành công');
     }

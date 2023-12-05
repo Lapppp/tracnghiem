@@ -13,5 +13,6 @@ class TestQuestions extends Model
     protected $fillable = [
         'test_id',
         'post_id',
+        'order_by',
     ];
 }

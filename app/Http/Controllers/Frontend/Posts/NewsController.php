@@ -45,7 +45,7 @@ class NewsController extends FrontendController
     public function index(Request $request)
     {
         $params = $request->only(['page']);
-        $post = $this->postRepository->getAll(['module_id'=>[ModuleType::News]], 18);
+        $post = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'status'=>[1]], 18);
         $this->data['news'] = $post;
         $this->data['title'] = 'Tin tức';
         $total = !empty($post->total()) ? $post->total() : 0;
@@ -103,10 +103,11 @@ class NewsController extends FrontendController
         $pOtherSameNews = [
             'module_id'=>[ModuleType::News],
             'category_id'=>[$post->category_id],
-            'notInId'=>$post->id
+            'notInId'=>$post->id,
+            'status'=>[1],
         ];
         $this->data['otherSameNews'] = $this->postRepository->getAll($pOtherSameNews);
-        $this->data['otherNews'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News]],5);
+        $this->data['otherNews'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'status'=>[1]],5);
 
         // Seo key word
         $imageSeo ='';
@@ -169,7 +170,7 @@ class NewsController extends FrontendController
             return redirect()->route('frontend.home.index');
         }
 
-        $post = $this->postRepository->getAll(['category_id'=>[$category_id]], 18);
+        $post = $this->postRepository->getAll(['category_id'=>[$category_id],'status'=>[1]], 18);
         $this->data['news'] = $post;
         $this->data['title'] = 'Tin tức';
         $this->data['category'] = $category;

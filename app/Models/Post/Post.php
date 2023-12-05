@@ -89,4 +89,10 @@ class Post extends Model
     {
         return $this->hasMany(Answer::class, 'post_id', 'id');
     }
+
+    public function answerCorrect()
+    {
+        return $this->hasMany(Answer::class, 'post_id', 'id')
+            ->where('is_correct',1);
+    }
 }

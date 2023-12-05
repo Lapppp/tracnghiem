@@ -46,7 +46,24 @@ class TestUsersTests extends Model
             'is_correct_temp',
             'created_at',
             'updated_at',
-        ]);
+            'order_by',
+        ])->orderBy('test_users.order_by','asc');
+
+    }
+
+
+    public function questionsCorrect()
+    {
+        return $this->belongsToMany(Post::class, 'test_users', 'test_id_test', 'question_id')
+            ->withPivot([
+                'user_id',
+                'is_correct',
+                'is_correct_temp',
+                'created_at',
+                'updated_at',
+                'order_by',
+            ])->where('test_users.is_correct_temp',1);
+
     }
 
     public function users()

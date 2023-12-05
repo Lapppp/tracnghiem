@@ -36,6 +36,7 @@
 
     <form class="multisteps_form bg-white position-relative overflow-hidden" id="wizard" method="POST" action="">
 
+
         <!------------------------- Step-1 ----------------------------->
         <div class="multisteps_form_panel step active" style="display: block;">
             <div class="question_title text-center text-uppercase">
@@ -99,6 +100,8 @@
     <x-slot name="javascript">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js" integrity="sha256-t0FDfwj/WoMHIBbmFfuOtZv1wtA977QCfsFR3p1K4No=" crossorigin="anonymous"></script>
         <script type="text/javascript">
+            var c = {{ $test->score_time ? $test->score_time * 60 : 900  }};
+            var t;
             $(document).ready(function() {
 
                 $(document).on('click', '.step_1',function(){
@@ -272,7 +275,7 @@
                         $this.countdown(finalDate, function(event) {
                             var $this = $(this).html(event.strftime(''
                                 +'<img  src="{{ asset('/frontend/questions')}}/assets/images/watch/watch.png" alt="image-not-found">'
-                                + '<span class="pe-5 counter">%M:%S</span>'));
+                                + '<span class="pe-5 counter" id="timer">%M:%S</span>'));
                         });
                     });
                 });
@@ -289,7 +292,34 @@
                     setTimeout(animateValue, 1000)
                 }
                 animateValue();
+
+                function timedCount()
+                {
+                    if(c == 185) {
+                       // return false;
+                    }
+
+                    var hours = parseInt( c / 3600 ) % 24;
+                    var minutes = parseInt( c / 60 ) % 60;
+                    var seconds = c % 60;
+                    var result = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds  < 10 ? "0" + seconds : seconds);
+                   // var result = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds  < 10 ? "0" + seconds : seconds);
+                    $('#timer').html(result);
+
+                    if(c == 0 ) {
+                        window.location.href = BASE_URL+'/bai-kiem-tra/ket-qua/{{ $checkUserTest ? $checkUserTest->id : 0 }}';
+                    }
+                    c = c - 1;
+                    t = setTimeout(function()
+                    {
+                        timedCount()
+                    },1000);
+                }
+                timedCount();
+
             });
+
+
 
 
         </script>

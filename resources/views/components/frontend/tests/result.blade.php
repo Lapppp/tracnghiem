@@ -36,7 +36,9 @@
             <div class="main__contact--area position__relative">
 
                 <div class="contact__form" style="margin-left: 0px !important;">
-
+                    <div class="alert alert-info" role="alert">
+                       Tổng số câu đúng là: {{ $questionsCorrect }} câu
+                    </div>
                     <form class="contact__form--inner" action="{{ Route('frontend.contact.store') }}">
 
                         @foreach($questions as $key => $question)
@@ -59,7 +61,7 @@
                                                         @endif
 
                                                         @if($question->pivot->is_correct == $val->id)
-                                                            <p class="mt-1 mb-1"><span class="badge bg-warning">{{ $alphabet }} . Là bạn trả lời</span></p>
+                                                            <p class="mt-1 mb-1"><span  class="badge bg-warning">{{ $alphabet }} . Là bạn trả lời</span></p>
                                                         @endif
 
                                                         @php

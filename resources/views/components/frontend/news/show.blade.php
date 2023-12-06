@@ -48,8 +48,8 @@
                                     <li class="blog__tags--media__list"><a class="blog__tags--media__link" href="blog-details.html">Service</a></li>
                                 </ul>
                             </div>
-                            <div class="blog__social--media d-flex align-items-center">
-                                <label class="blog__social--media__title">Chia sẻ :</label>
+                            <div class="blog__social--media d-flex align-items-center" style="display: none !important;">
+                                <label class="blog__social--media__title">Chia sẻ:</label>
                                 <ul class="d-flex">
                                     <li class="blog__social--media__list">
                                         <a class="blog__social--media__link" target="_blank" href="https://www.facebook.com">
@@ -109,7 +109,7 @@
                                             </div>
                                             <div class="related__post--text">
                                                 <h3 class="related__post--title"><a class="related__post--title__link" href="{{ Route('frontend.news.show',['id'=>$item->id,'name'=>Str::slug($item->name.'', '-').'.html']) }}">{{ $item->name ?? '' }}</a></h3>
-                                                <span class="related__post--deta">{{ !empty($item->created_at) ? date('d-m-Y',strtotime($item->created_at)) : ''  }}</span>
+                                                <span class="related__post--deta" style="display: none">{{ !empty($item->created_at) ? date('d-m-Y',strtotime($item->created_at)) : ''  }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -409,7 +409,7 @@
                                         </div>
                                         <div class="product__items--grid__content">
                                             <h3 class="product__items--content__title h4"><a href="{{ Route('frontend.news.show',['id'=>$value->id,'name'=>Str::slug($value->name.'', '-').'.html']) }}">{{ $value->name ?? '' }}</a></h3>
-                                            <span class="meta__deta">{{ $value->created_at ? date('d/m/Y',strtotime($value->created_at)) : ''  }}</span>
+                                            <span class="meta__deta" style="display: none">{{ $value->created_at ? date('d/m/Y',strtotime($value->created_at)) : ''  }}</span>
                                         </div>
                                     </div>
                                 @endforeach

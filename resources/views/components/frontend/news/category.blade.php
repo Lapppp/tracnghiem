@@ -37,7 +37,7 @@
                                     </a>
                                 </div>
                                 <div class="blog__content">
-                                    <span class="blog__content--meta">{{ !empty($value->created_at) ? date('d-m-Y',strtotime($value->created_at)) : '' }}</span>
+                                    <span class="blog__content--meta" style="display: none">{{ !empty($value->created_at) ? date('d-m-Y',strtotime($value->created_at)) : '' }}</span>
                                     <h3 class="blog__content--title"><a href="{{ Route('frontend.news.show',['id'=>$value->id,'name'=>Str::slug($value->name.'', '-').'.html']) }}">{{ $value->name }}</a></h3>
                                     <a class="blog__content--btn primary__btn" href="{{ Route('frontend.news.show',['id'=>$value->id,'name'=>Str::slug($value->name.'', '-').'.html']) }}">Xem chi tiết </a>
                                 </div>

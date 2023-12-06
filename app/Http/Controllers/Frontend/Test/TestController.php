@@ -19,9 +19,8 @@ class TestController extends Controller
             'title' => 'Mail from ItSolutionStuff.com',
             'body' => 'This is for testing email using smtp'
         ];
+       // \Mail::to('khanhnam99@gmail.com')->send(new \App\Mail\MyTestMail($details));
 
-        \Mail::to('khanhnam99@gmail.com')->send(new \App\Mail\MyTestMail($details));
-
-        dd("Email is Sent.");
+       // dd("Email is Sent.");
     }
 }

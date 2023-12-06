@@ -35,8 +35,7 @@
                                                             <img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}
                                                         </p>
                                                         <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
-                                                        <p class="slider__content--desc desc2 d-sm-2-none mb-40">Up To 40% Off Final Sale Items. <br>
-                                                            Caught in the Moment!</p>
+                                                        <p class="slider__content--desc desc2 d-sm-2-none mb-40"><br></p>
                                                     @if(!empty($value->url))
                                                             <a class="slider__btn primary__btn" href="{{ $value->url }}" target="_blank">Xem chi tiết
                                                                 <svg class="primary__btn--arrow__icon" xmlns="http://www.w3.org/2000/svg" width="20.2" height="12.2" viewBox="0 0 6.2 6.2">
@@ -81,8 +80,7 @@
                                                         <div class="slider__content">
                                                             <p class="slider__content--desc desc1 mb-15"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
                                                             <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
-                                                            <p class="slider__content--desc desc2 d-sm-2-none mb-40 ">Up To 40% Off Final Sale Items. <br>
-                                                                Caught in the Moment!</p>
+                                                            <p class="slider__content--desc desc2 d-sm-2-none mb-40 " ><br></p>
                                                         @if(!empty($value->url))
                                                                 <a class="primary__btn slider__btn" href="{{ $value->url }}" target="_blank">Xem chi tiết
                                                                     <svg class="slider__btn--arrow__icon" xmlns="http://www.w3.org/2000/svg" width="20.2" height="12.2" viewBox="0 0 6.2 6.2">
@@ -127,8 +125,7 @@
                                                         <div class="slider__content text-center">
                                                             <p class="slider__content--desc desc1 mb-15"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
                                                             <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
-                                                            <p class="slider__content--desc desc2 d-sm-2-none mb-40">Up To 40% Off Final Sale Items. <br>
-                                                                Caught in the Moment!</p>
+                                                            <p class="slider__content--desc desc2 d-sm-2-none mb-40" ><br></p>
                                                         @if(!empty($value->url))
                                                                 <a class="primary__btn slider__btn" href="{{ $value->url }}" target="_blank">Xem chi tiết
                                                                     <svg class="slider__btn--arrow__icon" xmlns="http://www.w3.org/2000/svg" width="20.2" height="12.2" viewBox="0 0 6.2 6.2">
@@ -164,12 +161,20 @@
                 <h2 class="section__heading--maintitle">Bài Kiểm Tra</h2>
             </div>
             <ul class="product__tab--one product__tab--primary__btn d-flex justify-content-center mb-50">
-                <li class="product__tab--primary__btn__list active" data-toggle="tab" data-target="#featured">Hot </li>
+                <li class="product__tab--primary__btn__list active" data-toggle="tab" data-target="#newarrival">Mới nhất</li>
+                <li class="product__tab--primary__btn__list" data-toggle="tab" data-target="#featured">Hot </li>
                 <li class="product__tab--primary__btn__list" data-toggle="tab" data-target="#trending">Xu hướng </li>
-                <li class="product__tab--primary__btn__list" data-toggle="tab" data-target="#newarrival">Mới nhất</li>
             </ul>
             <div class="tab_content">
-                <div id="featured" class="tab_pane active show">
+                <div id="newarrival" class="tab_pane active show">
+                    <div class="product__section--inner">
+                        <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
+                            @include('components.frontend.home.tests.newarrival')
+                        </div>
+                    </div>
+                </div>
+
+                <div id="featured" class="tab_pane">
                     <div class="product__section--inner">
                         <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
                             @include('components.frontend.home.tests.featured')
@@ -183,13 +188,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="newarrival" class="tab_pane">
-                    <div class="product__section--inner">
-                        <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
-                            @include('components.frontend.home.tests.newarrival')
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
@@ -200,7 +199,7 @@
         <section class="blog__section section--padding pt-0">
             <div class="container-fluid">
                 <div class="section__heading text-center mb-40">
-                    <h2 class="section__heading--maintitle">Tin Tức</h2>
+                    <h2 class="section__heading--maintitle">Thông tin mới</h2>
                 </div>
                 <div class="blog__section--inner blog__swiper--activation swiper">
                     <div class="swiper-wrapper">
@@ -218,7 +217,7 @@
                                         </a>
                                     </div>
                                     <div class="blog__content">
-                                        <span class="blog__content--meta">{{ !empty($item->created_at) ? date('d/m/Y',strtotime($item->created_at)) : ''  }}</span>
+                                        <span style="display: none" class="blog__content--meta">{{ !empty($item->created_at) ? date('d/m/Y',strtotime($item->created_at)) : ''  }}</span>
                                         <h3 class="blog__content--title"><a href="{{ Route('frontend.news.show',['id'=>$item->id,'name'=>Str::slug($item->name.'', '-').'.html']) }}">{{ $item->name ?? '' }}</a></h3>
                                         <a class="blog__content--btn primary__btn" href="{{ Route('frontend.news.show',['id'=>$item->id,'name'=>Str::slug($item->name.'', '-').'.html']) }}">Xem chi tiết </a>
                                     </div>

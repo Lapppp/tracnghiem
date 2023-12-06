@@ -22,7 +22,7 @@
                         <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="hotline" data-bs-original-title="hotline" aria-label="Specify a target name for future usage and reference"></i>
                     </label>
                     <!--end::Label-->
-                    <input type="text" class="form-control form-control-solid" placeholder="Nhập tên video" name="hotline" id="hotline" value="{{ old('hotline',!empty($posts) ? $posts->hotline : '') }}">
+                    <input type="text" class="form-control form-control-solid"  name="hotline" id="hotline" value="{{ old('hotline',!empty($posts) ? $posts->hotline : '') }}">
                     @if ($errors->has('hotline'))
                         <div class="fv-plugins-message-container invalid-feedback">
                             <div data-field="hotline" data-validator="notEmpty">{{ $errors->first('hotline') }}</div>
@@ -36,11 +36,11 @@
                     <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                            <span class="required">Điện thoại 2</span>
+                            <span>Điện thoại 2</span>
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Tư vấn" data-bs-original-title="Tư vấn" aria-label="Specify a target name for future usage and reference"></i>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid" placeholder="Liên kết Youtube" name="advise" id="advise" value="{{ old('advise',!empty($posts) ? $posts->advise : '') }}">
+                        <input type="text" class="form-control form-control-solid"  name="advise" id="advise" value="{{ old('advise',!empty($posts) ? $posts->advise : '') }}">
                         @if ($errors->has('advise'))
                             <div class="fv-plugins-message-container invalid-feedback">
                                 <div data-field="certificate" data-validator="notEmpty">{{ $errors->first('certificate') }}</div>
@@ -58,7 +58,7 @@
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="Bảo hành" data-bs-original-title="Bảo hành" aria-label="Specify a target name for future usage and reference"></i>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid" placeholder="Cấp bởi" name="insurance" id="insurance" value="{{ old('insurance',!empty($posts) ? $posts->insurance : '') }}">
+                        <input type="text" class="form-control form-control-solid"  name="insurance" id="insurance" value="{{ old('insurance',!empty($posts) ? $posts->insurance : '') }}">
                         @if ($errors->has('insurance'))
                             <div class="fv-plugins-message-container invalid-feedback">
                                 <div data-field="insurance" data-validator="notEmpty">{{ $errors->first('insurance') }}</div>
@@ -72,11 +72,11 @@
                     <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                            <span class="required">Email 2</span>
+                            <span>Email 2</span>
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Email" aria-label="Specify a target name for future usage and reference"></i>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid" placeholder="email" name="email" id="email" value="{{ old('email',!empty($posts) ? $posts->email : '') }}">
+                        <input type="text" class="form-control form-control-solid"  name="email" id="email" value="{{ old('email',!empty($posts) ? $posts->email : '') }}">
                         @if ($errors->has('email'))
                             <div class="fv-plugins-message-container invalid-feedback">
                                 <div data-field="email" data-validator="notEmpty">{{ $errors->first('email') }}</div>

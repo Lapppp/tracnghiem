@@ -27,8 +27,6 @@ class StoreSupportRequest extends FormRequest
     {
         return [
             'hotline' => 'bail|required',
-            'advise' => 'bail|required',
-            'email' => 'bail|required|email',
             'insurance' => 'bail|required',
             'product_consultation' => 'bail|required',
             'technical_assistance' => 'bail|required',

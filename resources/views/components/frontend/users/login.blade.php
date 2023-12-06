@@ -30,7 +30,7 @@
                             <div class="account__login">
                                 <div class="account__login--header mb-25">
                                     <h2 class="account__login--header__title h3 mb-10">Đăng nhập</h2>
-                                    <p class="account__login--header__desc">Đăng nhập nếu bạn là khách hàng cũ.</p>
+                                    <p class="account__login--header__desc">Đăng nhập nếu bạn là thành viên cũ.</p>
                                 </div>
                                 @if($errors->any())
                                     <div class="alert alert-danger" role="alert">
@@ -43,7 +43,7 @@
                                     <input class="account__login--input" name="password" id="password"
                                            placeholder="Nhập mật khẩu" type="password">
                                     <div
-                                        class="account__login--remember__forgot mb-15 d-flex justify-content-between align-items-center">
+                                        class="account__login--remember__forgot mb-15 d-flex justify-content-between align-items-center" style="display: none !important;">
                                         <div class="account__login--remember position__relative">
                                             <input class="checkout__checkbox--input" id="check1" type="checkbox">
                                             <span class="checkout__checkbox--checkmark"></span>
@@ -56,10 +56,10 @@
                                         </button>
                                     </div>
                                     <button class="account__login--btn primary__btn" type="submit">Đăng nhập</button>
-                                    <div class="account__login--divide">
+                                    <div class="account__login--divide" >
                                         <span class="account__login--divide__text">OR</span>
                                     </div>
-                                    <div class="account__social d-flex justify-content-center mb-15">
+                                    <div class="account__social d-flex justify-content-center mb-15" style="display: none !important;">
                                         <a class="account__social--link facebook" target="_blank"
                                            href="{{ Route('frontend.auth.facebookLogin') }}">Facebook</a>
                                         <a class="account__social--link google" target="_blank"
@@ -78,7 +78,7 @@
                             <div class="account__login register">
                                 <div class="account__login--header mb-25">
                                     <h2 class="account__login--header__title h3 mb-10">Tạo tài khoản mới</h2>
-                                    <p class="account__login--header__desc">Đăng ký tại đây nếu bạn là khách hàng
+                                    <p class="account__login--header__desc">Đăng ký tại đây nếu bạn là thành viên
                                         mới</p>
                                 </div>
                                 <div class="account__login--inner">

@@ -277,7 +277,7 @@
                 <h2>Tin tức - hoạt động</h2>
             </div>
             <ul class="pro-tab">
-                <li class="active-pro tabl" href="#tabnew1">Tin tức</li>
+                <li class="active-pro tabl" href="#tabnew1">Thông tin mới</li>
                 <li class="tabl" href="#tabnew2">Chia sẻ kinh nghiệm</li>
             </ul>
             <div class="pro-content">

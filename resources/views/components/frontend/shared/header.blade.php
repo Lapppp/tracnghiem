@@ -13,7 +13,7 @@
                                       d="M26.676,16.564l7.892-7.782L26.676,1V5.669H20.362v6.226h6.314Zm3.157,7a18.162,18.162,0,0,1-5.635-.887,1.627,1.627,0,0,0-1.61.374l-3.472,3.424a23.585,23.585,0,0,1-10.4-10.257l3.472-3.44a1.48,1.48,0,0,0,.395-1.556,17.457,17.457,0,0,1-.9-5.556A1.572,1.572,0,0,0,10.1,4.113H4.578A1.572,1.572,0,0,0,3,5.669,26.645,26.645,0,0,0,29.832,32.128a1.572,1.572,0,0,0,1.578-1.556V25.124A1.572,1.572,0,0,0,29.832,23.568Z"
                                       transform="translate(-3 -1)" fill="currentColor"/>
                             </svg>
-                            <a class="header__shipping--text__link" href="tel:+084{{ $menuSupport->hotline ?? '' }}">{{ $menuSupport->hotline ?? '' }}</a></li>
+                            <a class="header__shipping--text__link" href="https://zalo.me/{{ $menuSupport->hotline ?? '' }}" target="_blank">{{ $menuSupport->hotline ?? '' }}</a></li>
                     </ul>
                 </div>
 
@@ -132,14 +132,11 @@
                             <li class="header__menu--items style2">
                                 <a class="header__menu--link" href="{{ Route('frontend.home.index') }}">Trang chủ</a>
                             </li>
-                            <li class="header__menu--items style2">
-                                <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ?? '' }} </a>
-                            </li>
 
                             @if(Auth::guard('web')->user())
                                 @if(!empty(Auth::guard('web')->user()->permission_category))
                                     <li class="header__menu--items style2">
-                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
+                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Chuyên đề trắc nghiệm
                                             <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
                                                  height="7.41" viewBox="0 0 12 7.41">
                                                 <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
@@ -160,7 +157,7 @@
                                  @endif
                             @else
                                     <li class="header__menu--items style2">
-                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
+                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Chuyên đề trắc nghiệm
                                             <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
                                                  height="7.41" viewBox="0 0 12 7.41">
                                                 <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
@@ -176,6 +173,10 @@
                                         </ul>
                                     </li>
                             @endif
+
+                            <li class="header__menu--items style2">
+                                <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ?? '' }} </a>
+                            </li>
 
                             <li class="header__menu--items style2 d-none d-xl-block">
                                 <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$MeoThucChung->id,'name'=>Str::slug($MeoThucChung->name.'', '-').'.html']) }}">{{ $MeoThucChung->name ?? '' }} </a>
@@ -236,7 +237,7 @@
                                         d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z"
                                         fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/>
                                 </svg>
-                                <span class="visually-hidden">My Account ffff</span>
+                                <span class="visually-hidden">My Account</span>
                             </a>
                         </li>
                         <li class="header__account--items header__account2--items d-none d-lg-block">
@@ -288,11 +289,9 @@
                             <li class="header__menu--items">
                                 <a class="header__menu--link" href="{{ Route('frontend.home.index') }}">Trang chủ</a>
                             </li>
+
                             <li class="header__menu--items">
-                                <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ??  '' }} </a>
-                            </li>
-                            <li class="header__menu--items">
-                                <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Danh mục kiến thức chung
+                                <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Chuyên đề trắc nghiệm
                                     <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
                                          height="7.41" viewBox="0 0 12 7.41">
                                         <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
@@ -308,9 +307,15 @@
                                     @endforeach
                                 </ul>
                             </li>
+
                             <li class="header__menu--items d-none d-xl-block">
                                 <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$MeoThucChung->id,'name'=>Str::slug($MeoThucChung->name.'', '-').'.html']) }}">{{ $MeoThucChung->name ?? '' }} </a>
                             </li>
+
+                            <li class="header__menu--items">
+                                <a class="header__menu--link" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ??  '' }} </a>
+                            </li>
+
                             <li class="header__menu--items">
                                 <a class="header__menu--link" href="{{ Route('frontend.contact.index') }}">Liên hệ </a>
                             </li>
@@ -363,14 +368,11 @@
                     <li class="offcanvas__menu_li">
                         <a class="offcanvas__menu_item" href="{{ Route('frontend.home.index') }}">Trang chủ</a>
                     </li>
-                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ?? '' }}</a></li>
+
 
                     <li class="offcanvas__menu_li">
-                        <a class="offcanvas__menu_item" href="#">Danh mục kiến thức chung</a>
+                        <a class="offcanvas__menu_item" href="#">Chuyên đề trắc nghiệm</a>
                         <ul class="offcanvas__sub_menu">
-                            <li class="offcanvas__sub_menu_li">
-                                <a href="blog.html" class="offcanvas__sub_menu_item">Blog Grid</a>
-                            </li>
 
                             @foreach($menuCategory as $menu)
 
@@ -382,6 +384,9 @@
                     </li>
 
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ Route('frontend.news.category',['id'=>$MeoThucChung->id,'name'=>Str::slug($MeoThucChung->name.'', '-').'.html']) }}">{{ $MeoThucChung->name ?? '' }}</a></li>
+
+                    <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ Route('frontend.news.category',['id'=>$KienThucChung->id,'name'=>Str::slug($KienThucChung->name.'', '-').'.html']) }}">{{ $KienThucChung->name ?? '' }}</a></li>
+
                     <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="{{ Route('frontend.contact.index') }}">Liên hệ</a></li>
 
                     <li class="offcanvas__menu_li">

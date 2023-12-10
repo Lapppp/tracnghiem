@@ -126,7 +126,7 @@
                     <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                            <span class="required">Twitter</span>
+                            <span class="required">Youtube</span>
                             <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="free_call_center" aria-label="Specify a target name for future usage and reference"></i>
                         </label>
                         <!--end::Label-->

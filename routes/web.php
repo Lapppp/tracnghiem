@@ -68,6 +68,11 @@ Route::prefix('tin-tuc')->group(function () {
 Route::get('/tests', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'index'])->name('frontend.tests.index');
 Route::prefix('bai-kiem-tra')->group(function () {
 
+
+    Route::get('/chuyen-de/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'subject'])
+        ->name('frontend.tests.chuyende')
+        ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
+
     Route::get('/danh-muc/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'category'])
         ->name('frontend.tests.category')
         ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);

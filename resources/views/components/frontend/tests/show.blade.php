@@ -39,8 +39,9 @@
 
         <!------------------------- Step-1 ----------------------------->
         <div class="multisteps_form_panel step active" style="display: block;">
+
             <div class="question_title text-center text-uppercase">
-                <h1 class="animate__animated animate__fadeInRight animate_25ms">{{ $question->name ?? '' }}</h1>
+                <h1 class="animate__animated animate__fadeInRight animate_25ms">Câu {{ $question->pivot->order_by }}: {{ $question->name ?? '' }}</h1>
             </div>
             <div class="question_number text-center text-uppercase text-white">
                 <span class="rounded-pill">Tổng cộng có {{ $total }} câu</span>
@@ -57,6 +58,7 @@
                                 <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id) active @endif "
                                     data-answer_id="{{ $value->id }}"
                                     data-pivot_id="{{ $question->pivot->id}}"
+                                    data-order_by="{{ $question->pivot->order_by}}"
                                     data-test_id="{{ $test->id }}"
                                     data-question_id="{{ $question->id }}">
                                     <input id="opt_{{ $value->id }}" type="radio" name="stp_1_select_option" value="{{ $value->id }}">
@@ -79,6 +81,7 @@
                     id="prevBtn"
                     data-answer_id="{{ !empty($checkTest) && $checkTest->is_correct ? $checkTest->is_correct : 0  }}"
                     data-pivot_id="{{ $question->pivot->id}}"
+                    data-order_by="{{ $question->pivot->order_by}}"
                     data-test_id="{{ $test->id }}"
                     data-question_id="{{ $question->id }}"
                     > <span><i class="fas fa-arrow-left"></i></span> Quay lại</button>
@@ -87,6 +90,7 @@
                     id="nextBtn"
                     data-answer_id="{{ !empty($checkTest) && $checkTest->is_correct ? $checkTest->is_correct : 0  }}"
                     data-pivot_id="{{ $question->pivot->id}}"
+                    data-order_by="{{ $question->pivot->order_by}}"
                     data-test_id="{{ $test->id }}"
                     data-question_id="{{ $question->id }}"
                     >Tiếp theo</button>
@@ -111,6 +115,7 @@
                     let token = $("meta[name='csrf-token']").attr("content");
                     let answer_id = $(this).data('answer_id');
                     let pivot_id = $(this).data('pivot_id');
+                    let order_by = $(this).data('order_by');
                     let test_id = $(this).data('test_id');
                     let question_id = $(this).data('question_id');
                     let test_id_test = $('#test_id_test').val();
@@ -123,6 +128,7 @@
                         data: {
                             "answer_id": answer_id,
                             "pivot_id": pivot_id,
+                            "order_by": order_by,
                             "test_id": test_id,
                             "question_id": question_id,
                             "test_id_test": test_id_test,
@@ -139,6 +145,7 @@
                     let token = $("meta[name='csrf-token']").attr("content");
                     let answer_id = $(this).data('answer_id');
                     let pivot_id = $(this).data('pivot_id');
+                    let order_by = $(this).data('order_by');
                     let test_id = $(this).data('test_id');
                     let question_id = $(this).data('question_id');
                     let test_id_test = $('#test_id_test').val();
@@ -149,6 +156,7 @@
                         data: {
                             "answer_id": answer_id,
                             "pivot_id": pivot_id,
+                            "order_by": order_by,
                             "test_id": test_id,
                             "question_id": question_id,
                             "test_id_test": test_id_test,
@@ -206,6 +214,7 @@
                         let token = $("meta[name='csrf-token']").attr("content");
                         let answer_id = $(this).data('answer_id');
                         let pivot_id = $(this).data('pivot_id');
+                        let order_by = $(this).data('order_by');
                         let test_id = $(this).data('test_id');
                         let question_id = $(this).data('question_id');
                         let test_id_test = $('#test_id_test').val();
@@ -216,6 +225,7 @@
                             data: {
                                 "answer_id": answer_id,
                                 "pivot_id": pivot_id,
+                                "order_by": order_by,
                                 "test_id": test_id,
                                 "question_id": question_id,
                                 "test_id_test": test_id_test,

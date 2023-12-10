@@ -134,9 +134,8 @@
                             </li>
 
                             @if(Auth::guard('web')->user())
-                                @if(!empty(Auth::guard('web')->user()->permission_category))
                                     <li class="header__menu--items style2">
-                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Chuyên đề trắc nghiệm
+                                        <a class="header__menu--link" href="#">Chuyên đề trắc nghiệm
                                             <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
                                                  height="7.41" viewBox="0 0 12 7.41">
                                                 <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
@@ -144,20 +143,16 @@
                                             </svg>
                                         </a>
                                         <ul class="header__sub--menu">
-                                            @foreach($menuCategory as $menu)
-                                                @if(in_array($menu->id,explode(',',Auth::guard('web')->user()->permission_category)))
+                                            @foreach($menuSubject as $menu)
                                                     <li class="header__sub--menu__items">
-                                                        <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
+                                                        <a href="{{ Route('frontend.tests.chuyende',['id'=>$menu->id,'name'=>Str::slug($menu->title.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->title ?? '' }}</a>
                                                     </li>
-                                                @endif
-
                                             @endforeach
                                         </ul>
                                     </li>
-                                 @endif
                             @else
                                     <li class="header__menu--items style2">
-                                        <a class="header__menu--link" href="{{ Route('frontend.tests.index') }}">Chuyên đề trắc nghiệm
+                                        <a class="header__menu--link" href="#">Chuyên đề trắc nghiệm
                                             <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12"
                                                  height="7.41" viewBox="0 0 12 7.41">
                                                 <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z"
@@ -165,9 +160,9 @@
                                             </svg>
                                         </a>
                                         <ul class="header__sub--menu">
-                                            @foreach($menuCategory as $menu)
+                                            @foreach($menuSubject as $menu)
                                                 <li class="header__sub--menu__items">
-                                                    <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
+                                                    <a href="{{ Route('frontend.tests.chuyende',['id'=>$menu->id,'name'=>Str::slug($menu->title.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->title ?? '' }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -300,9 +295,9 @@
                                 </a>
                                 <ul class="header__sub--menu">
 
-                                    @foreach($menuCategory as $menu)
+                                    @foreach($menuSubject as $menu)
                                         <li class="header__sub--menu__items">
-                                            <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->name ?? '' }}</a>
+                                            <a href="{{ Route('frontend.tests.chuyende',['id'=>$menu->id,'name'=>Str::slug($menu->title.'', '-').'.html']) }}" class="header__sub--menu__link">{{ $menu->title ?? '' }}</a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -374,10 +369,10 @@
                         <a class="offcanvas__menu_item" href="#">Chuyên đề trắc nghiệm</a>
                         <ul class="offcanvas__sub_menu">
 
-                            @foreach($menuCategory as $menu)
+                            @foreach($menuSubject as $menu)
 
                                 <li class="offcanvas__sub_menu_li">
-                                    <a href="{{ Route('frontend.tests.category',['id'=>$menu->id,'name'=>Str::slug($menu->name.'', '-').'.html']) }}" class="offcanvas__sub_menu_item">{{ $menu->name ?? '' }}</a>
+                                    <a href="{{ Route('frontend.tests.chuyende',['id'=>$menu->id,'name'=>Str::slug($menu->title.'', '-').'.html']) }}" class="offcanvas__sub_menu_item">{{ $menu->title ?? '' }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -467,7 +462,7 @@
     <!-- End Offcanvas header menu -->
 
     <!-- Start Offcanvas stikcy toolbar -->
-    <div class="offcanvas__stikcy--toolbar">
+    <div class="offcanvas__stikcy--toolbar" style="display: none">
         <ul class="d-flex justify-content-between">
             <li class="offcanvas__stikcy--toolbar__list">
                 <a class="offcanvas__stikcy--toolbar__btn" href="index.html">

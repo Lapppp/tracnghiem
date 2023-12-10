@@ -9,6 +9,7 @@ use App\Http\Controllers\FrontendController;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Post\PostRepository;
 use App\Repositories\Quiz\AnswerRepository;
+use App\Repositories\Quiz\SubjectRepository;
 use App\Repositories\Quiz\TestRepository;
 use App\Repositories\Quiz\TestUsersRepository;
 use App\Repositories\Quiz\TestUsersTestsRepository;
@@ -30,6 +31,7 @@ class TestsController extends FrontendController
         $postRepository,
         $answerRepository,
         $categoryRepository,
+        $subjectRepository,
         $testUsersTestsRepository;
 
     public function __construct(
@@ -38,7 +40,8 @@ class TestsController extends FrontendController
         TestUsersRepository $testUsersRepository,
         PostRepository $postRepository,
         AnswerRepository $answerRepository,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        SubjectRepository $subjectRepository
     ) {
         $this->testRepository = $testRepository;
         $this->testUsersTestsRepository = $testUsersTestsRepository;
@@ -46,6 +49,7 @@ class TestsController extends FrontendController
         $this->postRepository = $postRepository;
         $this->answerRepository = $answerRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->subjectRepository = $subjectRepository;
         parent::__construct();
     }
 
@@ -110,6 +114,53 @@ class TestsController extends FrontendController
         return view('components.frontend.tests.category', $this->data);
     }
 
+    public function subject(Request $request, $id = 0)
+    {
+        $user = Auth::guard('web')->user();
+        $params = $request->only(['page', 'subject_id']);
+        $subject_id = $id ?? 0;
+        $subject = $this->subjectRepository->getByID($subject_id);
+        if(!$subject) {
+            return redirect()->route('frontend.home.index');
+        }
+        $p = [
+            'status' => [1],
+            'subject_id' => [$subject->id]
+        ];
+
+        if($user){
+            $permission = !empty($user->permission_category) ? explode(',',$user->permission_category) : [];
+            $category_id = [9999999999999999];
+            if(!empty($permission)){
+                $category_id= $permission;
+            }
+
+            $p = [
+                'status' => [1],
+                'subject_id' => [$subject->id],
+                'category_id'=>$category_id
+            ];
+        }
+
+        $post = $this->testRepository->getAll($p,18);
+        $this->data['tests'] = $post;
+        $this->data['subject'] = $subject;
+        $total = !empty($post->total()) ? $post->total() : 0;
+        $perPage = !empty($post->perPage()) ? $post->perPage() : 20;
+
+        $page = !empty($request->page) ? $request->page : 1;
+        $url = route('frontend.tests.chuyende',['id'=>$subject->id,'name'=>Str::slug($subject->title.'', '-').'.html']).'?'.Arr::query($params);;
+        $this->data['pager'] = PaginationHelper::Pagination($total, $perPage, $page, $url);
+
+        View::share('title', $subject->title ?? '');
+        View::share('description', $subject->title ?? '');
+        View::share('keywords', $subject->title ?? '');
+        View::share('author', 'Kiwi');
+        View::share('imageSeo', '');
+
+        return view('components.frontend.tests.subject', $this->data);
+    }
+
     public function show(Request $request, $id = 0)
     {
         $test = $this->testRepository->getById($id);
@@ -124,6 +175,15 @@ class TestsController extends FrontendController
         $user = Auth::guard('web')->user();
         $this->data['checkUserTest'] = [];
         if($user) {
+            $permission = !empty($user->permission_category) ? explode(',',$user->permission_category) : [];
+            if(empty($permission)) {
+                return view('components.frontend.tests.phanquyen', $this->data);
+            }else {
+                if(!in_array($test->category_id,$permission)) {
+                    return view('components.frontend.tests.phanquyen', $this->data);
+                }
+            }
+
             $this->data['checkTest']  = $this->testUsersRepository->getUserTest([
                 'user_id' => $user->id,
                 'test_id' => $test->id,
@@ -187,8 +247,9 @@ class TestsController extends FrontendController
         }
 
         $pivot_id = $request->pivot_id ?? 0;
+        $order_by = $request->order_by ?? 0;
         $this->data['AllTest'] = $test->testAllquestions()->get();
-        $this->data['question'] = $test->nextTestAllquestions($pivot_id);
+        $this->data['question'] = $test->nextTestAllquestions($order_by);
 
 
         $html = 'xemketqua';
@@ -265,8 +326,9 @@ class TestsController extends FrontendController
         }
 
         $pivot_id = $request->pivot_id ?? 0;
+        $order_by = $request->order_by ?? 0;
         $this->data['AllTest'] = $test->testAllquestions()->get();
-        $this->data['question'] = $test->PreviousTestAllquestions($pivot_id);
+        $this->data['question'] = $test->PreviousTestAllquestions($order_by);
         $html = 'notPreview';
 
 
@@ -316,6 +378,16 @@ class TestsController extends FrontendController
         }
 
         if ( $user ) {
+
+            $permission = !empty($user->permission_category) ? explode(',',$user->permission_category) : [];
+            if(empty($permission)) {
+                return ResponseHelper::error('Bạn không được phép');
+            }else {
+                if(!in_array($test->category_id,$permission)) {
+                    return ResponseHelper::error('Bạn không được phép');
+                }
+            }
+
 
             $checkUserTest  = $this->testUsersTestsRepository->checkUserTest([
                 'test_id'=>$test->id,

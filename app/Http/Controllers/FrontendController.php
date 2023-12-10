@@ -9,6 +9,7 @@ use App\Models\Category\Category;
 use App\Models\Companies\Company;
 use App\Models\Post\Post;
 use App\Models\Provinces\Province;
+use App\Models\Quiz\Subject;
 use App\Models\ShowRooms\ShowRoom;
 use App\Models\Support\Support;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -84,6 +85,9 @@ class FrontendController extends BaseController
 
         $menuSupport = Support::find(1);
         View::share('menuSupport', $menuSupport);
+
+        $menuSubject = Subject::where('status',1)->get();
+        View::share('menuSubject', $menuSubject);
 
         $detect = new MobileDetectHelper();
         $isMobile = 0 ;

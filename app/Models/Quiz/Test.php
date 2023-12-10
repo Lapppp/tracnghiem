@@ -61,9 +61,9 @@ class Test extends Model
     public function nextTestAllquestions($id)
     {
         return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
-            ->withPivot('id')
-            ->where('test_questions.id', '>', $id)
-            ->orderBy('test_questions.id','asc')
+            ->withPivot(['id','order_by'])
+            ->where('test_questions.order_by', '>', $id)
+            ->orderBy('test_questions.order_by','asc')
             ->first();
     }
 
@@ -71,9 +71,9 @@ class Test extends Model
     public function PreviousTestAllquestions($id)
     {
         return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
-            ->withPivot('id')
-            ->where('test_questions.id', '<', $id)
-            ->orderBy('test_questions.id','desc')
+            ->withPivot(['id','order_by'])
+            ->where('test_questions.order_by', '<', $id)
+            ->orderBy('test_questions.order_by','desc')
             ->first();
     }
 

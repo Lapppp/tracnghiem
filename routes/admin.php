@@ -102,12 +102,15 @@ Route::prefix('adminkiwi')->group(function () {
         Route::prefix('questions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'index'])->name('backend.questions.index');
             Route::get('/create', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'create'])->name('backend.questions.create');
+            Route::get('/createEnglish', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'createEnglish'])->name('backend.questions.createEnglish');
             Route::get('/category', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'category'])->name('backend.questions.category');
             Route::get('/import', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'import'])->name('backend.questions.import');
             Route::get('/category/create', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'createCategory'])->name('backend.questions.category.create');
             Route::get('/category/edit/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'editCategory'])->name('backend.questions.category.edit');
             Route::get('/edit/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'edit'])->name('backend.questions.edit');
+            Route::get('/editEnglish/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'editEnglish'])->name('backend.questions.editEnglish');
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'update'])->name('backend.questions.update');
+            Route::put('/updateCreateEnglish/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateCreateEnglish'])->name('backend.questions.updateCreateEnglish');
             Route::put('/category/update/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateCategory'])->name('backend.questions.category.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'destroy'])->name('backend.questions.destroy');
             Route::delete('/category/delete/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'destroyCategory'])->name('backend.questions.category.destroy');
@@ -116,6 +119,8 @@ Route::prefix('adminkiwi')->group(function () {
             Route::post('updateImageDefault', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateImageDefault'])->name('backend.questions.updateImageDefault');
             Route::post('storeAnswer', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'storeAnswer'])->name('backend.questions.storeAnswer');
             Route::post('insertImport', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'insertImport'])->name('backend.questions.insertImport');
+            Route::post('storeCreateEnglish', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'storeCreateEnglish'])->name('backend.questions.storeCreateEnglish');
+            Route::post('addQuestionEnglish', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'addQuestionEnglish'])->name('backend.questions.addQuestionEnglish');
         });
 
 
@@ -400,8 +405,6 @@ Route::prefix('adminkiwi')->group(function () {
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'update'])->name('backend.test.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'destroy'])->name('backend.test.destroy');
         });
-
-
     });
 });
 

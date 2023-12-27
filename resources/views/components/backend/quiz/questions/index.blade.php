@@ -95,11 +95,19 @@
                                     <td class="text-end">
 
                                         @if (Auth::guard('backend')->user()->can(['edit_questions']))
-                                            <a href="{{ Route('backend.questions.edit', ['id' => $item->id]) }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
-                                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                            @if($item->type == 1)
+                                                <a href="{{ Route('backend.questions.editEnglish', ['id' => $item->id]) }}"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
+                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ Route('backend.questions.edit', ['id' => $item->id]) }}"
+                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
+                                                   class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                            @endif
                                         @endif
 
                                         @if (Auth::guard('backend')->user()->can(['delete_questions']))

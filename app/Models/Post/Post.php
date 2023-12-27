@@ -36,6 +36,7 @@ class Post extends Model
         'meta_keywords',
         'meta_description',
         'meta_title',
+        'type',
     ];
 
 
@@ -81,7 +82,7 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id')->withDefault([
-            'name'=>''
+            'name' => ''
         ]);
     }
 
@@ -93,6 +94,19 @@ class Post extends Model
     public function answerCorrect()
     {
         return $this->hasMany(Answer::class, 'post_id', 'id')
-            ->where('is_correct',1);
+            ->where('is_correct', 1);
     }
+
+    public function questionMultiples()
+    {
+        return $this->hasMany(QuestionsMultiple::class, 'post_id', 'id');
+    }
+
+    public function questionMultiplesGroup($group = '')
+    {
+        return $this->hasMany(QuestionsMultiple::class, 'post_id', 'id')
+            ->where('group_question',$group);
+    }
+
+
 }

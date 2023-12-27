@@ -38,8 +38,7 @@ class QuestionsController extends BackendController
         CategoryRepository $categoryRepository,
         ImageRepository    $imageRepository,
         AnswerRepository   $answerRepository
-    )
-    {
+    ) {
 
         parent::__construct();
         $this->data['title'] = 'Câu hỏi';
@@ -88,6 +87,14 @@ class QuestionsController extends BackendController
         $this->data['isEdit'] = 0;
         $this->data['questions'] = [];
         return view('components.backend.quiz.questions.create', $this->data);
+    }
+
+    public function createEnglish()
+    {
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        $this->data['isEdit'] = 0;
+        $this->data['questions'] = [];
+        return view('components.backend.quiz.questions.createEnglish', $this->data);
     }
 
     public function store(QuestionsCreateRequest $request)
@@ -146,6 +153,74 @@ class QuestionsController extends BackendController
         return redirect()->route('backend.questions.index')->with('success', 'Đã tạo tài thành công');
     }
 
+    public function storeCreateEnglish(QuestionsCreateRequest $request)
+    {
+        $params = $request->all();
+
+        $params['category_id'] = $params['category_id'] ?? 0;
+        $params['module_id'] = ModuleType::Quiz;
+        $params['slug'] = Str::slug($params['name']);
+        $params['type'] = 1;
+        $groups = $params['groups'] ?? [];
+        $answers = $params['answers'] ?? [];
+        $correct = $params['correct'] ?? [];
+        $post = $this->postRepository->create($params);
+        if (!$post) {
+            return redirect()->route('backend.questions.index')->with('error', 'Server đang bận không thể tạo');
+        }
+
+        // Thêm câu trả lời
+        if (!empty($groups)) {
+            foreach ($groups as $key => $group) {
+                $a = $answers[$key][0];
+                $b = $answers[$key][1];
+                $c = $answers[$key][2];
+                $d = $answers[$key][3];
+                $is_correct = $correct[$key] ?? 'a';
+                $aAnswer = [
+                    'a' => $a,
+                    'b' => $b,
+                    'c' => $c,
+                    'd' => $d,
+                    'is_correct' => $is_correct,
+                    'group_question' => $key
+                ];
+                $post->questionMultiples()->createMany([$aAnswer]);
+            }
+        }
+
+
+        if ($request->hasfile('files')) {
+            $n = count($request->file('files'));
+            $date = date('Y/m/d');
+            foreach ($request->file('files') as $key => $file) {
+                $path = $file->store('products/' . $date);
+                $aImage = $file->hashName();
+                $photo = new Image();
+                $photo->url = $date . '/' . $aImage;
+                $photo->is_default = ($key == $n - 1) ? 1 : 0;
+                $photo->filename = $file->getClientOriginalName();
+                $post->image()->save($photo);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
+
+                // size height 165
+                $img = ImageIntervention::make($pathOld);
+                $img->heighten(165, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNew);
+
+                // size height 50
+                $img->fit(50, 50, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNewSize);
+            }
+        }
+        return redirect()->route('backend.questions.index')->with('success', 'Đã tạo tài thành công');
+    }
     public function edit($id)
     {
         $post = $this->postRepository->getByID($id);
@@ -158,6 +233,20 @@ class QuestionsController extends BackendController
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         return view('components.backend.quiz.questions.create', $this->data);
     }
+
+    public function editEnglish($id){
+        $post = $this->postRepository->getByID($id);
+        $this->data['posts'] = $post;
+        if (!$post) {
+            return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+        $this->data['isEdit'] = 1;
+        $questions = $post->questionMultiples()->get();
+        $this->data['questions'] = $questions->groupBy('group_question');
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        return view('components.backend.quiz.questions.createEnglish', $this->data);
+    }
+
 
     public function update(QuestionsCreateRequest $request, $id)
     {
@@ -196,10 +285,108 @@ class QuestionsController extends BackendController
                     if (!empty($deleteFile)) {
                         $fileUnlink = Str::of('/' . $deleteFile)->basename();
                         @unlink(public_path('storage/products/' . $deleteFile));
-                        @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_' . $fileUnlink,
-                                $deleteFile)));
-                        @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_50x50_' . $fileUnlink,
-                                $deleteFile)));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_' . $fileUnlink,
+                            $deleteFile
+                        )));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_50x50_' . $fileUnlink,
+                            $deleteFile
+                        )));
+                    }
+                    $item->delete();
+                }
+            }
+
+            $n = count($request->file('files'));
+            $date = date('Y/m/d');
+            foreach ($request->file('files') as $key => $file) {
+                $file->store('products/' . $date);
+                $aImage = $file->hashName();
+
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
+
+                // size height 165
+                $img = ImageIntervention::make($pathOld);
+                $img->heighten(165, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNew);
+
+                // size height 50
+
+                $img->fit(50, 50, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNewSize);
+
+                $photo = new Image();
+                $photo->url = $date . '/' . $aImage;
+                $photo->is_default = ($key == $n - 1) ? 1 : 0;
+                $photo->filename = $file->getClientOriginalName();
+                $post->image()->save($photo);
+            }
+        }
+
+        return redirect()->route('backend.questions.index')->with('success', 'Đã cập nhật thành công');
+    }
+
+    public function updateCreateEnglish(QuestionsCreateRequest $request, $id)
+    {
+        $params = $request->all();
+        $params['status'] = $params['status'] ?? 0;
+        $params['category_id'] = $params['category_id'] ?? 0;
+        $params['updated_at'] = date('Y-m-d H:i:s');
+        $post = $this->postRepository->getByID($id);
+        if (!$post) {
+            return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+        $post->update($params);
+
+        $answers = $params['answers'] ?? [];
+        $groups = $params['groups'] ?? [];
+        $aIsCorrect = $params['is_correct'] ?? [];
+        if(!empty($groups)) {
+            foreach ($groups as $key =>$value) {
+                $a = $answers[$key][0];
+                $b = $answers[$key][1];
+                $c = $answers[$key][2];
+                $d = $answers[$key][3];
+                $is_correct = $aIsCorrect[$key];
+                $update = [
+                    'a'=>$a,
+                    'b'=>$b,
+                    'c'=>$c,
+                    'd'=>$d,
+                    'is_correct'=>$is_correct,
+                ];
+                $post->questionMultiplesGroup($key)->update($update);
+            }
+        }
+
+        if ($request->hasfile('files')) {
+
+            $images = $post->image()->get();
+            if (count($images) > 0) {
+                foreach ($images as $item) {
+                    $deleteFile = $item->url ?? null;
+                    if (!empty($deleteFile)) {
+                        $fileUnlink = Str::of('/' . $deleteFile)->basename();
+                        @unlink(public_path('storage/products/' . $deleteFile));
+                        @unlink(public_path('storage/products/' . str_replace(
+                                $fileUnlink,
+                                'thumb_' . $fileUnlink,
+                                $deleteFile
+                            )));
+                        @unlink(public_path('storage/products/' . str_replace(
+                                $fileUnlink,
+                                'thumb_50x50_' . $fileUnlink,
+                                $deleteFile
+                            )));
                     }
                     $item->delete();
                 }
@@ -254,10 +441,16 @@ class QuestionsController extends BackendController
                 if (!empty($deleteFile)) {
                     $fileUnlink = Str::of('/' . $deleteFile)->basename();
                     @unlink(public_path('storage/products/' . $deleteFile));
-                    @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_' . $fileUnlink,
-                            $deleteFile)));
-                    @unlink(public_path('storage/products/' . str_replace($fileUnlink, 'thumb_50x50_' . $fileUnlink,
-                            $deleteFile)));
+                    @unlink(public_path('storage/products/' . str_replace(
+                        $fileUnlink,
+                        'thumb_' . $fileUnlink,
+                        $deleteFile
+                    )));
+                    @unlink(public_path('storage/products/' . str_replace(
+                        $fileUnlink,
+                        'thumb_50x50_' . $fileUnlink,
+                        $deleteFile
+                    )));
                 }
                 $item->delete();
             }
@@ -450,5 +643,39 @@ class QuestionsController extends BackendController
         }
 
         return ResponseHelper::success('Đã import thành công');
+    }
+
+    public function addQuestionEnglish(Request $request) {
+
+        $params = $request->all();
+        $id = $params['post_id'] ?? 0;
+        $this->data['isEdit'] = 0;
+        $this->data['listAnswers'] = [];
+        $post = $this->postRepository->getByID($id);
+        if($post) {
+
+            $prefix = StringHelper::generateRandomCode('', 2);
+            $group = StringHelper::generateRandomCode($prefix.'_', 10);
+
+            $dataGroup  = [
+                [
+                    'a'=>'',
+                    'b'=>'',
+                    'c'=>'',
+                    'd'=>'',
+                    'is_correct'=>'a',
+                    'group_question'=>$group,
+                ]
+            ];
+
+            $this->data['isEdit'] = 1;
+            foreach ($dataGroup as $answer) {
+                $post->questionMultiples()->createMany([$answer]);
+            }
+            $this->data['listAnswers'] = $post->questionMultiplesGroup($group)->get();
+        }
+
+        $html = view('components.backend.quiz.questions.answerEnglish',$this->data)->render();
+        return ResponseHelper::success('Đã import thành công',['responseHtml'=>$html]);
     }
 }

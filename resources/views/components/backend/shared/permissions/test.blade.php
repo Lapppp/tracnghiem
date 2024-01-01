@@ -38,6 +38,17 @@
             @endif
 
 
+                @if(Auth::guard('backend')->user()->can(['test_create']))
+                    <div class="menu-item">
+                        <a class="menu-link @if($actionName =='createEnglish' && $controller =='TestsController') active @endif" href="{{ Route('backend.test.createEnglish') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                            <span class="menu-title">Tạo bài kiểm tra Tiếng Anh</span>
+                        </a>
+                    </div>
+                @endif
+
 
 
         </div>

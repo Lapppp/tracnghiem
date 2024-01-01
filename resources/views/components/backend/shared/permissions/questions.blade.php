@@ -38,6 +38,16 @@
                 </div>
             @endif
 
+                @if(Auth::guard('backend')->user()->can(['create_questions']))
+                    <div class="menu-item">
+                        <a class="menu-link @if($actionName =='createEnglish' && $controller =='QuestionsController') active @endif" href="{{ Route('backend.questions.createEnglish') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                            <span class="menu-title">Tạo câu hỏi tiếng anh</span>
+                        </a>
+                    </div>
+                @endif
 
             @if(Auth::guard('backend')->user()->can(['import_excel_questions']))
                 <div class="menu-item">

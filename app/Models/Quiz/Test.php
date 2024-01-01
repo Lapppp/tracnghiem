@@ -5,6 +5,7 @@ namespace App\Models\Quiz;
 use App\Models\Category\Category;
 use App\Models\Images\Image;
 use App\Models\Post\Post;
+use App\Models\Post\QuestionsPart;
 use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,7 @@ class Test extends Model
         'questions',
         'position',
         'views',
+        'type',
     ];
 
     public function questions()
@@ -95,5 +97,15 @@ class Test extends Model
     public function category()
     {
         return $this->belongsTo(Category::class,'category_id','id')->withDefault(['name' =>'']);
+    }
+
+    public function testpart()
+    {
+        return $this->hasMany(QuestionsPart::class,'test_id','id');
+    }
+
+    public function testpartOne($id)
+    {
+        return $this->hasMany(QuestionsPart::class,'test_id','id')->where('id',$id);
     }
 }

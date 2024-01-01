@@ -396,10 +396,13 @@ Route::prefix('adminkiwi')->group(function () {
         Route::prefix('test')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'index'])->name('backend.test.index');
             Route::get('/create', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'create'])->name('backend.test.create');
+            Route::post('/createPart', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'createPart'])->name('backend.test.createPart');
+            Route::get('/createEnglish', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'createEnglish'])->name('backend.test.createEnglish');
             Route::post('/search-question', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'searchQuestion'])->name('backend.test.search.question');
             Route::post('/load-question', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'loadQuestion'])->name('backend.test.load.question');
             Route::post('/store', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'store'])->name('backend.test.store');
             Route::get('/edit/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'edit'])->name('backend.test.edit');
+            Route::get('/next/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'next'])->name('backend.test.next');
             Route::get('/question/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'question'])->name('backend.test.question');
             Route::post('/updateSortQuestion/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'updateSortQuestion'])->name('backend.test.updateSortQuestion');
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'update'])->name('backend.test.update');

@@ -2,10 +2,6 @@
 
 namespace App\Models\Post;
 
-use App\Models\Category\Category;
-use App\Models\Images\Image;
-use App\Models\Quiz\Answer;
-use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Model;
 
 class QuestionsMultiple extends Model

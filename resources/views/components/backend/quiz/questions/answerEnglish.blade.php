@@ -22,7 +22,7 @@ $group = StringHelper::generateRandomCode('', 10);
             <div class="col-md-3">
                 <div class="form-check form-check-custom form-check-solid mt-5 pt-5">
                     <input class="form-check-input valueCorrect" data-id="{{ $id }}" type="radio" name="correct[{{$group}}]"
-                           value="{{ strtolower($c) }}" id="flexRadioDefault_{{ $id }}"/>
+                           value="{{ strtolower($c) }}" id="flexRadioDefault_{{ $id }}" @if($c =='A') checked="checked" @endif/>
                     <label class="form-check-label valueCorrect" data-id="{{ $id }}" for="flexRadioDefault_{{ $id }}">
                         Trả lời đúng
                     </label>

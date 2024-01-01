@@ -44,6 +44,10 @@ class TestsController extends BackendController
             PostStatusType::HomeThree => 'Xuất hiện trang chủ vị trí 3',
         ];
 
+        $this->data['type'] = [
+            0=>'Mặc định',
+            1=>'Câu hỏi nhiều câu trả lời',
+        ];
         $this->data['trends'] = TestsPosition::getPosition();
         $this->testRepository = $testRepository;
         $this->categoryRepository = $categoryRepository;
@@ -78,10 +82,23 @@ class TestsController extends BackendController
         return view('components.backend.quiz.test.create', $this->data);
     }
 
+    public function createEnglish()
+    {
+        $this->data['isEdit'] = 0;
+        $this->data['posts'] = [];
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        $this->data['subjects'] = $this->subjectRepository->getAll([], null);
+        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null);
+        $this->data['questions_select'] = '';
+        return view('components.backend.quiz.test.createEnglish', $this->data);
+    }
+
     public function store(TestsCreateRequest $request)
     {
         $params = $request->all();
         $questions = $params['questions'] ?? null;
+        $is_english = $params['is_english'] ?? 0;
         $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post =  $this->testRepository->create($params);
         if ( !$post ) {
@@ -128,8 +145,11 @@ class TestsController extends BackendController
             }
         }
 
-        return redirect()->route('backend.test.index')->with('success', 'Đã tạo tài thành công');
+        if($is_english == 1){
+            return redirect()->route('backend.test.next',['id'=>$post->id])->with('success', 'Đã tạo tài thành công');
+        }
 
+        return redirect()->route('backend.test.index')->with('success', 'Đã tạo tài thành công');
     }
 
     public function edit($id)
@@ -148,6 +168,24 @@ class TestsController extends BackendController
         $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
         return view('components.backend.quiz.test.create', $this->data);
     }
+
+    public function next($id)
+    {
+        $post = $this->testRepository->getByID($id);
+        $this->data['posts'] = $post;
+        if ( !$post ) {
+            return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+
+        $this->data['isEdit'] = 1;
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        $this->data['subjects'] = $this->subjectRepository->getAll([], null);
+        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null);
+        $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
+        return view('components.backend.quiz.test.next', $this->data);
+    }
+
 
 
     public function question($id)
@@ -301,6 +339,28 @@ class TestsController extends BackendController
         $posts = $this->postRepository->getAll($params);
         $this->data['questions'] = $posts;
         $html = view('components.backend.quiz.test.load_questions', $this->data)->render();
+        return ResponseHelper::success('thành công', ['jsonResult' => $html]);
+    }
+
+    public function createPart(Request $request){
+        $params = $request->all();
+        $test_id = $params['test_id'] ?? 0 ;
+        $test = $this->testRepository->getByID($test_id);
+        if ( !$test ) {
+            return ResponseHelper::error('Không tìm thấy bài kiểm tra');
+        }
+
+        $insert = [
+            'name' => $params['part_name'] ?? '',
+            'type' => $params['type'] ?? '',
+            'short_description' => $params['short_description'] ?? '',
+            'description' => $params['description'] ?? '',
+            'order' => $params['order'] ?? 0,
+        ];
+        $part = $test->testpart()->createMany([$insert]);
+
+        $this->data['part'] = $part->first();
+        $html = view('components.backend.quiz.test.accordion', $this->data)->render();
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 }

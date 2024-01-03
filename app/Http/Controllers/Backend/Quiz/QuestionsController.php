@@ -104,6 +104,7 @@ class QuestionsController extends BackendController
         $params['module_id'] = ModuleType::Quiz;
         $params['slug'] = Str::slug($params['name']);
         $answers = $params['answers'] ?? [];
+        $params['type'] = 0;
         $post = $this->postRepository->create($params);
         if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Server đang bận không thể tạo');
@@ -254,6 +255,7 @@ class QuestionsController extends BackendController
         $params['status'] = $params['status'] ?? 0;
         $params['category_id'] = $params['category_id'] ?? 0;
         $params['updated_at'] = date('Y-m-d H:i:s');
+        $params['type'] = 0;
         $post = $this->postRepository->getByID($id);
         if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');
@@ -341,6 +343,7 @@ class QuestionsController extends BackendController
         $params['status'] = $params['status'] ?? 0;
         $params['category_id'] = $params['category_id'] ?? 0;
         $params['updated_at'] = date('Y-m-d H:i:s');
+        $params['type'] = 1;
         $post = $this->postRepository->getByID($id);
         if (!$post) {
             return redirect()->route('backend.questions.index')->with('error', 'Không tìm thấy dữ liệu');

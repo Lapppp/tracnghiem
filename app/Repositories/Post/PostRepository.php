@@ -36,6 +36,7 @@ class PostRepository extends BaseRepository
             'user_id' => [],
             'sort' => null,
             'notInId' => null,
+            'type' => 0,
         ], $params);
 
         $result = Post::select(
@@ -50,8 +51,8 @@ class PostRepository extends BaseRepository
         $result->leftJoin(User::TABLE, Post::TABLE . '.user_id', '=', User::TABLE . '.id');
 
         if ( !empty($params['search']) ) {
-            $result->where(Post::TABLE . '.name', 'LIKE', '%' . $params['search'] . '%');
-            $result->orWhere(Post::TABLE . '.code', 'LIKE', '%' . $params['search'] . '%');
+            $sql = "(".Post::TABLE.".name LIKE '%".$params['search']."%' OR ".Post::TABLE.".code LIKE '%".$params['search']."%' )";
+            $result->whereRaw($sql);
         }
 
         if ( !empty($params['status']) && is_array($params['status']) ) {
@@ -91,6 +92,7 @@ class PostRepository extends BaseRepository
             $result->where(Post::TABLE . '.id', '!=', $params['notInId']);
         }
 
+
         if ( !empty($params['not_in_category_id']) && is_array($params['not_in_category_id']) ) {
             $result->whereNotIn(Post::TABLE . '.category_id', $params['not_in_category_id']);
         }
@@ -113,6 +115,10 @@ class PostRepository extends BaseRepository
             $result->whereIn(Post::TABLE . '.user_id', $params['user_id']);
         }
 
+        if ( isset($params['type']) ) {
+            $result->where(Post::TABLE . '.type', $params['type']);
+        }
+
         if(!empty($params['sort'])){
             $result->orderBy(Post::TABLE . '.'.$params['sort'], 'desc');
         }else{
@@ -121,6 +127,7 @@ class PostRepository extends BaseRepository
 
         if(!empty($params['debug'])){
             echo $result->toSql();
+            exit;
         }
 
         return empty($limit) ? $result->get() : $result->paginate($limit);

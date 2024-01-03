@@ -32,44 +32,57 @@
 
             <!--begin::Accordion-->
             <div class="accordion" id="kt_accordion_1">
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="kt_accordion_1_header_1">
-                        <button class="accordion-button fs-4 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_1" aria-expanded="true" aria-controls="kt_accordion_1_body_1">
-                            Accordion Item #1
-                        </button>
-                    </h2>
-                    <div id="kt_accordion_1_body_1" class="position-relative accordion-collapse collapse show" aria-labelledby="kt_accordion_1_header_1" data-bs-parent="#kt_accordion_1">
-                            <button type="button" class="btn btn-primary btn-sm" style="position: absolute;right: 16px;top:10px;z-index: 1">Thêm câu hỏi</button>
-                        <div class="accordion-body">
-                            <table class="table table-row-bordered">
-                                <thead>
-                                <tr class="fw-bold fs-6 text-gray-800 border-bottom border-gray-200">
-                                    <th scope="col" style="width: 7%"><b>STT</b></th>
-                                    <th scope="col"><b>Tên câu hỏi</b></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row">
-                                        <input type="number" class="form-control form-control-sm">
-                                    </th>
-                                    <td>Mark</td>
-
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+                @include('components.backend.quiz.test.showAccordion',['parts'=>$parts])
             </div>
             <!--end::Accordion-->
         </div>
     </div>
 
     @include('components.backend.quiz.test.nextModal',['post'=>$posts])
+
+
+    <div class="modal bg-body fade" tabindex="-1" id="kt_modal_2">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content shadow-none">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12" style="min-height: 500px">
+                                <form class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="questions_name" class="form-label">Tên câu hỏi hoặc mã câu hỏi</label>
+                                        <input type="text" class="form-control" placeholder="Nhập tên câu hỏi hoặc mã câu hỏi" id="questions_name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="category_id_search" class="form-label">Danh mục</label>
+                                        <select id="category_id_search" class="form-select">
+                                            <option value="0" selected>chọn danh mục</option>
+                                            @foreach ($category as $key => $value)
+                                                <option value="{{ $value->id }}"
+                                                    {{ old('category_id', !empty($posts) ? $posts->category_id : '') == $value->id ? 'selected' : '' }}>
+                                                    {{ $value->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-primary" id="searchQuestion">Tìm kiếm</button>
+                                    </div>
+                                    <p class="fw-bold mb-0" id="showResult" style="display: none">Kết quả tìm kiếm</p>
+                                    <hr class="mb-0" id="showResultHR" style="display: none">
+                                    <ul class="list-group list-group-flush" id="showListSearchQuestion"></ul>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -78,6 +91,60 @@
                     event.preventDefault();
                     $('#kt_modal_part').modal('show');
                 });
+
+                $(document).on('click', '#searchQuestion', function(event) {
+                    let questions_name = $('#questions_name').val();
+                    let category_id = $('#category_id_search').val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    let type = $(this).data('type');
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ Route('backend.test.search.question') }}',
+                        dataType: 'json',
+                        data: {
+                            "_token": token,
+                            search: questions_name,
+                            category_id: category_id,
+                            type:type
+                        },
+                        success: function(json) {
+                            $('#showResult').show()
+                            $('#showResultHR').show()
+                            $('#showListSearchQuestion').html(json.data.jsonResult);
+                        }
+                    });
+                });
+
+                $(document).on('click', '.addQuestion', function(event) {
+                    let part_id = $('#searchQuestion').data('id');
+                    let post_id = $(this).data('id');
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    let data = {
+                        "test_id": test_id,
+                        "part_id": part_id,
+                        "post_id": post_id,
+                        "_token": token,
+                    };
+
+                    $.ajax({
+                        url: baseUrl + "/test/addQuestionPart",
+                        type: 'POST',
+                        data: data,
+                        success: function (json) {
+                            $('#contentQuestion_'+part_id).html(json.data.jsonResult);
+                            $('#doneQuestion_'+post_id).html('Đã thêm')
+                        }
+                    });
+                });
+
+                $(document).on('click', 'button.AddQuestionPart', function(event) {
+                    let id = $(this).data('id');
+                    let type = $(this).data('type');
+                    $('#searchQuestion').attr('data-id',id);
+                    $('#searchQuestion').attr('data-type',type);
+                    $('#kt_modal_2').modal('show');
+                });
+
 
                 $(document).on('click', '#createPartNew', function(event) {
                     let part_name = $('#part_name').val();

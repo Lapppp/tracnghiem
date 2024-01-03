@@ -397,6 +397,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'index'])->name('backend.test.index');
             Route::get('/create', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'create'])->name('backend.test.create');
             Route::post('/createPart', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'createPart'])->name('backend.test.createPart');
+            Route::post('/addQuestionPart', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'addQuestionPart'])->name('backend.test.addQuestionPart');
             Route::get('/createEnglish', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'createEnglish'])->name('backend.test.createEnglish');
             Route::post('/search-question', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'searchQuestion'])->name('backend.test.search.question');
             Route::post('/load-question', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'loadQuestion'])->name('backend.test.load.question');

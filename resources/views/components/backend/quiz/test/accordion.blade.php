@@ -7,7 +7,7 @@
     </h2>
     <div id="kt_accordion_1_body_{{ $part->id }}" class="position-relative accordion-collapse collapse show"
          aria-labelledby="kt_accordion_1_header_{{ $part->id }}" data-bs-parent="#kt_accordion_1">
-        <button type="button" class="btn btn-primary btn-sm AddQuestionPart" data-id="{{ $part->id }}" style="position: absolute;right: 16px;top:10px;z-index: 1">
+        <button type="button" class="btn btn-primary btn-sm AddQuestionPart" data-id="{{ $part->id }}" data-type="{{ $part->type }}" style="position: absolute;right: 16px;top:10px;z-index: 1">
             Thêm câu hỏi
         </button>
         <div class="accordion-body">

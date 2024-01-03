@@ -11,6 +11,7 @@ use App\Http\Controllers\BackendController;
 use App\Http\Requests\Backend\Quiz\TestsCreateRequest;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Post\PostRepository;
+use App\Repositories\Quiz\QuestionsPartRepository;
 use App\Repositories\Quiz\SubjectRepository;
 use App\Repositories\Quiz\TestRepository;
 use App\Models\Images\Image;
@@ -22,13 +23,14 @@ use Intervention\Image\Facades\Image as ImageIntervention;
 class TestsController extends BackendController
 {
     protected $data = [];
-    protected $testRepository, $categoryRepository, $subjectRepository, $postRepository;
+    protected $testRepository, $categoryRepository, $subjectRepository, $postRepository,$questionsPartRepository;
 
     public function __construct(
         TestRepository $testRepository,
         CategoryRepository $categoryRepository,
         SubjectRepository $subjectRepository,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        QuestionsPartRepository $questionsPartRepository
     ) {
         parent::__construct();
 
@@ -53,6 +55,7 @@ class TestsController extends BackendController
         $this->categoryRepository = $categoryRepository;
         $this->subjectRepository = $subjectRepository;
         $this->postRepository = $postRepository;
+        $this->questionsPartRepository = $questionsPartRepository;
     }
 
     public function index(Request $request)
@@ -183,6 +186,8 @@ class TestsController extends BackendController
         $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
             null);
         $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
+
+        $this->data['parts'] = $post->testpart()->get();
         return view('components.backend.quiz.test.next', $this->data);
     }
 
@@ -322,8 +327,11 @@ class TestsController extends BackendController
             'module_id'=>[ModuleType::Quiz],
             'category_id'=>!empty($category_id) ? [$category_id] : [] ,
             'search'=>$search,
+            'type'=>$request->type ?? 0,
             'debug'=>0
         ];
+
+
         $posts = $this->postRepository->getAll($params);
         $this->data['questions'] = $posts;
         $html = view('components.backend.quiz.test.questions', $this->data)->render();
@@ -361,6 +369,28 @@ class TestsController extends BackendController
 
         $this->data['part'] = $part->first();
         $html = view('components.backend.quiz.test.accordion', $this->data)->render();
+        return ResponseHelper::success('thành công', ['jsonResult' => $html]);
+    }
+
+    public function addQuestionPart(Request $request) {
+        $params = $request->all();
+        $part_id = $params['part_id'] ?? 0;
+        $post_id = $params['post_id'] ?? 0;
+        $part = $this->questionsPartRepository->getById($part_id);
+        if(!$part) {
+            return ResponseHelper::error('Không tìm thấy Part');
+        }
+
+        $insert = [
+            'order'=>0,
+            'created_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s')
+        ];
+
+        $part->posts()->syncWithoutDetaching([$post_id]);
+        $part->posts()->updateExistingPivot($post_id, $insert);
+        $this->data['questions'] = $part->posts()->get();
+        $html = view('components.backend.quiz.test.addQuestion', $this->data)->render();
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 }

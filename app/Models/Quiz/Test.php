@@ -101,7 +101,8 @@ class Test extends Model
 
     public function testpart()
     {
-        return $this->hasMany(QuestionsPart::class,'test_id','id');
+        return $this->hasMany(QuestionsPart::class,'test_id','id')
+            ->orderBy('order','asc');
     }
 
     public function testpartOne($id)

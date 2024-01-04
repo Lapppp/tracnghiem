@@ -67,7 +67,10 @@ class QuestionsController extends BackendController
         $params = $request->only(['username', 'password']);
         $status = !empty($request->status) ? explode(',', $request->status) : [];
         $post = $this->postRepository->getAll([
-            'module_id' => [ModuleType::Quiz], 'search' => $request->search, 'status' => $status
+            'module_id' => [ModuleType::Quiz],
+            'search' => $request->search,
+            'status' => $status,
+            'type' => [0,1],
         ]);
 
 

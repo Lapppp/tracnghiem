@@ -199,6 +199,16 @@ class TestsController extends FrontendController
 
         return view('components.frontend.tests.show', $this->data);
     }
+    public function showEnglish(Request $request, $id = 0){
+
+        $test = $this->testRepository->getById($id);
+        if ( !$test ) {
+            return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
+        }
+        $this->data['parts'] = $test->testpart()->get();
+        $this->data['test'] = $test;
+        return view('components.frontend.tests.showEnglish', $this->data);
+    }
 
     public function next(Request $request)
     {

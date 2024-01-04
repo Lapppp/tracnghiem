@@ -77,6 +77,10 @@ Route::prefix('bai-kiem-tra')->group(function () {
         ->name('frontend.tests.category')
         ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
 
+    Route::get('/tieng-anh/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'showEnglish'])
+        ->name('frontend.tests.showEnglish')
+        ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
+
     Route::get('/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'show'])
         ->name('frontend.tests.show')
         ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);

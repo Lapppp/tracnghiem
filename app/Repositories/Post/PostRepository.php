@@ -36,7 +36,7 @@ class PostRepository extends BaseRepository
             'user_id' => [],
             'sort' => null,
             'notInId' => null,
-            'type' => 0,
+            'type' => [],
         ], $params);
 
         $result = Post::select(
@@ -115,8 +115,9 @@ class PostRepository extends BaseRepository
             $result->whereIn(Post::TABLE . '.user_id', $params['user_id']);
         }
 
-        if ( isset($params['type']) ) {
-            $result->where(Post::TABLE . '.type', $params['type']);
+
+        if ( !empty($params['type']) && is_array($params['type']) ) {
+            $result->whereIn(Post::TABLE . '.type', $params['type']);
         }
 
         if(!empty($params['sort'])){

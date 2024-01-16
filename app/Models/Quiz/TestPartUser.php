@@ -19,4 +19,23 @@ class TestPartUser extends Model
         'user_chosen',
         'user_id',
     ];
+
+    public static function checkUserTestEnglishPart($params = [])
+    {
+        return self::where('test_id',$params['test_id'])
+            ->where('part_id',$params['part_id'])
+            ->where('question_id',$params['question_id'])
+            ->where('answer_id',$params['answer_id'])
+            ->where('user_id',$params['user_id'])
+            ->first();
+    }
+
+    public static function checkUserTestPart($params = [])
+    {
+        return self::where('test_id',$params['test_id'])
+            ->where('part_id',$params['part_id'])
+            ->where('question_id',$params['question_id'])
+            ->where('user_id',$params['user_id'])
+            ->first();
+    }
 }

@@ -17,7 +17,16 @@
                         <input type="hidden" name="counterHidden" id="counterHidden" value="0">
                         <input type="hidden" name="test_id_test" id="test_id_test" value="0">
                         <a href="{{ Route('frontend.home.index') }}">
-                            <img src="{{ asset('/frontend/questions')}}/assets/images/logo/logo.png" alt="image-not-found">
+                            <a href="{{ Route('frontend.home.index') }}" style="
+                            border: 1px solid;
+                            border-radius: 5px;
+                            padding: 5px;
+                            background: floralwhite;
+                            ">
+                                @if($footerCompany->default() && $footerCompany->default()['url'])
+                                    <img class="main__logo--img" src="{{ str_replace(Str::of($footerCompany->default()['url'])->basename(),'thumb_'.Str::of($footerCompany->default()['url'])->basename(),asset('storage/products/'.$footerCompany->default()['url'])) }}" alt="logo-img">
+                                @endif
+                            </a>
                         </a>
                     </div>
                 </div>
@@ -46,7 +55,7 @@
 
     <form class="multisteps_form bg-white position-relative overflow-hidden" style="max-width: none;background: none" id="wizard" method="POST" action="">
 
-
+        <div class="mt-2 p-3"><p class="m-0">Số câu đúng của ban: <span class="badge bg-primary">{{ $so_cau_dung->total ?? 0 }}</span></p></div>
         @foreach($parts as $key => $part)
             <!------------------------- Step-1 ----------------------------->
             <div class="multisteps_form_panel step active p-3" style="display: block;">
@@ -72,18 +81,32 @@
                             @if($questions->answers()->count() > 0)
                                 @php
                                     $alphabet = 'A';
+                                    $is_correct_test  = '';
                                 @endphp
                                 <div class="row pt-2 mt-1 form_items">
                                      @foreach($questions->answers()->get() as $q => $answer)
                                         <div class="col-6">
                                             <ul class="list-unstyled p-0">
-                                                <li class="step_1 animate__animated animate__fadeInRight"
+                                                <?php
+                                                         $check =  \App\Models\Quiz\TestPartUser::checkUserTestPart([
+                                                             'test_id'=>$test->id,
+                                                             'part_id'=>$part->id,
+                                                             'question_id'=>$questions->id,
+                                                             'user_id'=>$user->id,
+                                                         ]);
+                                                    $correct = $questions->answerCorrect()->first();
+                                                    if($correct->id == $answer->id) {
+                                                        $is_correct_test = $alphabet;
+                                                    }
+
+                                                    ?>
+                                                <li  class="step_1 animate__animated animate__fadeInRight @if($check->user_chosen == $answer->id ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
                                                     data-question_id="{{ $questions->id }}">
-                                                    <input id="opt_{{ $answer->id }}" type="radio" name="stp_1_select_option_{{ $questions->id }}" value="{{ $answer->id }}">
-                                                    <label for="opt_{{ $answer->id }}"><b>{{ $alphabet }}.</b> {{ $answer->description ?? '' }} </label>
+                                                    <input  id="opt_{{ $answer->id }}" type="radio" name="stp_1_select_option_{{ $questions->id }}" value="{{ $answer->id }}">
+                                                    <label  for="opt_{{ $answer->id }}"><b>{{ $alphabet }}.</b> {{ $answer->description ?? '' }} </label>
                                                 </li>
                                             </ul>
                                         </div>
@@ -91,6 +114,13 @@
                                             $alphabet++;
                                         @endphp
                                      @endforeach
+                                    <div>
+                                        Đán án đúng là: <span class="badge bg-primary">{{ $is_correct_test }}</span>
+                                        <a href="#" data-modal-id="popup" id="showViewBaiGiai_{{ $questions->id }}"  title="{{ $questions->name ?? '' }}" class="viewBaiGiai" data-id="{{ $questions->id }}">
+                                            <span class="badge bg-primary ">Xem bài giải</span>
+                                        </a>
+                                        <div hidden  id="viewBaiGiai_{{ $questions->id }}">{!! $questions->description ?? 'Đang cập nhật' !!}</div>
+                                    </div>
                                 </div>
                             @endif
                      @endforeach
@@ -106,12 +136,24 @@
                             @if($questions->questionMultiples()->count() > 0)
                                 @php
                                     $alphabet = 'A';
+                                    $is_correct_test  = 'A';
                                 @endphp
                                 <div class="row pt-2 mt-1 form_items">
                                     @foreach($questions->questionMultiples()->get() as $q => $answer)
+
+                                        <?php
+                                            $check =  \App\Models\Quiz\TestPartUser::checkUserTestEnglishPart([
+                                                'test_id'=>$test->id,
+                                                'part_id'=>$part->id,
+                                                'question_id'=>$questions->id,
+                                                'user_id'=>$user->id,
+                                                'answer_id'=>$answer->id,
+                                            ]);
+
+                                            ?>
                                         <div class="col-6">
                                             <ul class="list-unstyled p-0">
-                                                <li class="step_2 animate__animated animate__fadeInRight"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'a' ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -122,7 +164,7 @@
                                                     <input id="opt_{{ $answer->id }}_a" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="a">
                                                     <label for="opt_{{ $answer->id }}_a"><b>A.</b> {{ $answer->a ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'b' ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -133,7 +175,7 @@
                                                     <input id="opt_{{ $answer->id }}_b" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="b">
                                                     <label for="opt_{{ $answer->id }}_b"><b>B.</b> {{ $answer->b ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'c' ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -144,7 +186,7 @@
                                                     <input id="opt_{{ $answer->id }}_c" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="c">
                                                     <label for="opt_{{ $answer->id }}_c"><b>C.</b> {{ $answer->c ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'd' ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -155,7 +197,15 @@
                                                     <input id="opt_{{ $answer->id }}_d" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="d">
                                                     <label for="opt_{{ $answer->id }}_d"><b>D.</b> {{ $answer->d ?? '' }} </label>
                                                 </li>
+
                                             </ul>
+                                            <div class="mt-2 mb-2">
+                                                Đán án đúng là: <span class="badge bg-primary">{{ ucfirst($answer->is_correct) }}</span>
+                                                <a href="#" data-modal-id="popup" id="showViewBaiGiai_{{ $questions->id }}"  title="{{ $questions->name ?? '' }}" class="viewBaiGiai" data-id="{{ $questions->id }}">
+                                                    <span class="badge bg-primary ">Xem bài giải</span>
+                                                </a>
+                                                <div hidden  id="viewBaiGiai_{{ $questions->id }}">{!! $questions->description ?? 'Đang cập nhật' !!}</div>
+                                            </div>
                                         </div>
                                         @php
                                             $alphabet++;
@@ -172,12 +222,7 @@
         @endforeach
 
     </form>
-
-    <div class="footer_nopbai">
-        <div class="d-grid gap-2 col-2 mx-auto">
-            <button class="btn btn-primary" type="button" id="NopBai">Nộp Bài</button>
-        </div>
-    </div>
+    @include('components.frontend.tests.modalbox')
     <x-slot name="css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" integrity="sha256-sWZjHQiY9fvheUAOoxrszw9Wphl3zqfVaz1kZKEvot8=" crossorigin="anonymous">
         <style>
@@ -188,19 +233,19 @@
                 -o-user-select: none;
                 user-select: none;
             }
-            .footer_nopbai {
-                position: fixed;
-                left: 0;
-                bottom: 10px;
-                width: 100%;
-            }
         </style>
     </x-slot>
 
     <x-slot name="javascript">
-
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js" integrity="sha256-t0FDfwj/WoMHIBbmFfuOtZv1wtA977QCfsFR3p1K4No=" crossorigin="anonymous"></script>
         <script type="text/javascript">
+            var c = {{ $test->score_time ? $test->score_time * 60 : 900  }};
+            var t;
+
+
+
+            document.addEventListener("copy", (e) => {e.preventDefault();}, false);
+            document.addEventListener('contextmenu', event => { event.preventDefault(); });
             window.addEventListener('keydown', function(event) {
                 if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
                     event.preventDefault();
@@ -212,117 +257,39 @@
                     return;
                 }
             }, true);
+
             document.addEventListener('dragover', event => event.preventDefault());
             document.addEventListener('drop', event => event.preventDefault());
-            document.addEventListener("keyup", function (event) {
-                var keyCode = event.keyCode ? event.keyCode : event.which;
-                if (keyCode == 44) {
-                    stopPrntScr();
-                }
-            });
-
-            function stopPrntScr() {
-                var inpFld = document.createElement("input");
-                inpFld.setAttribute("value", ".");
-                inpFld.setAttribute("width", "0");
-                inpFld.style.height = "0px";
-                inpFld.style.width = "0px";
-                inpFld.style.border = "0px";
-                document.body.appendChild(inpFld);
-                inpFld.select();
-                document.execCommand("copy");
-                inpFld.remove(inpFld);
-            }
-            var c = {{ $test->score_time ? $test->score_time * 60 : 900  }};
-            var t;
-            document.addEventListener("copy", (e) => {e.preventDefault();}, false);
-            document.addEventListener('contextmenu', event => { event.preventDefault(); });
             $(document).ready(function() {
+
+                var modal = $('.modal_box');
+                var span = $('.close_box');
+
+                $(document).on('click','a.viewBaiGiai',function (event) {
+                    event.preventDefault();
+                    let id = $(this).data('id');
+                    let content = $('#viewBaiGiai_'+id).html();
+                    $('#showContentBaiGia').html(content);
+                    modal.show();
+                })
+
+                span.click(function () {
+                    modal.hide();
+                });
+
+                $(window).on('click', function (e) {
+                    if ($(e.target).is('.modal_box')) {
+                        modal.hide();
+                    }
+                });
+
                 $(document).on('keydown', function(e) {
                     if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
                         e.cancelBubble = true;
                         e.preventDefault();
-
                         e.stopImmediatePropagation();
                     }
                 });
-                disableSelection(document.body);
-                $(document).on('click', '.step_2',function(){
-                    let group = $(this).data('group');
-                    $("li[data-group='"+group+"']").removeClass("active")
-                    $(this).addClass("active");
-                    let token = $("meta[name='csrf-token']").attr("content");
-                    let answer_id = $(this).data('answer_id');
-                    let part_id = $(this).data('part_id');
-                    let test_id = $(this).data('test_id');
-                    let question_id = $(this).data('question_id');
-                    let is_correct = $(this).data('is_correct');
-                    let chosen = $(this).data('chosen');
-                    $.ajax({
-                        url: "{{ Route('frontend.tests.updateEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html'])}}",
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            "answer_id": answer_id,
-                            "part_id": part_id,
-                            "test_id": test_id,
-                            "question_id": question_id,
-                            "_token": token,
-                            "is_correct": is_correct,
-                            "chosen": chosen,
-                        },
-                        success: function (dataJson) {
-                          //  window.location.href = '{{ Route('frontend.tests.resultEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html']) }}';
-                        }
-                    })
-                    return false;
-                });
-
-
-                $(document).on('click', '.step_1',function(){
-                    //$(".step_1").removeClass("active");
-                    let question_id = $(this).data('question_id');
-                    $("li[data-question_id='"+question_id+"']").removeClass("active")
-                    $(this).addClass("active");
-
-                    let token = $("meta[name='csrf-token']").attr("content");
-                    let answer_id = $(this).data('answer_id');
-                    let part_id = $(this).data('part_id');
-                    let test_id = $(this).data('test_id');
-                    $.ajax({
-                        url: "{{ Route('frontend.tests.updateEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html'])}}",
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            "answer_id": answer_id,
-                            "part_id": part_id,
-                            "test_id": test_id,
-                            "question_id": question_id,
-                            "_token": token,
-                        },
-                        success: function (dataJson) {
-
-                        }
-                    })
-                    return false;
-
-                });
-
-                $(document).on('click', '#NopBai',function(){
-
-                    Swal.fire({
-                        title: 'Bạn làm xong bài kiểm tra, Bạn có muốn dừng bài kiểm tra và xem kết quả?',
-                        showCancelButton: true,
-                        confirmButtonText: 'Đồng ý',
-                        cancelButtonText:'Đóng'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '{{ Route('frontend.tests.resultEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html']) }}';
-                        }
-                    })
-
-                });
-
 
                 // ================== CountDown function ================
                 $('.countdown_timer').each(function(){
@@ -343,9 +310,9 @@
                     timer--;
                     document.getElementById("value").innerHTML = timer;
                     if(timer <= 0) {
-                        window.location.href = BASE_URL+'/bai-kiem-tra/ket-qua/';
+
                     }
-                    setTimeout(animateValue, 1000)
+                    //setTimeout(animateValue, 1000)
                 }
                 animateValue();
 
@@ -363,30 +330,15 @@
                     $('#timer').html(result);
 
                     if(c == 0 ) {
-                        window.location.href = BASE_URL+'/bai-kiem-tra/ket-qua/';
+
                     }
                     c = c - 1;
                     t = setTimeout(function()
                     {
-                        timedCount()
+                       // timedCount()
                     },1000);
                 }
                 timedCount();
-
-                function disableSelection(target){
-                    $(function() {
-                        $(this).bind("contextmenu", function(e) {
-                            e.preventDefault();
-                        });
-                    });
-                    if (typeof target.onselectstart!="undefined") //For IE
-                        target.onselectstart=function(){return false}
-                    else if (typeof target.style.MozUserSelect!="undefined") //For Firefox
-                        target.style.MozUserSelect="none"
-                    else //All other route (For Opera)
-                        target.onmousedown=function(){return false}
-                    target.style.cursor = "default";
-                }
 
             });
 

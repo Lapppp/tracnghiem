@@ -1,0 +1,1 @@
+@if($BGBanner->default() && $BGBanner->default()['url'] && $isMobile ==0) background: url({{ str_replace(Str::of($BGBanner->default()['url'])->basename(),Str::of($BGBanner->default()['url'])->basename(),asset('storage/banner/'.$BGBanner->default()['url'])) }}); @else background:#FFC061 @endif

@@ -105,13 +105,20 @@
                                     <td class="text-end">
 
                                         @if (Auth::guard('backend')->user()->can(['test_edit']))
-                                            <a href="{{ Route('backend.test.edit', ['id' => $item->id]) }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
-                                                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                            @if($item->type == 1)
+                                                <a href="{{ Route('backend.test.next', ['id' => $item->id]) }}"
+                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
+                                                   class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                            @else
+                                                <a href="{{ Route('backend.test.edit', ['id' => $item->id]) }}"
+                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
+                                                   class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                            @endif
                                         @endif
-
                                         <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 showSortModal" data-bs-toggle="tooltip" data-bs-placement="top" title="Sắp xếp"><i class="bi bi-sort-numeric-down"></i></a>
 
                                         @if (Auth::guard('backend')->user()->can(['test_delete']))

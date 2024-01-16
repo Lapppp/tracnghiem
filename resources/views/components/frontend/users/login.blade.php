@@ -1,6 +1,6 @@
 <x-layout.frontend>
     <!-- Start breadcrumb section -->
-    <section class="breadcrumb__section breadcrumb__bg">
+    <section class="breadcrumb__section breadcrumb__bg" style="@include('components.frontend.shared.banner.bg_banner')">
         <div class="container">
             <div class="row row-cols-1">
                 <div class="col">

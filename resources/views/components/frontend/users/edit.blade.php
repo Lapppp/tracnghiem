@@ -1,6 +1,6 @@
 <x-layout.frontend>
     <!-- Start breadcrumb section -->
-    <section class="breadcrumb__section breadcrumb__bg">
+    <section class="breadcrumb__section breadcrumb__bg" style="@include('components.frontend.shared.banner.bg_banner')">
         <div class="container">
             <div class="row row-cols-1">
                 <div class="col">
@@ -21,7 +21,30 @@
 
     <!-- Start login section  -->
     <div class="login__section section--padding">
+
+
+
         <div class="container">
+            @if($user->expiry_date)
+                @php
+                    $now = time(); // or your date as well
+                    $your_date = strtotime($user->expiry_date);
+                    $diff = $your_date - $now;
+                    $days =  round($diff / (60 * 60 * 24));
+                @endphp
+
+                @if($days < 5)
+                    <div class="alert alert-danger" role="alert">
+                        <p class="m-0 p-0">Thời gian hết hạn còn <button type="button" class="btn btn-success btn-sm">{{ $days }}</button> ngày</p>
+                        <p class="m-0 p-0">Vui lòng liên hệ với admin để cập nhật thêm</p>
+                    </div>
+                @else
+                    <div class="alert alert-success" role="alert">
+                        <p class="m-0 p-0">Thời gian hết hạn còn <button type="button" class="btn btn-success btn-sm">{{ $days }}</button> ngày</p>
+                    </div>
+                @endif
+
+            @endif
             <form action="{{ Route('frontend.users.update') }}" method="post">
                 @csrf
                 <div class="login__section--inner">

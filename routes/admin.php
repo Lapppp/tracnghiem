@@ -31,6 +31,7 @@ Route::prefix('adminkiwi')->group(function () {
         // Users
         Route::prefix('users')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\User\UserController::class, 'index'])->name('backend.users.index');
+            Route::get('/export', [\App\Http\Controllers\Backend\User\UserController::class, 'export'])->name('backend.users.export');
             Route::get('/search', [\App\Http\Controllers\Backend\User\UserController::class, 'search'])->name('backend.users.search');
             Route::post('/ajax', [\App\Http\Controllers\Backend\User\UserController::class, 'ajaxLoadApprovedUsers'])->name('backend.users.ajax');
             Route::post('/update-ajax', [\App\Http\Controllers\Backend\User\UserController::class, 'updateAdminDepartment'])->name('backend.users.update-ajax');
@@ -204,6 +205,17 @@ Route::prefix('adminkiwi')->group(function () {
             Route::get('/edit/{id}', [\App\Http\Controllers\Backend\Banner\BannerController::class, 'edit'])->name('backend.banner.edit');
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Banner\BannerController::class, 'update'])->name('backend.banner.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Banner\BannerController::class, 'destroy'])->name('backend.banner.destroy');
+        });
+
+
+        // Banner
+        Route::prefix('bgbanner')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'index'])->name('backend.bgbanner.index');
+            Route::get('/create', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'create'])->name('backend.bgbanner.create');
+            Route::post('/store', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'store'])->name('backend.bgbanner.store');
+            Route::get('/edit/{id}', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'edit'])->name('backend.bgbanner.edit');
+            Route::put('/update/{id}', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'update'])->name('backend.bgbanner.update');
+            Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\BGBanner\BGBannerController::class, 'destroy'])->name('backend.bgbanner.destroy');
         });
 
 

@@ -6,8 +6,15 @@
                     <div class="logo_area pt-5 ps-5">
                         <input type="hidden" name="counterHidden" id="counterHidden" value="0">
                         <input type="hidden" name="test_id_test" id="test_id_test" value="0">
-                        <a href="{{ Route('frontend.home.index') }}">
-                            <img src="{{ asset('/frontend/questions')}}/assets/images/logo/logo.png" alt="image-not-found">
+                        <a href="{{ Route('frontend.home.index') }}" style="
+                            border: 1px solid;
+                            border-radius: 5px;
+                            padding: 5px;
+                            background: floralwhite;
+                            ">
+                            @if($footerCompany->default() && $footerCompany->default()['url'])
+                                <img class="main__logo--img" src="{{ str_replace(Str::of($footerCompany->default()['url'])->basename(),'thumb_'.Str::of($footerCompany->default()['url'])->basename(),asset('storage/products/'.$footerCompany->default()['url'])) }}" alt="logo-img">
+                            @endif
                         </a>
                     </div>
                 </div>
@@ -99,6 +106,15 @@
 
     <x-slot name="css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" integrity="sha256-sWZjHQiY9fvheUAOoxrszw9Wphl3zqfVaz1kZKEvot8=" crossorigin="anonymous">
+        <style>
+            body {
+                -webkit-user-select: none;  /* Chrome all / Safari all */
+                -moz-user-select: none;     /* Firefox all */
+                -ms-user-select: none;      /* IE 10+ */
+                -o-user-select: none;
+                user-select: none;
+            }
+        </style>
     </x-slot>
 
     <x-slot name="javascript">
@@ -106,7 +122,49 @@
         <script type="text/javascript">
             var c = {{ $test->score_time ? $test->score_time * 60 : 900  }};
             var t;
+            document.addEventListener("copy", (e) => {e.preventDefault();}, false);
+            document.addEventListener('contextmenu', event => { event.preventDefault(); });
+            document.addEventListener("keyup", function (event) {
+                var keyCode = event.keyCode ? event.keyCode : event.which;
+                if (keyCode == 44) {
+                    stopPrntScr();
+                }
+            });
+            document.addEventListener('dragover', event => event.preventDefault());
+            document.addEventListener('drop', event => event.preventDefault());
+            window.addEventListener('keydown', function(event) {
+                if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
+                    event.preventDefault();
+                    if (event.stopImmediatePropagation) {
+                        event.stopImmediatePropagation();
+                    } else {
+                        event.stopPropagation();
+                    }
+                    return;
+                }
+            }, true);
+
+            function stopPrntScr() {
+                var inpFld = document.createElement("input");
+                inpFld.setAttribute("value", ".");
+                inpFld.setAttribute("width", "0");
+                inpFld.style.height = "0px";
+                inpFld.style.width = "0px";
+                inpFld.style.border = "0px";
+                document.body.appendChild(inpFld);
+                inpFld.select();
+                document.execCommand("copy");
+                inpFld.remove(inpFld);
+            }
             $(document).ready(function() {
+                disableSelection(document.body);
+                $(document).on('keydown', function(e) {
+                    if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
+                        e.cancelBubble = true;
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                    }
+                });
 
                 $(document).on('click', '.step_1',function(){
                     $(".step_1").removeClass("active");
@@ -326,6 +384,22 @@
                     },1000);
                 }
                 timedCount();
+
+
+                function disableSelection(target){
+                    $(function() {
+                        $(this).bind("contextmenu", function(e) {
+                            e.preventDefault();
+                        });
+                    });
+                    if (typeof target.onselectstart!="undefined") //For IE
+                        target.onselectstart=function(){return false}
+                    else if (typeof target.style.MozUserSelect!="undefined") //For Firefox
+                        target.style.MozUserSelect="none"
+                    else //All other route (For Opera)
+                        target.onmousedown=function(){return false}
+                    target.style.cursor = "default";
+                }
 
             });
 

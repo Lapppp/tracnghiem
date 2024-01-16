@@ -175,6 +175,7 @@
                             success: function (json) {
                                 $('#kt_accordion_1').append(json.data.jsonResult)
                                 $('#kt_modal_part').modal('hide');
+                                window.location.reload()
                             }
                         });
                     }

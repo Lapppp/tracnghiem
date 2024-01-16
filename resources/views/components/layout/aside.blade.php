@@ -55,6 +55,7 @@
             @include('components.backend.shared.permissions.guide')
             @include('components.backend.shared.permissions.terms')
             @include('components.backend.shared.permissions.banner')
+            @include('components.backend.shared.permissions.bgbanner')
             @include('components.backend.shared.permissions.department')
             @include('components.backend.shared.permissions.region')
             @include('components.backend.shared.permissions.brand')

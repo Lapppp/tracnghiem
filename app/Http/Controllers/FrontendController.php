@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Modules\ModuleType;
 use App\Helpers\MobileDetectHelper;
 use App\Models\Banners\Banner;
+use App\Models\Banners\BGBanner;
 use App\Models\Category\Category;
 use App\Models\Companies\Company;
 use App\Models\Post\Post;
@@ -88,6 +89,9 @@ class FrontendController extends BaseController
 
         $menuSubject = Subject::where('status',1)->get();
         View::share('menuSubject', $menuSubject);
+
+        $BGBanner = BGBanner::find(1);
+        View::share('BGBanner', $BGBanner);
 
         $detect = new MobileDetectHelper();
         $isMobile = 0 ;

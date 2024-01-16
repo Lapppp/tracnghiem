@@ -102,6 +102,7 @@ class TestsController extends BackendController
         $params = $request->all();
         $questions = $params['questions'] ?? null;
         $is_english = $params['is_english'] ?? 0;
+        $params['type'] = $is_english;
         $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post =  $this->testRepository->create($params);
         if ( !$post ) {
@@ -383,6 +384,7 @@ class TestsController extends BackendController
 
         $insert = [
             'order'=>0,
+            'test_id'=>$part->test_id,
             'created_at'=>date('Y-m-d H:i:s'),
             'updated_at'=>date('Y-m-d H:i:s')
         ];

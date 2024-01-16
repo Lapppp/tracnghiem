@@ -3,15 +3,28 @@
         <div class="col mb-30">
             <div class="product__items ">
                 <div class="product__items--thumbnail">
-                    <a class="product__items--link" href="{{ Route('frontend.tests.show',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">
-                        @if($value->default() && $value->default()['url'])
-                            <img
-                                class="product__items--img product__primary--img"
-                                src="{{ str_replace(Str::of($value->default()['url'])->basename(),'thumb_'.Str::of($value->default()['url'])->basename(),asset('storage/products/'.$value->default()['url'])) }}"
-                                alt="{{ $value->title ?? '' }}">
-                        @else
-                        @endif
-                    </a>
+                    @if($value->type ==1)
+                        <a class="product__items--link" href="{{ Route('frontend.tests.showEnglish',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">
+                            @if($value->default() && $value->default()['url'])
+                                <img
+                                    class="product__items--img product__primary--img"
+                                    src="{{ str_replace(Str::of($value->default()['url'])->basename(),'thumb_'.Str::of($value->default()['url'])->basename(),asset('storage/products/'.$value->default()['url'])) }}"
+                                    alt="{{ $value->title ?? '' }}">
+                            @else
+                            @endif
+                        </a>
+                    @else
+                        <a class="product__items--link" href="{{ Route('frontend.tests.show',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">
+                            @if($value->default() && $value->default()['url'])
+                                <img
+                                    class="product__items--img product__primary--img"
+                                    src="{{ str_replace(Str::of($value->default()['url'])->basename(),'thumb_'.Str::of($value->default()['url'])->basename(),asset('storage/products/'.$value->default()['url'])) }}"
+                                    alt="{{ $value->title ?? '' }}">
+                            @else
+                            @endif
+                        </a>
+                    @endif
+
                     <div class="product__badge" style="display: none !important;">
                         <span class="product__badge--items sale">Sale</span>
                     </div>
@@ -19,7 +32,12 @@
                 <div class="product__items--content">
                     <span class="product__items--content__subtitle">Chuyên đề: {{ $value->topic->title ?? '' }}</span>
                     <h3 class="product__items--content__title h4">
-                        <a href="{{ Route('frontend.tests.show',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">{{ $value->title ?? '' }}</a>
+                        @if($value->type ==1)
+                            <a href="{{ Route('frontend.tests.showEnglish',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">{{ $value->title ?? '' }}</a>
+                        @else
+                            <a href="{{ Route('frontend.tests.show',['id'=>$value->id,'name'=>Str::slug($value->title.'', '-').'.html']) }}">{{ $value->title ?? '' }}</a>
+                        @endif
+
                     </h3>
                     <div class="product__items--price" style="display: none !important;">
                         <span class="current__price">$110</span>

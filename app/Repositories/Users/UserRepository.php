@@ -29,7 +29,8 @@ class UserRepository extends BaseRepository
         );
 
         if ( !empty($params['search']) ) {
-            $result->where(User::TABLE.'.name', 'LIKE', '%'.$params['search'].'%');
+            $sql = "(".User::TABLE.".name LIKE '%".$params['search']."%' OR ".User::TABLE.".email LIKE '%".$params['search']."%')";
+            $result->whereRaw($sql);
         }
 
         if ( !empty($params['status']) && is_array($params['status']) ) {

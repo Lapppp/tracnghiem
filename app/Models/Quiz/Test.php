@@ -109,4 +109,8 @@ class Test extends Model
     {
         return $this->hasMany(QuestionsPart::class,'test_id','id')->where('id',$id);
     }
+
+    public static function getById($id = 0) {
+        return self::find($id);
+    }
 }

@@ -8,9 +8,23 @@
             <h3 class="card-title align-items-start flex-column">
                 <span class="card-label fw-bolder fs-3 mb-1">Danh sách Khách hàng</span>
             </h3>
+            <div class="card-title">
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="text" value="{{ $params['search'] ?? '' }}" id="search" name="search" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Tìm kiếm khách hàng">
+                </div>
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
+                    <a href="#" class="btn btn-primary" id="searchUser">Tìm kiếm</a>
+                </div>
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
+                    <a href="{{ Route('backend.users.export') }}" target="_blank" class="btn btn-primary">Xuất Excel</a>
+                </div>
+            </div>
             <div class="card-toolbar">
                 @if(Auth::guard('backend')->user()->can(['create_user']))
-                <a href="{{ Route('backend.users.create') }}" class="btn btn-sm btn-light-primary">
+                <a href="{{ Route('backend.users.create') }}" class="btn  btn-light-primary">
                     <!--begin::Svg Icon | path: icons/duotone/Communication/Add-user.svg-->
                     <span class="svg-icon svg-icon-2">
 												<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"
@@ -306,6 +320,21 @@
                 });
 
 
+                $(document).on('keypress',function(e) {
+                    if(e.which == 13) {
+                        let search = $('#search').val();
+                        window.location.href = '{{ Route('backend.users.index')}}?search='+search;
+                        return false;
+                    }
+                });
+
+                $(document).on('click','a#searchUser',function(event) {
+                    event.preventDefault();
+
+                    let search = $('#search').val();
+                    window.location.href = '{{ Route('backend.users.index')}}?search='+search;
+                    return false;
+                });
                 $(document).on('click','#updateVipCustomize',function(event) {
                     let date = $('#kt_datepicker_3').val();
                     let number = $('#numberDate').val();

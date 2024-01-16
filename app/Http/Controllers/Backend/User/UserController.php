@@ -23,6 +23,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image as ImageIntervention;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -82,6 +83,7 @@ class UserController extends BackendController
         $post = $this->userRepository->getAll($params, 20);
         $this->data['title'] = 'Users';
         $this->data['items'] = $post;
+        $this->data['params'] = $params;
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
 
@@ -500,5 +502,36 @@ class UserController extends BackendController
             }
 
         }
+    }
+
+    public function export(Request $request) {
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+        $spreadsheet = $reader->load(public_path('template/khachhang.xlsx'));
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $posts = $this->userRepository->getAll([], null);
+        $i = 2;
+        foreach ( $posts as $key => $value) {
+            $sheet->setCellValue('A' . $i, $value->name ?? '');
+            $sheet->setCellValue('B' . $i, $value->email ?? '');
+            $sheet->setCellValue('C' . $i, $value->phone ?? '');
+            $i++;
+        }
+        $pathfile = "danh-sach-khach-hang.xlsx";
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");;
+        header('Content-Disposition: attachment; filename=' . basename($pathfile) . '');
+        header("Content-Transfer-Encoding: binary ");
+
+        ob_end_clean();
+        ob_start();
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+        $writer->save('php://output');
+        exit;
     }
 }

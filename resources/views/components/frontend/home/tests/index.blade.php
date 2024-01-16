@@ -31,7 +31,7 @@
                                             <div class="row row-cols-1">
                                                 <div class="col">
                                                     <div class="slider__content">
-                                                        <p class="slider__content--desc desc1 mb-15">
+                                                        <p class="slider__content--desc desc1 mb-15" style="display: none">
                                                             <img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}
                                                         </p>
                                                         <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
@@ -78,7 +78,7 @@
                                                 <div class="col">
                                                     <div class="hero__slider--items__inner">
                                                         <div class="slider__content">
-                                                            <p class="slider__content--desc desc1 mb-15"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
+                                                            <p class="slider__content--desc desc1 mb-15" style="display: none"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
                                                             <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
                                                             <p class="slider__content--desc desc2 d-sm-2-none mb-40 " ><br></p>
                                                         @if(!empty($value->url))
@@ -123,7 +123,7 @@
                                                 <div class="col-lg-6 offset-lg-6">
                                                     <div class="hero__slider--items__inner">
                                                         <div class="slider__content text-center">
-                                                            <p class="slider__content--desc desc1 mb-15"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
+                                                            <p class="slider__content--desc desc1 mb-15" style="display: none"><img class="slider__text--shape__icon" src="{{ asset('/frontend') }}/assets/img/icon/text-shape-icon.png" alt="text-shape-icon"> {{ $value->name ?? '' }}</p>
                                                             <h2 class="slider__content--maintitle h1">{!! $value->description ?? '' !!}</h2>
                                                             <p class="slider__content--desc desc2 d-sm-2-none mb-40" ><br></p>
                                                         @if(!empty($value->url))

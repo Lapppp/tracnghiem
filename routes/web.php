@@ -81,6 +81,14 @@ Route::prefix('bai-kiem-tra')->group(function () {
         ->name('frontend.tests.showEnglish')
         ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
 
+    Route::get('/ket-qua-bai-kiem-tra-tieng-anh/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'resultEnglish'])
+        ->name('frontend.tests.resultEnglish')
+        ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
+
+    Route::post('/update-bai-kiem-tra-tieng-anh/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'updateEnglish'])
+        ->name('frontend.tests.updateEnglish')
+        ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);
+
     Route::get('/{id}-{name}', [\App\Http\Controllers\Frontend\Test\TestsController::class, 'show'])
         ->name('frontend.tests.show')
         ->where(['id'=>'[0-9]+','name'=>'[A-Za-z\d\-\_.]+']);

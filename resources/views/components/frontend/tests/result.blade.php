@@ -1,7 +1,7 @@
 <x-layout.frontend>
 
     <!-- Start breadcrumb section -->
-    <section class="breadcrumb__section breadcrumb__bg">
+    <section class="breadcrumb__section breadcrumb__bg" style="@include('components.frontend.shared.banner.bg_banner')">
         <div class="container">
             <div class="row row-cols-1">
                 <div class="col">
@@ -56,8 +56,13 @@
                                                     <li class="list-group-item">
                                                         <b>{{ $alphabet }}.</b> {{ $val->description ?? '' }}
                                                         @if($val->is_correct)
-                                                            <p class="mt-1 mb-1"><span class="badge bg-success">{{ $alphabet }} . Là câu trả lời đúng</span></p>
-                                                            <div id="viewBaiGiai_{{ $question->id }}" style="display: none">{{ $question->description ?? 'Đang cập nhật' }}</div>
+                                                            <p class="mt-1 mb-1">
+                                                                <span class="badge bg-success">{{ $alphabet }} . Là câu trả lời đúng</span>
+                                                                <a href="#" data-modal-id="popup" id="showViewBaiGiai_{{ $question->id }}"  title="{{ $question->name ?? '' }}" class="viewBaiGiai" data-id="{{ $question->id }}">
+                                                                    <span class="badge bg-primary ">{{ $alphabet }} Xem bài giải</span>
+                                                                </a>
+                                                            </p>
+                                                            <div hidden  id="viewBaiGiai_{{ $question->id }}">{!! $question->description ?? 'Đang cập nhật' !!}</div>
                                                         @endif
 
                                                         @if($question->pivot->is_correct == $val->id)
@@ -76,8 +81,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-                        <button class="contact__form--btn primary__btn" style="display: none" type="submit">Gửi ngay bây giờ</button>
                     </form>
                 </div>
 
@@ -86,35 +89,68 @@
     </section>
     <!-- End contact section -->
 
+    @include('components.frontend.tests.modalbox')
 
-    <div class="modal fade" id="exampleModalLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Xem bài giải</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="showBaiGiai">
-                    dddddddddddddddddddddd
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <style>
+        body {
+            -webkit-user-select: none;  /* Chrome all / Safari all */
+            -moz-user-select: none;     /* Firefox all */
+            -ms-user-select: none;      /* IE 10+ */
+            -o-user-select: none;
+            user-select: none;
+        }
+    </style>
 
     <x-slot name="javascript">
         <script type="text/javascript">
+
+            document.addEventListener("copy", (e) => {e.preventDefault();}, false);
+            document.addEventListener('contextmenu', event => { event.preventDefault(); });
+            window.addEventListener('keydown', function(event) {
+                if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
+                    event.preventDefault();
+                    if (event.stopImmediatePropagation) {
+                        event.stopImmediatePropagation();
+                    } else {
+                        event.stopPropagation();
+                    }
+                    return;
+                }
+            }, true);
+
+            document.addEventListener('dragover', event => event.preventDefault());
+            document.addEventListener('drop', event => event.preventDefault());
+
             $(document).ready(function() {
 
-                $(document).on('click','.viewBaiGiai',function(e) {
+                $(document).on('keydown', function(e) {
+                    if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
+                        e.cancelBubble = true;
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                    }
+                });
+
+                var modal = $('.modal_box');
+                var span = $('.close_box');
+
+                $(document).on('click','a.viewBaiGiai',function (event) {
+                    event.preventDefault();
                     let id = $(this).data('id');
-                    let content = $('#viewBaiGiai_'+id).html()
-                    $('#showBaiGiai').html('kkkkkk');
-                    $('#exampleModalLabel').modal('show');
+                    let content = $('#viewBaiGiai_'+id).html();
+                    $('#showContentBaiGia').html(content);
+                    modal.show();
                 })
+
+                span.click(function () {
+                    modal.hide();
+                });
+
+                $(window).on('click', function (e) {
+                    if ($(e.target).is('.modal_box')) {
+                        modal.hide();
+                    }
+                });
 
             })
         </script>

@@ -114,6 +114,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::put('/updateCreateEnglish/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateCreateEnglish'])->name('backend.questions.updateCreateEnglish');
             Route::put('/category/update/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'updateCategory'])->name('backend.questions.category.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'destroy'])->name('backend.questions.destroy');
+            Route::delete('/deleteAnswer/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'destroyAnswer'])->name('backend.questions.destroyAnswer');
             Route::delete('/category/delete/{id}', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'destroyCategory'])->name('backend.questions.category.destroy');
             Route::post('/store', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'store'])->name('backend.questions.store');
             Route::post('category/store', [\App\Http\Controllers\Backend\Quiz\QuestionsController::class, 'storeCategory'])->name('backend.questions.category.store');
@@ -419,6 +420,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::get('/question/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'question'])->name('backend.test.question');
             Route::post('/updateSortQuestion/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'updateSortQuestion'])->name('backend.test.updateSortQuestion');
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'update'])->name('backend.test.update');
+            Route::post('/updateQuestionPart/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'updateQuestionPart'])->name('backend.test.updateQuestionPart');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\Quiz\TestsController::class, 'destroy'])->name('backend.test.destroy');
         });
     });

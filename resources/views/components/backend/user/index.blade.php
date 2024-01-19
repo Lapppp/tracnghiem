@@ -11,20 +11,20 @@
             <div class="card-title">
                 <div class="d-flex align-items-center position-relative me-2">
                     <i class="ki-duotone ki-magnifier fs-3 position-absolute"><span class="path1"></span><span class="path2"></span></i>
-                    <input type="text" value="{{ $params['search'] ?? '' }}" id="search" name="search" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Tìm kiếm khách hàng">
+                    <input type="text" value="{{ $params['search'] ?? '' }}" id="search" name="search" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-500px ps-12 form-control-sm" placeholder="Tìm kiếm khách hàng">
                 </div>
                 <div class="d-flex align-items-center position-relative me-2">
                     <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
-                    <a href="#" class="btn btn-primary" id="searchUser">Tìm kiếm</a>
+                    <a href="#" class="btn btn-primary btn-sm" id="searchUser">Tìm kiếm</a>
                 </div>
                 <div class="d-flex align-items-center position-relative me-2">
                     <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
-                    <a href="{{ Route('backend.users.export') }}" target="_blank" class="btn btn-primary">Xuất Excel</a>
+                    <a href="{{ Route('backend.users.export') }}" target="_blank" class="btn btn-primary btn-sm">Xuất Excel</a>
                 </div>
             </div>
             <div class="card-toolbar">
                 @if(Auth::guard('backend')->user()->can(['create_user']))
-                <a href="{{ Route('backend.users.create') }}" class="btn  btn-light-primary">
+                <a href="{{ Route('backend.users.create') }}" class="btn  btn-light-primary btn-sm">
                     <!--begin::Svg Icon | path: icons/duotone/Communication/Add-user.svg-->
                     <span class="svg-icon svg-icon-2">
 												<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px"

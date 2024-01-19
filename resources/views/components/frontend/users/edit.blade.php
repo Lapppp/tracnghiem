@@ -63,7 +63,7 @@
                                            placeholder="Nhập mật khẩu" type="password">
                                     <input class="account__login--input" id="rePasswordRegister"
                                            placeholder="Nhập lại mật khẩu" type="password">
-                                    <button class="account__login--btn primary__btn mb-10" type="button" id="RegisterCreate">Cập nhật</button>
+                                    <button class="account__login--btn primary__btn mb-10 bg_orange" type="button" id="RegisterCreate">Cập nhật</button>
                                 </div>
                             </div>
                         </div>

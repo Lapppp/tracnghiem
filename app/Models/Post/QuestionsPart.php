@@ -31,7 +31,7 @@ class QuestionsPart extends Model
     public function posts()
     {
         return $this->belongsToMany(Post::class, 'questions_part_question', 'part_id', 'post_id')->withPivot([
-            'order'
+            'order','id'
         ])->orderBy('order','asc');
     }
 }

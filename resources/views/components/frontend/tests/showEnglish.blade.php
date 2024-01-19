@@ -16,18 +16,27 @@
                     <div class="logo_area pt-5 ps-5">
                         <input type="hidden" name="counterHidden" id="counterHidden" value="0">
                         <input type="hidden" name="test_id_test" id="test_id_test" value="0">
-                        <a href="{{ Route('frontend.home.index') }}">
-                            <img src="{{ asset('/frontend/questions')}}/assets/images/logo/logo.png" alt="image-not-found">
+                        <a href="{{ Route('frontend.home.index') }}" style="
+                            border: 1px solid;
+                            border-radius: 5px;
+                            padding: 5px;
+                            background: floralwhite;
+                            ">
+                            @if($footerCompany->default() && $footerCompany->default()['url'])
+                                <img class="main__logo--img" src="{{ str_replace(Str::of($footerCompany->default()['url'])->basename(),'thumb_'.Str::of($footerCompany->default()['url'])->basename(),asset('storage/products/'.$footerCompany->default()['url'])) }}" alt="logo-img">
+                            @else
+                                Trang chủ
+                            @endif
                         </a>
                     </div>
                 </div>
                 <div class="col-sm-6 d-none d-sm-block">
-                    <div class="count_box d-flex float-end pt-5 pe-5">
-                        <div class="count_clock countdown_timer d-flex align-items-center pe-5 me-3" data-countdown="{{ !empty($test->start_date) ? date("Y/m/d",strtotime($test->start_date)) : '' }}">
+                    <div class="count_box d-flex float-end pt-5">
+                        <div class="count_clock countdown_timer d-flex align-items-center" data-countdown="{{ !empty($test->start_date) ? date("Y/m/d",strtotime($test->start_date)) : '' }}">
                         </div>
                         <!-- <div id="countdown"></div> -->
                         <!-- Step Progress bar -->
-                        <div class="count_progress" id="showPercent">
+                        <div class="count_progress" id="showPercent" style="display: none">
                      <span class="progress-left">
                         <span class="progress_bar"></span>
                      </span>
@@ -57,7 +66,7 @@
                     @endif
 
                     @if($part->description)
-                        <p class="m-0">{!! $part->description !!}</p>
+                        <div class="m-0">{!! $part->description !!}</div>
                     @endif
                 </div>
 
@@ -98,7 +107,12 @@
                 @else
                     @if($part->posts()->count() > 0)
                         @php $iq = 1 @endphp
+
+
+                        <div class="row">
                         @foreach($part->posts()->get() as $k => $questions)
+
+                                <div class="col-md-6">
                             <div class="alert alert-warning" role="alert">
                                 <span class="fw-bold">Câu {{ $k + $iq }}:</span> {{ $questions->name ?? '' }}
                             </div>
@@ -109,7 +123,7 @@
                                 @endphp
                                 <div class="row pt-2 mt-1 form_items">
                                     @foreach($questions->questionMultiples()->get() as $q => $answer)
-                                        <div class="col-6">
+                                        <div class="col-md-12">
                                             <ul class="list-unstyled p-0">
                                                 <li class="step_2 animate__animated animate__fadeInRight"
                                                     data-answer_id="{{ $answer->id }}"
@@ -163,7 +177,10 @@
                                     @endforeach
                                 </div>
                             @endif
+                            </div>
+
                         @endforeach
+                        </div>
                     @endif
                 @endif
 
@@ -178,6 +195,9 @@
             <button class="btn btn-primary" type="button" id="NopBai">Nộp Bài</button>
         </div>
     </div>
+
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
+
     <x-slot name="css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" integrity="sha256-sWZjHQiY9fvheUAOoxrszw9Wphl3zqfVaz1kZKEvot8=" crossorigin="anonymous">
         <style>
@@ -194,6 +214,47 @@
                 bottom: 10px;
                 width: 100%;
             }
+
+            #scroll__top {
+                position: fixed;
+                bottom: 80px;
+                right: 25px;
+                z-index: 99;
+                outline: none;
+                background-color:#FFC061;
+                color: #ffffff;
+                -webkit-box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
+                box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
+                cursor: pointer;
+                -webkit-transform: translateY(50px);
+                transform: translateY(50px);
+                opacity: 0;
+                visibility: hidden;
+                -webkit-transition: 0.3s;
+                transition: 0.3s;
+                line-height: 1;
+                width: 3.3rem;
+                height: 3.3rem;
+                line-height: 1;
+                border-radius: 50%;
+                border: 0;
+            }
+
+            #scroll__top:hover {
+                background: #061738;
+            }
+
+            #scroll__top.active {
+                visibility: visible;
+                opacity: 1;
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+
+            #scroll__top svg {
+                width: 25px;
+                line-height: 1;
+            }
         </style>
     </x-slot>
 
@@ -201,6 +262,22 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js" integrity="sha256-t0FDfwj/WoMHIBbmFfuOtZv1wtA977QCfsFR3p1K4No=" crossorigin="anonymous"></script>
         <script type="text/javascript">
+
+            // Back to top
+            const scrollTop = document.getElementById("scroll__top");
+            if (scrollTop) {
+                scrollTop.addEventListener("click", function () {
+                    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+                });
+                window.addEventListener("scroll", function () {
+                    if (window.scrollY > 300) {
+                        scrollTop.classList.add("active");
+                    } else {
+                        scrollTop.classList.remove("active");
+                    }
+                });
+            }
+
             window.addEventListener('keydown', function(event) {
                 if (event.keyCode === 80 && (event.ctrlKey || event.metaKey) && !event.altKey && (!event.shiftKey || window.chrome || window.opera)) {
                     event.preventDefault();

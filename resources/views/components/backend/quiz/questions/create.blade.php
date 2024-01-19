@@ -110,7 +110,7 @@
                     @if(!empty($questions))
 
                         @foreach ($questions as $key => $value)
-                            <div class="row">
+                            <div class="row" id="deleteAnswers_{{ $value->id }}">
                                 <div class="col-md-9">
                                     <div class="mb-10">
                                         <label for="exampleFormControlInput_{{ $value->id }}" data-id="{{ $value->id }}" class="form-label labelAnswerAjax">{{ $code++ }}</label>
@@ -118,7 +118,7 @@
                                                placeholder="Nhập câu trả lời" id="exampleFormControlInput_{{ $value->id }}" />
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-check form-check-custom form-check-solid mt-5 pt-5">
                                         <input class="form-check-input valueCorrect" type="radio" data-id="{{ $value->id }}" name="correct"
                                                id="flexRadioDefault_{{ $value->id }}" @if ($value->is_correct == 1) checked="checked" @endif/>
@@ -127,6 +127,13 @@
                                         </label>
                                     </div>
                                 </div>
+                                @if ($isEdit == 1)
+                                    <div class="col-md-1">
+                                        <div class="form-check form-check-custom form-check-solid mt-5 pt-5">
+                                            <a  href="#"  class="btn btn-danger btn-sm deleteAnswer" role="button" data-question_id="{{ $posts->id }}" data-answer="{{ $value->id }}">Xóa</a>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                                 @if ($value->is_correct == 1)
                                     <?php $is_correct = $value->id;?>
@@ -360,6 +367,7 @@
                      $('#list-answers').append(answer)
                 });
 
+
                 $(document).on('click', '#addAnswerAjax', function(event) {
 
                     let token = $("meta[name='csrf-token']").attr("content");
@@ -382,6 +390,66 @@
 
                 });
 
+                @if ($isEdit == 1)
+                $(document).on('click','a.deleteAnswer',function(event)
+                {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Bạn có chắc là muốn xóa không?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        denyButtonText: `Không`,
+                        customClass: {
+                            confirmButton: "btn btn-primary btn-sm",
+                            denyButton: "btn btn-danger btn-sm"
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed)
+                        {
+                            let answer_id = $(this).data("answer");
+                            let token = $("meta[name='csrf-token']").attr("content");
+                            $.ajax(
+                                {
+                                    url: '{{ Route('backend.questions.destroyAnswer',['id'=>$posts->id]) }}',
+                                    type: 'DELETE',
+                                    data: {
+                                        answer_id: answer_id,
+                                        "_token": token,
+                                    },
+                                    success: function (json) {
+                                        if(json.status == 'success'){
+
+                                            let timerInterval;
+                                            Swal.fire({
+                                                title: 'Vui lòng đợi...',
+                                                html: '',
+                                                timer: 1000,
+                                                timerProgressBar: true,
+                                                didOpen: () => {
+                                                    Swal.showLoading()
+                                                    timerInterval = setInterval(() => {
+                                                    }, 100)
+                                                },
+                                                willClose: () => {
+                                                    clearInterval(timerInterval)
+                                                }
+                                            }).then((result) => {
+                                                if (result.dismiss === Swal.DismissReason.timer) {
+                                                    $('#deleteAnswers_'+answer_id).hide();
+                                                }
+                                            })
+
+                                        }else {
+                                            Swal.fire(json.message, '', 'danger')
+                                        }
+                                    }
+                                });
+
+                            //Swal.fire('Saved!', '', 'success')
+                        }
+                    })
+                });
+                @endif
 
                 $(document).on('click', '.updateImage', function(event) {
 

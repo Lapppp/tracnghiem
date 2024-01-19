@@ -25,7 +25,7 @@
                     @foreach($part->posts as $question)
                         <tr>
                             <th scope="row">
-                                <input type="number" value="{{ $question->pivot->order }}" data-post_id="{{ $question->id }}" data-part_id="{{ $question->pivot->part_id }}" class="form-control form-control-sm">
+                                <input type="number" value="{{ $question->pivot->order }}" data-post_id="{{ $question->id }}" data-question_part_question="{{ $question->pivot->id }}" data-part_id="{{ $question->pivot->part_id }}" class="form-control form-control-sm updateOrderBy">
                             </th>
                             <td>{{ $question->name ?? '' }}</td>
                         </tr>

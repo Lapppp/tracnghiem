@@ -30,7 +30,7 @@
                                 <p class="blog__post--meta">Tạo bởi : admin / vào ngày : {{ !empty($post->created_at) ? date('d/m/Y',strtotime($post->created_at)) : '' }}</p>
                             </div>
                             @if($post->default() && $post->default()['url'])
-                                <div class="blog__thumbnail mb-30">
+                                <div class="blog__thumbnail mb-30" style="display: none !important;">
                                     <img alt="{{ $post->name ?? '' }}" class="blog__thumbnail--img border-radius-10" src="{{ str_replace(Str::of($post->default()['url'])->basename(),Str::of($post->default()['url'])->basename(),asset('storage/products/'.$post->default()['url'])) }}">
                                 </div>
                             @endif
@@ -207,7 +207,7 @@
                                 <label>
                                     <input class="widget__search--form__input" placeholder="Search..." type="text">
                                 </label>
-                                <button class="widget__search--form__btn" aria-label="search button" type="button">
+                                <button class="widget__search--form__btn bg_orange" aria-label="search button" type="button">
                                     <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 512 512"><path d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"></path><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M338.29 338.29L448 448"></path></svg>
                                 </button>
                             </form>

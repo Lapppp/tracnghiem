@@ -78,10 +78,10 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="contact__form--btn primary__btn" type="submit">Gửi ngay bây giờ</button>
+                        <button class="contact__form--btn primary__btn bg_orange" type="submit">Gửi ngay bây giờ</button>
                     </form>
                 </div>
-                <div class="contact__info border-radius-5">
+                <div class="contact__info border-radius-5 bg_orange">
                     <div class="contact__info--items">
                         <h3 class="contact__info--content__title text-white mb-15">Liên hệ</h3>
                         <div class="contact__info--items__inner d-flex">

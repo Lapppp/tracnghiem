@@ -8,6 +8,16 @@
             <h3 class="card-title align-items-start flex-column">
                 <span class="card-label fw-bolder fs-3 mb-1">Danh sách câu hỏi</span>
             </h3>
+            <div class="card-title">
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="text" value="{{ $params['search'] ?? '' }}" id="search" name="search" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-500px ps-12 form-control-sm" placeholder="Tìm kiếm câu hỏi hoặc mã câu hỏi">
+                </div>
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
+                    <a href="#" class="btn btn-primary btn-sm" id="searchUser">Tìm kiếm</a>
+                </div>
+            </div>
             <div class="card-toolbar">
                 @if (Auth::guard('backend')->user()->can(['create_questions']))
                     <a href="{{ Route('backend.questions.create') }}" class="btn btn-sm btn-light-primary">
@@ -39,8 +49,8 @@
                     <thead>
                         <tr class="fw-bolder text-muted bg-light">
                             <th class="ps-4 w-25 rounded-start">Tiêu đề</th>
+                            <th class="min-w-125px">Mã câu hỏi</th>
                             <th class="min-w-125px">Ngày tạo</th>
-                            <th class="min-w-125px">Ngày cập nhật</th>
                             <th class="min-w-125px">Danh mục</th>
                             <th class="min-w-125px">Trạng thái</th>
                             <th class="min-w-45px text-end rounded-end"></th>
@@ -71,13 +81,13 @@
 
                                     <td>
                                         <span class="text-muted fw-bold text-muted d-block fs-7">
-                                            {{ $item->created_at ? date('d-m-Y', strtotime($item->created_at)) : '' }}
+                                            {{ $item->code ?? '' }}
                                         </span>
 
                                     </td>
                                     <td>
                                         <span class="text-muted fw-bold text-muted d-block fs-7">
-                                            {{ $item->updated_at ? date('d-m-Y', strtotime($item->updated_at)) : '' }}
+                                           {{ $item->created_at ? date('d-m-Y', strtotime($item->created_at)) : '' }}
                                         </span>
                                     </td>
                                     <td>
@@ -150,6 +160,14 @@
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
+
+                $(document).on('click','a#searchUser',function(event) {
+                    event.preventDefault();
+
+                    let search = $('#search').val();
+                    window.location.href = '{{ Route('backend.questions.index')}}?search='+search;
+                    return false;
+                });
 
                 $(document).on('click', '.deleteAction', function(event) {
                     event.preventDefault();

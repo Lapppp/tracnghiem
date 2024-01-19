@@ -84,14 +84,40 @@
     </div>
 
     <x-slot name="javascript">
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
         <script type="text/javascript">
             $(document).ready(function() {
+                $('#description').summernote({
+                    placeholder: 'Nội dung câu hỏi',
+                    tabsize: 2,
+                    height: 300
+                });
                 var test_id = {{ $posts->id ?? 0 }};
                 $(document).on('click', '#createPart', function(event) {
                     event.preventDefault();
                     $('#kt_modal_part').modal('show');
                 });
 
+
+                $(document).on('change', '.updateOrderBy', function(event) {
+                    let id = $(this).data('question_part_question');
+                    let order = $(this).val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        url: baseUrl + "/test/updateQuestionPart/"+id,
+                        type: 'POST',
+                        data: {
+                            "_token": token,
+                            id: id,
+                            order:order
+                        },
+                        success: function (json) {
+
+                        }
+                    });
+                });
                 $(document).on('click', '#searchQuestion', function(event) {
                     let questions_name = $('#questions_name').val();
                     let category_id = $('#category_id_search').val();
@@ -181,6 +207,13 @@
                     }
 
                 });
+
+
+              //  CKEDITOR.replace('description');
+               // CKEDITOR.config.height = 500;
+                //CKEDITOR.config.removePlugins = 'easyimage, cloudservices, exportpdf';
+
+               // CKEDITOR.replace( 'description' );
 
 
             });

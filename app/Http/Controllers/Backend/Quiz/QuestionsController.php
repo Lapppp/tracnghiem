@@ -64,7 +64,7 @@ class QuestionsController extends BackendController
 
     public function index(Request $request)
     {
-        $params = $request->only(['username', 'password']);
+        $params = $request->only(['username', 'password','search']);
         $status = !empty($request->status) ? explode(',', $request->status) : [];
         $post = $this->postRepository->getAll([
             'module_id' => [ModuleType::Quiz],
@@ -683,5 +683,18 @@ class QuestionsController extends BackendController
 
         $html = view('components.backend.quiz.questions.answerEnglish',$this->data)->render();
         return ResponseHelper::success('Đã import thành công',['responseHtml'=>$html]);
+    }
+
+    public function destroyAnswer(Request $request, $id)
+    {
+        $post = $this->postRepository->getByID($id);
+        if (!$post) {
+            return ResponseHelper::error('Không tìm thấy câu hỏi');
+        }
+        $answer_id = $request->answer_id;
+        $answer = $this->answerRepository->getByQuestion($post->id,$answer_id);
+        $answer->delete();
+
+        return ResponseHelper::success('Đã import thành công');
     }
 }

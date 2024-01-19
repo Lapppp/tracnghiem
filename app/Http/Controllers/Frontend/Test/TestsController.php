@@ -175,6 +175,13 @@ class TestsController extends FrontendController
         if (!$test) {
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
+
+        View::share('title', $test->title ?? '');
+        View::share('description', $test->title ?? '');
+        View::share('keywords', $test->title ?? '');
+        View::share('author', 'Kiwi');
+        View::share('imageSeo', '');
+
         $this->data['AllTest'] = $test->testAllquestions()->get();
         $this->data['question'] = $test->testAllquestions()->first();
         $this->data['total'] = count($this->data['AllTest']);
@@ -219,6 +226,12 @@ class TestsController extends FrontendController
         $this->data['test'] = $test;
         $this->data['user'] = $user;
         $this->data['so_cau_dung'] = $this->testPartUserRepository->totalTestPart($id);
+
+        View::share('title', $test->title ?? '');
+        View::share('description', $test->title ?? '');
+        View::share('keywords', $test->title ?? '');
+        View::share('author', 'Kiwi');
+        View::share('imageSeo', '');
 
         if ($user) {
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
@@ -346,6 +359,12 @@ class TestsController extends FrontendController
         }
         $this->data['parts'] = $test->testpart()->get();
         $this->data['test'] = $test;
+
+        View::share('title', $test->title ?? '');
+        View::share('description', $test->title ?? '');
+        View::share('keywords', $test->title ?? '');
+        View::share('author', 'Kiwi');
+        View::share('imageSeo', '');
 
         if ($user) {
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
@@ -631,6 +650,12 @@ class TestsController extends FrontendController
         if (!$test) {
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
+
+        View::share('title', $test->title ?? '');
+        View::share('description', $test->title ?? '');
+        View::share('keywords', $test->title ?? '');
+        View::share('author', 'Kiwi');
+        View::share('imageSeo', '');
 
         $questions = $testUserTest->questions()->get();
         $this->data['questions'] = $questions;//$test->testAllquestions()->get();

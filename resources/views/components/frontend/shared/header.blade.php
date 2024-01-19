@@ -1,6 +1,6 @@
 <!-- Start header area -->
 <header class="header__section">
-    <div class="header__topbar bg__secondary">
+    <div class="header__topbar bg_orange">
         <div class="container-fluid">
             <div class="header__topbar--inner d-flex align-items-center justify-content-between">
                 <div class="header__shipping">
@@ -57,7 +57,7 @@
                             <label>
                                 <input class="header__search--input" name="search" value="{{ $search ?? '' }}" id="search" placeholder="Nhập từ khóa..." type="text">
                             </label>
-                            <button class="header__search--button bg__secondary text-white" type="submit"
+                            <button class="header__search--button bg_orange text-white" type="submit"
                                     aria-label="search button">
                                 <svg class="header__search--button__svg" xmlns="http://www.w3.org/2000/svg"
                                      width="27.51" height="26.443" viewBox="0 0 512 512">

@@ -9,6 +9,7 @@ use App\Helpers\PaginationHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\BackendController;
 use App\Http\Requests\Backend\Quiz\TestsCreateRequest;
+use App\Models\Post\QuestionsPartQuestion;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Post\PostRepository;
 use App\Repositories\Quiz\QuestionsPartRepository;
@@ -394,5 +395,13 @@ class TestsController extends BackendController
         $this->data['questions'] = $part->posts()->get();
         $html = view('components.backend.quiz.test.addQuestion', $this->data)->render();
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
+    }
+
+    public function updateQuestionPart(Request $request, $id){
+        $qpq = QuestionsPartQuestion::find($id);
+        if($qpq) {
+            $qpq->update(['order'=>$request->order]);
+        }
+        return ResponseHelper::success('thành công');
     }
 }

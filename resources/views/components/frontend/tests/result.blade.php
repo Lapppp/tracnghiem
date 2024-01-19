@@ -90,6 +90,7 @@
     <!-- End contact section -->
 
     @include('components.frontend.tests.modalbox')
+    <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
     <style>
         body {
@@ -99,10 +100,65 @@
             -o-user-select: none;
             user-select: none;
         }
+        #scroll__top {
+            position: fixed;
+            bottom: 80px;
+            right: 25px;
+            z-index: 99;
+            outline: none;
+            background-color:#FFC061;
+            color: #ffffff;
+            -webkit-box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
+            cursor: pointer;
+            -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+            line-height: 1;
+            width: 3.3rem;
+            height: 3.3rem;
+            line-height: 1;
+            border-radius: 50%;
+            border: 0;
+        }
+
+        #scroll__top:hover {
+            background: #061738;
+        }
+
+        #scroll__top.active {
+            visibility: visible;
+            opacity: 1;
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+
+        #scroll__top svg {
+            width: 25px;
+            line-height: 1;
+        }
     </style>
 
     <x-slot name="javascript">
         <script type="text/javascript">
+
+            // Back to top
+            const scrollTop = document.getElementById("scroll__top");
+            if (scrollTop) {
+                scrollTop.addEventListener("click", function () {
+                    window.scroll({ top: 0, left: 0, behavior: "smooth" });
+                });
+                window.addEventListener("scroll", function () {
+                    if (window.scrollY > 300) {
+                        scrollTop.classList.add("active");
+                    } else {
+                        scrollTop.classList.remove("active");
+                    }
+                });
+            }
 
             document.addEventListener("copy", (e) => {e.preventDefault();}, false);
             document.addEventListener('contextmenu', event => { event.preventDefault(); });

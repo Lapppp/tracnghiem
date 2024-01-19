@@ -37,8 +37,8 @@ $config['authentication'] = function () {
 /*============================ License Key ============================================*/
 // http://docs.cksource.com/ckfinder3-php/configuration.html#configuration_options_licenseKey
 
-$config['licenseName'] = 'kenjivietnam.vn';
-$config['licenseKey']  = 'HLNLV2D3K716ULHF3B4ETUFP6L6G3';
+$config['licenseName'] = 'localhost';
+$config['licenseKey']  = 'R63W9M32THHJ4BPVSNPUNUKU2GVKD5LG';
 
 /*============================ CKFinder Internal Directory ============================*/
 // http://docs.cksource.com/ckfinder3-php/configuration.html#configuration_options_privateDir

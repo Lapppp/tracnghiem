@@ -10,7 +10,7 @@
         <div class="card-body pt-9 pb-0">
             <form id="kt_modal_new_target_form" class="form fv-plugins-bootstrap5 fv-plugins-framework"
                 enctype="multipart/form-data"
-                action="{{ $isEdit == 0 ? Route('backend.test.store') : Route('backend.test.update', ['id' => $posts->id]) }}"
+                action="{{ $isEdit == 0 ? Route('backend.test.store') : Route('backend.test.updateEnglish', ['id' => $posts->id]) }}"
                 method="post">
                 @if ($isEdit == 1)
                     @method('PUT')
@@ -148,6 +148,54 @@
                         CKEDITOR.config.height = 500;
                     </script>
                 </div>
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Ẩn/Hiên số câu trả lời đúng</span>
+                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
+                               data-bs-original-title="Trạng thái sẽ thay đổi"
+                               aria-label="Specify a target name for future usage and reference"></i>
+                        </label>
+                        <!--end::Label-->
+                        <select class="form-select form-select-solid select2-hidden-accessible" data-control="select2"
+                                data-hide-search="true" data-placeholder="Chọn vai trò" name="show_question_correct"
+                                data-select2-id="select2-data-10-goux" tabindex="-1" aria-hidden="true">
+                            @foreach ($show_question_correct as $key => $value)
+                                <option value="{{ $key }}"
+                                    {{ old('show_question_correct', !empty($posts) ? $posts->show_question_correct : '') == $key ? 'selected' : '' }}>
+                                    {{ $value }}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
+                    <!--end::Input group-->
+
+
+
+                    <!--begin::Input group-->
+                    <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Ẩn/Hiên bài giải</span>
+                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
+                               data-bs-original-title="Trạng thái sẽ thay đổi"
+                               aria-label="Specify a target name for future usage and reference"></i>
+                        </label>
+                        <!--end::Label-->
+                        <select class="form-select form-select-solid select2-hidden-accessible" data-control="select2"
+                                data-hide-search="true" data-placeholder="Chọn vai trò" name="show_bai_giai"
+                                data-select2-id="select2-data-10-gouf" tabindex="-1" aria-hidden="true">
+                            @foreach ($show_bai_giai as $key => $value)
+                                <option value="{{ $key }}"
+                                    {{ old('show_bai_giai', !empty($posts) ? $posts->show_bai_giai : '') == $key ? 'selected' : '' }}>
+                                    {{ $value }}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
+                    <!--end::Input group-->
 
                 <!--begin::Input group-->
                 <div class="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">

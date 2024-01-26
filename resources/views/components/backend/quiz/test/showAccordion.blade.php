@@ -10,6 +10,10 @@
         </h2>
         <div id="kt_accordion_1_body_{{ $part->id }}" class="position-relative accordion-collapse collapse @if($key == 0) show @endif"
              aria-labelledby="kt_accordion_1_header_{{ $part->id }}" data-bs-parent="#kt_accordion_1">
+            <button type="button" class="btn btn-primary btn-sm EditPart" data-bs-toggle="modal" data-bs-target="#kt_modal_part_update_{{ $part->id }}" data-id="{{ $part->id }}" data-type="{{ $part->type }}" style="position: absolute;right: 153px;top:10px;z-index: 1">
+                Sửa Part
+            </button>
+            @include('components.backend.quiz.test.nextEditModal',['part'=>$part])
             <button type="button" class="btn btn-primary btn-sm AddQuestionPart" data-id="{{ $part->id }}" data-type="{{ $part->type }}" style="position: absolute;right: 16px;top:10px;z-index: 1">
                 Thêm câu hỏi
             </button>

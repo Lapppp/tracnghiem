@@ -332,7 +332,12 @@
                     event.preventDefault();
 
                     let search = $('#search').val();
-                    window.location.href = '{{ Route('backend.users.index')}}?search='+search;
+                    @if($deactivated == 0)
+                        window.location.href = '{{ Route('backend.users.index')}}?search='+search;
+                    @else
+                        window.location.href = '{{ Route('backend.deactivated.index')}}?search='+search;
+                    @endif
+
                     return false;
                 });
                 $(document).on('click','#updateVipCustomize',function(event) {

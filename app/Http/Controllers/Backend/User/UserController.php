@@ -61,6 +61,7 @@ class UserController extends BackendController
     public function index(Request $request)
     {
         $params = $request->all();
+        $p = $request->all();
         // Role::create(['name' => 'admin', 'team_id' => null]);
         $user = Auth::guard('backend')->user();
         $roles = $user->getRoleNames()->toArray();
@@ -80,6 +81,49 @@ class UserController extends BackendController
             $lsCustomer = $user->managementUser()->pluck('user_id');
             $params['id'] = count($lsCustomer) > 0 ? $lsCustomer->toArray() : [0];
         }
+        $params['status'] = [1];
+        $p['status'] = 1;
+        $post = $this->userRepository->getAll($params, 20);
+        $this->data['title'] = 'Users';
+        $this->data['items'] = $post;
+        $this->data['params'] = $params;
+        $total = !empty($post->total()) ? $post->total() : 0;
+        $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
+        $this->data['deactivated'] = 0;
+        $page = !empty($request->page) ? $request->page : 1;
+        unset($p['page']);
+        $url = route('backend.users.index') . '?' . Arr::query($p).'&';
+        $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
+        return view('components.backend.user.index', $this->data);
+    }
+
+    public function deactivated(Request $request)
+    {
+        $params = $request->all();
+        $p = $request->all();
+        // Role::create(['name' => 'admin', 'team_id' => null]);
+        $user = Auth::guard('backend')->user();
+        $roles = $user->getRoleNames()->toArray();
+        $flag = false;
+        if (count($roles) > 0) {
+            if (
+                in_array(RoleType::manager, $roles) ||
+                in_array(RoleType::employee_main, $roles) ||
+                in_array(RoleType::employee_sub, $roles)
+            ) {
+                $flag = true;
+            }
+        }
+
+        // Nếu là trưởng phòng, nhân viên chính, nhân viên phụ
+        if ($flag) {
+            $lsCustomer = $user->managementUser()->pluck('user_id');
+            $params['id'] = count($lsCustomer) > 0 ? $lsCustomer->toArray() : [0];
+        }
+
+        $params['status'] = [0];
+        $p['status'] = 0;
+        $this->data['deactivated'] = 1;
         $post = $this->userRepository->getAll($params, 20);
         $this->data['title'] = 'Users';
         $this->data['items'] = $post;
@@ -88,7 +132,8 @@ class UserController extends BackendController
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
 
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.users.index') . '?' . Arr::query($params);
+        unset($p['page']);
+        $url = route('backend.users.index') . '?' . Arr::query($p).'&';
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
         return view('components.backend.user.index', $this->data);
     }

@@ -106,7 +106,7 @@ class FrontendLoginController extends FrontendController
     public function store(StoreUserRequest $request)
     {
         $params = $request->all();
-        $params['status'] = 1;
+        $params['status'] = 0;
         $params['name'] = ucwords($params['name']) ?? '';
         $params['password'] = Hash::make($params['password']);
 
@@ -121,7 +121,7 @@ class FrontendLoginController extends FrontendController
 
         $credentials = [
             'email' => $request->email,
-            'status' => 1,
+           // 'status' => 1,
             'password' => $request->password
         ];
         if ( Auth::guard('web')->attempt($credentials, true) ) {

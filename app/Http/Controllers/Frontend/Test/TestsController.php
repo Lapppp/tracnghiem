@@ -171,9 +171,14 @@ class TestsController extends FrontendController
 
     public function show(Request $request, $id = 0)
     {
+        $user = Auth::guard('web')->user();
         $test = $this->testRepository->getById($id);
         if (!$test) {
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
+        }
+
+        if(empty($user->status)){
+            return view('components.frontend.tests.permission');
         }
 
         View::share('title', $test->title ?? '');
@@ -222,10 +227,11 @@ class TestsController extends FrontendController
         if (!$test) {
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
+
         $this->data['parts'] = $test->testpart()->get();
         $this->data['test'] = $test;
         $this->data['user'] = $user;
-        $this->data['so_cau_dung'] = $this->testPartUserRepository->totalTestPart($id);
+        $this->data['so_cau_dung'] = $this->testPartUserRepository->totalTestPart($id,$user->id);
 
         View::share('title', $test->title ?? '');
         View::share('description', $test->title ?? '');
@@ -357,6 +363,11 @@ class TestsController extends FrontendController
         if (!$test) {
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
+
+        if(empty($user->status)){
+            return view('components.frontend.tests.permission');
+        }
+
         $this->data['parts'] = $test->testpart()->get();
         $this->data['test'] = $test;
 

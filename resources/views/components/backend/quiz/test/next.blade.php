@@ -94,6 +94,12 @@
                     tabsize: 2,
                     height: 300
                 });
+                $('.update_description').summernote({
+                    placeholder: 'Nội dung câu hỏi',
+                    tabsize: 2,
+                    height: 300
+                });
+
                 var test_id = {{ $posts->id ?? 0 }};
                 $(document).on('click', '#createPart', function(event) {
                     event.preventDefault();
@@ -201,6 +207,40 @@
                             success: function (json) {
                                 $('#kt_accordion_1').append(json.data.jsonResult)
                                 $('#kt_modal_part').modal('hide');
+                                window.location.reload()
+                            }
+                        });
+                    }
+
+                });
+
+
+                $(document).on('click', 'button.updatePartNew', function(event) {
+                    let id = $(this).data('id');
+                    let part_name = $('#part_name_update_'+id).val();
+                    let order = $('#order_update_'+id).val();
+                    let short_description = $('#short_description_update_'+id).val();
+                    let description = $('#description_update_'+id).val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    let data = {
+                        "part_id": id,
+                        "name": part_name,
+                        "short_description": short_description,
+                        "description": description,
+                        "_token": token,
+                        "order": order,
+                    };
+                    if(part_name.trim().length <= 0) {
+                        $('#part_name_update_'+id).focus();
+                    }else if (description.trim().length <= 0) {
+                        $('#description_update_'+id).focus();
+                    }else {
+
+                        $.ajax({
+                            url: baseUrl + "/test/updatePart",
+                            type: 'POST',
+                            data: data,
+                            success: function (json) {
                                 window.location.reload()
                             }
                         });

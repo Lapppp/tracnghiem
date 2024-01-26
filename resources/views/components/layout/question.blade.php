@@ -33,6 +33,7 @@
 <script src="{{ asset('/frontend/questions')}}/assets/js/bootstrap.min.js"></script>
 <script src="{{ asset('/frontend/questions')}}/assets/js/countdown.js"></script>
 <script src="{{ asset('/frontend/questions')}}/assets/js/jquery.validate.min.js"></script>
+<script src="{{ asset('/frontend/questions')}}/assets/js/stickyElement.min.js"></script>
 @if(isset($javascript))
     {{$javascript}}
 @endif

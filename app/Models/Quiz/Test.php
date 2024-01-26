@@ -31,6 +31,8 @@ class Test extends Model
         'position',
         'views',
         'type',
+        'show_question_correct',
+        'show_bai_giai',
     ];
 
     public function questions()
@@ -108,6 +110,20 @@ class Test extends Model
     public function testpartOne($id)
     {
         return $this->hasMany(QuestionsPart::class,'test_id','id')->where('id',$id);
+    }
+
+    public function cloneWithPart()
+    {
+        $clone = $this->replicate();
+        $clone->push();
+
+        // Clone related tasks
+        foreach ($this->testpart as $part) {
+            $clonedPart = $part->replicate();
+            $clone->testpart()->save($clonedPart);
+        }
+
+        return $clone;
     }
 
     public static function getById($id = 0) {

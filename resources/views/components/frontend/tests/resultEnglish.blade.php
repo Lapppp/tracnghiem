@@ -154,7 +154,7 @@
                                             ?>
                                         <div class="col-12">
                                             <ul class="list-unstyled p-0">
-                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'a' ) active @endif"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if(isset($check->user_chosen) && ($check->user_chosen == 'a') ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -165,7 +165,7 @@
                                                     <input id="opt_{{ $answer->id }}_a" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="a">
                                                     <label for="opt_{{ $answer->id }}_a"><b>A.</b> {{ $answer->a ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'b' ) active @endif"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if(isset($check->user_chosen) && ($check->user_chosen == 'b') ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -176,7 +176,7 @@
                                                     <input id="opt_{{ $answer->id }}_b" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="b">
                                                     <label for="opt_{{ $answer->id }}_b"><b>B.</b> {{ $answer->b ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'c' ) active @endif"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if(isset($check->user_chosen) && ($check->user_chosen == 'c') ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -187,7 +187,7 @@
                                                     <input id="opt_{{ $answer->id }}_c" type="radio" name="stp_1_select_option_{{ $answer->id }}_a" value="c">
                                                     <label for="opt_{{ $answer->id }}_c"><b>C.</b> {{ $answer->c ?? '' }} </label>
                                                 </li>
-                                                <li class="step_2 animate__animated animate__fadeInRight @if($check->user_chosen == 'd' ) active @endif"
+                                                <li class="step_2 animate__animated animate__fadeInRight @if(isset($check->user_chosen) && ($check->user_chosen == 'd') ) active @endif"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"

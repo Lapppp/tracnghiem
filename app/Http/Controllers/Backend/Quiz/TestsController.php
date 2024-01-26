@@ -47,6 +47,16 @@ class TestsController extends BackendController
             PostStatusType::HomeThree => 'Xuất hiện trang chủ vị trí 3',
         ];
 
+        $this->data['show_question_correct'] = [
+            PostStatusType::Approved => 'Hiện',
+            PostStatusType::Deactivated => 'Ẩn',
+        ];
+
+        $this->data['show_bai_giai'] = [
+            PostStatusType::Approved => 'Hiện',
+            PostStatusType::Deactivated => 'Ẩn',
+        ];
+
         $this->data['type'] = [
             0=>'Mặc định',
             1=>'Câu hỏi nhiều câu trả lời',
@@ -174,6 +184,22 @@ class TestsController extends BackendController
         return view('components.backend.quiz.test.create', $this->data);
     }
 
+    public function editEnglish($id)
+    {
+        $post = $this->testRepository->getByID($id);
+        $this->data['posts'] = $post;
+        if ( !$post ) {
+            return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+
+        $this->data['isEdit'] = 1;
+        $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
+        $this->data['subjects'] = $this->subjectRepository->getAll([], null);
+        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null);
+        $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
+        return view('components.backend.quiz.test.createEnglish', $this->data);
+    }
     public function next($id)
     {
         $post = $this->testRepository->getByID($id);
@@ -254,6 +280,12 @@ class TestsController extends BackendController
                 $insert = [
                     'post_id' => $question
                 ];
+
+//                if(!$post->testquestions()->wherePivot('post_id', $question)->exists()){
+//                    $post->testquestions()->createMany([$insert]);
+//                }
+                //$post->testquestions()->syncWithoutDetaching([$question]);
+                //$post->testquestions()->updateExistingPivot($question, $insert);
                 $post->testquestions()->createMany([$insert]);
             }
         }
@@ -311,6 +343,70 @@ class TestsController extends BackendController
         return redirect()->route('backend.test.index')->with('success', 'Đã cập nhật thành công');
     }
 
+    public function updateEnglish(TestsCreateRequest $request, $id)
+    {
+        $params = $request->all();
+        unset($params['questions']);
+        $is_english = $params['is_english'] ?? 0;
+        $params['type'] = $is_english;
+        $post = $this->testRepository->getByID($id);
+        if ( !$post ) {
+            return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+        $post->update($params);
+
+        if ( $request->hasfile('files') ) {
+
+            $images = $post->image()->get();
+            if ( count($images) > 0 ) {
+                foreach ( $images as $item ) {
+                    $deleteFile = $item->url ?? null;
+                    if ( !empty($deleteFile) ) {
+                        $fileUnlink = Str::of('/'.$deleteFile)->basename();
+                        @unlink(public_path('storage/products/'.$deleteFile));
+                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_'.$fileUnlink,
+                                $deleteFile)));
+                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_50x50_'.$fileUnlink,
+                                $deleteFile)));
+                    }
+                    $item->delete();
+                }
+            }
+
+            $n = count($request->file('files'));
+            $date = date('Y/m/d');
+            foreach ( $request->file('files') as $key => $file ) {
+                $file->store('products/'.$date);
+                $aImage = $file->hashName();
+
+                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
+                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
+                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+
+                // size height 165
+                $img = ImageIntervention::make($pathOld);
+                $img->fit(282, 310, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNew);
+
+                // size height 50
+
+                $img->fit(50, 50, function ($constraint) {
+                    $constraint->upsize();
+                });
+                $img->save($fileNewSize);
+
+                $photo = new Image();
+                $photo->url = $date.'/'.$aImage;
+                $photo->is_default = ($key == $n - 1) ? 1 : 0;
+                $photo->filename = $file->getClientOriginalName();
+                $post->image()->save($photo);
+            }
+        }
+
+        return redirect()->route('backend.test.index')->with('success', 'Đã cập nhật thành công');
+    }
     public function destroy($id)
     {
         $post = $this->testRepository->getByID($id);
@@ -374,6 +470,16 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
+    public function updatePart(Request $request){
+        $params = $request->all();
+        $part_id = $params['part_id'];
+        $part = $this->questionsPartRepository->getById($part_id);
+        unset($part['part_id']);
+        unset($part['_token']);
+        $part->update($params);
+        return ResponseHelper::success('thành công');
+    }
+
     public function addQuestionPart(Request $request) {
         $params = $request->all();
         $part_id = $params['part_id'] ?? 0;
@@ -403,5 +509,25 @@ class TestsController extends BackendController
             $qpq->update(['order'=>$request->order]);
         }
         return ResponseHelper::success('thành công');
+    }
+
+    public function duplicate(Request $request)
+    {
+        //https://laracoding.com/how-to-clone-a-model-in-laravel-with-or-without-relations/
+        $test = $this->testRepository->getByID($request->id);
+        if ( !$test ) {
+            return ResponseHelper::error('Không tìm thấy câu hỏi');
+        }
+        $testNew = $test->replicate();
+        $testNew->save();
+    }
+
+    public function duplicatePart(Request $request) {
+        $test = $this->testRepository->getByID($request->id);
+        if ( !$test ) {
+            return ResponseHelper::error('Không tìm thấy câu hỏi');
+        }
+
+        $testNew = $test->cloneWithPart();
     }
 }

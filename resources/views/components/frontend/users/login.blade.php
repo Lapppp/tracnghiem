@@ -55,7 +55,7 @@
                                                 type="submit">Forgot Your Password?
                                         </button>
                                     </div>
-                                    <button class="account__login--btn primary__btn" type="submit">Đăng nhập</button>
+                                    <button class="account__login--btn primary__btn bg_orange" type="submit">Đăng nhập</button>
                                     <div class="account__login--divide" >
                                         <span class="account__login--divide__text">OR</span>
                                     </div>
@@ -90,7 +90,7 @@
                                            placeholder="Nhập mật khẩu" type="password">
                                     <input class="account__login--input" id="rePasswordRegister"
                                            placeholder="Nhập lại mật khẩu" type="password">
-                                    <button class="account__login--btn primary__btn mb-10" type="button" id="RegisterCreate">Tạo mới</button>
+                                    <button class="account__login--btn primary__btn mb-10 bg_orange" type="button" id="RegisterCreate">Tạo mới</button>
                                     <div class="account__login--remember position__relative">
                                         <input class="checkout__checkbox--input" id="checkTerm" type="checkbox">
                                         <span class="checkout__checkbox--checkmark"></span>

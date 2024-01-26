@@ -9,6 +9,13 @@
                 background-color: currentColor;
                 opacity: .25;
             }
+            div.scrollYX{
+                height:300px;
+                white-space: nowrap;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
         </style>
         <div class="container-fluid">
             <div class="row">
@@ -70,11 +77,12 @@
                     @endif
                 </div>
 
+                <div class="scrollYX">
                 @if($part->type != 1)
                     @if($part->posts()->count() > 0)
                         @php $iq = 1 @endphp
                      @foreach($part->posts()->get() as $k => $questions)
-                            <div class="alert alert-warning" role="alert">
+                            <div class="alert alert-warning me-3 ms-3" role="alert">
                                 <span class="fw-bold">Câu {{ $k + $iq }}:</span> {{ $questions->name ?? '' }}
                             </div>
 
@@ -82,11 +90,11 @@
                                 @php
                                     $alphabet = 'A';
                                 @endphp
-                                <div class="row pt-2 mt-1 form_items">
+                                <div class="row pt-2 mt-1 form_items me-3 ms-3">
                                      @foreach($questions->answers()->get() as $q => $answer)
                                         <div class="col-6">
                                             <ul class="list-unstyled p-0">
-                                                <li class="step_1 animate__animated animate__fadeInRight"
+                                                <li class="step_1 animate__animated animate__fadeInRight" style="white-space:normal"
                                                     data-answer_id="{{ $answer->id }}"
                                                     data-part_id="{{ $part->id }}"
                                                     data-test_id="{{ $test->id }}"
@@ -109,11 +117,11 @@
                         @php $iq = 1 @endphp
 
 
-                        <div class="row">
+                        <div class="row me-3 ms-3">
                         @foreach($part->posts()->get() as $k => $questions)
 
                                 <div class="col-md-6">
-                            <div class="alert alert-warning" role="alert">
+                            <div class="alert alert-warning " role="alert">
                                 <span class="fw-bold">Câu {{ $k + $iq }}:</span> {{ $questions->name ?? '' }}
                             </div>
 
@@ -183,7 +191,7 @@
                         </div>
                     @endif
                 @endif
-
+                </div>
 
             </div>
         @endforeach
@@ -199,6 +207,8 @@
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
     <x-slot name="css">
+        <link rel="stylesheet" href="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/prettify.css" />
+        <link rel="stylesheet" href="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/jquery.scrollbar.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" integrity="sha256-sWZjHQiY9fvheUAOoxrszw9Wphl3zqfVaz1kZKEvot8=" crossorigin="anonymous">
         <style>
             body {
@@ -255,11 +265,13 @@
                 width: 25px;
                 line-height: 1;
             }
+
         </style>
     </x-slot>
 
     <x-slot name="javascript">
-
+        <script src="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/prettify.js"></script>
+        <script src="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/jquery.scrollbar.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js" integrity="sha256-t0FDfwj/WoMHIBbmFfuOtZv1wtA977QCfsFR3p1K4No=" crossorigin="anonymous"></script>
         <script type="text/javascript">
 
@@ -325,6 +337,9 @@
                 });
                 disableSelection(document.body);
                 $(document).on('click', '.step_2',function(){
+
+                    $('.scrollbar-macosx').scrollbar();
+
                     let group = $(this).data('group');
                     $("li[data-group='"+group+"']").removeClass("active")
                     $(this).addClass("active");
@@ -420,7 +435,7 @@
                     timer--;
                     document.getElementById("value").innerHTML = timer;
                     if(timer <= 0) {
-                        window.location.href = BASE_URL+'/bai-kiem-tra/ket-qua/';
+                        window.location.href = '{{ Route('frontend.tests.resultEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html']) }}';
                     }
                     setTimeout(animateValue, 1000)
                 }
@@ -440,7 +455,7 @@
                     $('#timer').html(result);
 
                     if(c == 0 ) {
-                        window.location.href = BASE_URL+'/bai-kiem-tra/ket-qua/';
+                        window.location.href = '{{ Route('frontend.tests.resultEnglish',['id'=>$test->id,'name'=>Str::slug($test->title.'', '-').'.html']) }}';
                     }
                     c = c - 1;
                     t = setTimeout(function()

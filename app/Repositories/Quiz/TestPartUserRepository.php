@@ -54,10 +54,11 @@ class TestPartUserRepository extends BaseRepository
      * @param $test_id
      * @return mixed
      */
-    public function totalTestPart($test_id)
+    public function totalTestPart($test_id,$user_id)
     {
         return TestPartUser::where('test_id',$test_id)
             ->whereRaw('is_correct = user_chosen')
+            ->where('user_id',$user_id)
             ->selectRaw("COUNT(*) as total")
             ->groupBy('test_id')
             ->first();

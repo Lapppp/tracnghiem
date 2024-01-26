@@ -107,7 +107,7 @@
                                         @if (Auth::guard('backend')->user()->can(['test_edit']))
                                             @if($item->type == 1)
                                                 <a href="{{ Route('backend.test.next', ['id' => $item->id]) }}"
-                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa"
+                                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa các Part"
                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
@@ -119,7 +119,15 @@
                                                 </a>
                                             @endif
                                         @endif
-                                        <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 showSortModal" data-bs-toggle="tooltip" data-bs-placement="top" title="Sắp xếp"><i class="bi bi-sort-numeric-down"></i></a>
+
+                                            @if($item->type == 1)
+                                                <a href="{{ Route('backend.test.editEnglish', ['id' => $item->id]) }}" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Sửa bài kiểm tra"><i class="bi bi-pencil"></i></a>
+                                                <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 copyEnglish" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy bài kiểm tra"><i class="bi bi-vector-pen"></i></a>
+                                            @else
+                                                <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 showSortModal" data-bs-toggle="tooltip" data-bs-placement="top" title="Sắp xếp"><i class="bi bi-sort-numeric-down"></i></a>
+                                                <a href="#" data-id="{{ $item->id }}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 copyNoEnglish" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy bài kiểm tra"><i class="bi bi-vector-pen"></i></a>
+                                            @endif
+
 
                                         @if (Auth::guard('backend')->user()->can(['test_delete']))
                                             <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}"
@@ -162,6 +170,17 @@
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
+
+
+                $(document).on('click', 'a.copyNoEnglish', function(event) {
+                    event.preventDefault();
+                    alert('Chức năng đang cập nhật')
+                });
+
+                $(document).on('click', 'a.copyEnglish', function(event) {
+                    event.preventDefault();
+                    alert('Chức năng đang cập nhật')
+                });
 
                 $(document).on('click', '.deleteAction', function(event) {
                     event.preventDefault();

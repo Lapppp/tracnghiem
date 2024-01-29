@@ -24,7 +24,7 @@ use Intervention\Image\Facades\Image as ImageIntervention;
 class TestsController extends BackendController
 {
     protected $data = [];
-    protected $testRepository, $categoryRepository, $subjectRepository, $postRepository,$questionsPartRepository;
+    protected $testRepository, $categoryRepository, $subjectRepository, $postRepository, $questionsPartRepository;
 
     public function __construct(
         TestRepository $testRepository,
@@ -58,8 +58,8 @@ class TestsController extends BackendController
         ];
 
         $this->data['type'] = [
-            0=>'Mặc định',
-            1=>'Câu hỏi nhiều câu trả lời',
+            0 => 'Mặc định',
+            1 => 'Câu hỏi nhiều câu trả lời',
         ];
         $this->data['trends'] = TestsPosition::getPosition();
         $this->testRepository = $testRepository;
@@ -78,7 +78,7 @@ class TestsController extends BackendController
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.test.index').'?'.Arr::query($params);
+        $url = route('backend.test.index') . '?' . Arr::query($params);
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
         return view('components.backend.quiz.test.index', $this->data);
@@ -90,8 +90,10 @@ class TestsController extends BackendController
         $this->data['posts'] = [];
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
-        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
-            null);
+        $this->data['questions'] = $this->postRepository->getAll(
+            ['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null
+        );
         $this->data['questions_select'] = '';
         return view('components.backend.quiz.test.create', $this->data);
     }
@@ -102,8 +104,10 @@ class TestsController extends BackendController
         $this->data['posts'] = [];
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
-        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
-            null);
+        $this->data['questions'] = $this->postRepository->getAll(
+            ['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null
+        );
         $this->data['questions_select'] = '';
         return view('components.backend.quiz.test.createEnglish', $this->data);
     }
@@ -116,13 +120,13 @@ class TestsController extends BackendController
         $params['type'] = $is_english;
         $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post =  $this->testRepository->create($params);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Server đang bận không thể tạo');
         }
 
-        if(!empty($questions)) {
-            $questions = explode(',',$params['questions']);
-            foreach ( $questions as  $question ) {
+        if (!empty($questions)) {
+            $questions = explode(',', $params['questions']);
+            foreach ($questions as  $question) {
                 $insert = [
                     'post_id' => $question
                 ];
@@ -130,20 +134,20 @@ class TestsController extends BackendController
             }
         }
 
-        if ( $request->hasfile('files') ) {
+        if ($request->hasfile('files')) {
             $n = count($request->file('files'));
             $date = date('Y/m/d');
-            foreach ( $request->file('files') as $key => $file ) {
-                $file->store('products/'.$date);
+            foreach ($request->file('files') as $key => $file) {
+                $file->store('products/' . $date);
                 $aImage = $file->hashName();
                 $photo = new Image();
-                $photo->url = $date.'/'.$aImage;
+                $photo->url = $date . '/' . $aImage;
                 $photo->is_default = ($key == $n - 1) ? 1 : 0;
                 $photo->filename = $file->getClientOriginalName();
                 $post->image()->save($photo);
-                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
-                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
-                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
 
                 // size height 165
                 $img = ImageIntervention::make($pathOld);
@@ -160,8 +164,8 @@ class TestsController extends BackendController
             }
         }
 
-        if($is_english == 1){
-            return redirect()->route('backend.test.next',['id'=>$post->id])->with('success', 'Đã tạo tài thành công');
+        if ($is_english == 1) {
+            return redirect()->route('backend.test.next', ['id' => $post->id])->with('success', 'Đã tạo tài thành công');
         }
 
         return redirect()->route('backend.test.index')->with('success', 'Đã tạo tài thành công');
@@ -171,15 +175,17 @@ class TestsController extends BackendController
     {
         $post = $this->testRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
 
         $this->data['isEdit'] = 1;
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
-        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
-            null);
+        $this->data['questions'] = $this->postRepository->getAll(
+            ['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null
+        );
         $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
         return view('components.backend.quiz.test.create', $this->data);
     }
@@ -188,15 +194,17 @@ class TestsController extends BackendController
     {
         $post = $this->testRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
 
         $this->data['isEdit'] = 1;
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
-        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
-            null);
+        $this->data['questions'] = $this->postRepository->getAll(
+            ['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null
+        );
         $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
         return view('components.backend.quiz.test.createEnglish', $this->data);
     }
@@ -204,15 +212,17 @@ class TestsController extends BackendController
     {
         $post = $this->testRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
 
         $this->data['isEdit'] = 1;
         $this->data['category'] = $this->categoryRepository->getAll(['module_id' => [ModuleType::Quiz]]);
         $this->data['subjects'] = $this->subjectRepository->getAll([], null);
-        $this->data['questions'] = $this->postRepository->getAll(['module_id' => [ModuleType::Quiz], 'status' => [1]],
-            null);
+        $this->data['questions'] = $this->postRepository->getAll(
+            ['module_id' => [ModuleType::Quiz], 'status' => [1]],
+            null
+        );
         $this->data['questions_select'] = !empty($post->questions) ? $post->questions : '';
 
         $this->data['parts'] = $post->testpart()->get();
@@ -225,7 +235,7 @@ class TestsController extends BackendController
     {
         $post = $this->testRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
 
@@ -234,20 +244,20 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
-    public function updateSortQuestion(Request $request,$id)
+    public function updateSortQuestion(Request $request, $id)
     {
         $post = $this->testRepository->getByID($id);
         $this->data['posts'] = $post;
-        if ( !$post ) {
-            return ResponseHelper::error('thất bại',null,404);
+        if (!$post) {
+            return ResponseHelper::error('thất bại', null, 404);
         }
 
 
-        $aQuestions = $request->questions?? [];
+        $aQuestions = $request->questions ?? [];
 
         $sort = $request->sortQuestions ?? [];
         $aQuestionsId = [];
-        if(!empty($aQuestions)) {
+        if (!empty($aQuestions)) {
             foreach ($aQuestions as $key => $question_id) {
                 $aQuestionsId[$question_id] = [
                     'order_by' => $sort[$key],
@@ -255,8 +265,8 @@ class TestsController extends BackendController
                 ];
             }
         }
-        if(!empty($aQuestionsId)) {
-            $post->testAllquestions()->sync($aQuestionsId,false);
+        if (!empty($aQuestionsId)) {
+            $post->testAllquestions()->sync($aQuestionsId, false);
         }
 
         return ResponseHelper::success('thành công');
@@ -268,41 +278,47 @@ class TestsController extends BackendController
         $questions = $params['questions'] ?? null;
         $params['questions'] = !empty($params['questions']) ? $params['questions'] : '';
         $post = $this->testRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
         $post->testquestions()->delete();
 
-        if(!empty($questions)) {
-            $questions = explode(',',$params['questions']);
-            foreach ( $questions as  $question ) {
+        if (!empty($questions)) {
+            $questions = explode(',', $params['questions']);
+            foreach ($questions as  $question) {
                 $insert = [
                     'post_id' => $question
                 ];
 
-//                if(!$post->testquestions()->wherePivot('post_id', $question)->exists()){
-//                    $post->testquestions()->createMany([$insert]);
-//                }
+                //                if(!$post->testquestions()->wherePivot('post_id', $question)->exists()){
+                //                    $post->testquestions()->createMany([$insert]);
+                //                }
                 //$post->testquestions()->syncWithoutDetaching([$question]);
                 //$post->testquestions()->updateExistingPivot($question, $insert);
                 $post->testquestions()->createMany([$insert]);
             }
         }
 
-        if ( $request->hasfile('files') ) {
+        if ($request->hasfile('files')) {
 
             $images = $post->image()->get();
-            if ( count($images) > 0 ) {
-                foreach ( $images as $item ) {
+            if (count($images) > 0) {
+                foreach ($images as $item) {
                     $deleteFile = $item->url ?? null;
-                    if ( !empty($deleteFile) ) {
-                        $fileUnlink = Str::of('/'.$deleteFile)->basename();
-                        @unlink(public_path('storage/products/'.$deleteFile));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_'.$fileUnlink,
-                                $deleteFile)));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_50x50_'.$fileUnlink,
-                                $deleteFile)));
+                    if (!empty($deleteFile)) {
+                        $fileUnlink = Str::of('/' . $deleteFile)->basename();
+                        @unlink(public_path('storage/products/' . $deleteFile));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_' . $fileUnlink,
+                            $deleteFile
+                        )));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_50x50_' . $fileUnlink,
+                            $deleteFile
+                        )));
                     }
                     $item->delete();
                 }
@@ -310,13 +326,13 @@ class TestsController extends BackendController
 
             $n = count($request->file('files'));
             $date = date('Y/m/d');
-            foreach ( $request->file('files') as $key => $file ) {
-                $file->store('products/'.$date);
+            foreach ($request->file('files') as $key => $file) {
+                $file->store('products/' . $date);
                 $aImage = $file->hashName();
 
-                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
-                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
-                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
 
                 // size height 165
                 $img = ImageIntervention::make($pathOld);
@@ -333,7 +349,7 @@ class TestsController extends BackendController
                 $img->save($fileNewSize);
 
                 $photo = new Image();
-                $photo->url = $date.'/'.$aImage;
+                $photo->url = $date . '/' . $aImage;
                 $photo->is_default = ($key == $n - 1) ? 1 : 0;
                 $photo->filename = $file->getClientOriginalName();
                 $post->image()->save($photo);
@@ -350,24 +366,30 @@ class TestsController extends BackendController
         $is_english = $params['is_english'] ?? 0;
         $params['type'] = $is_english;
         $post = $this->testRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
 
-        if ( $request->hasfile('files') ) {
+        if ($request->hasfile('files')) {
 
             $images = $post->image()->get();
-            if ( count($images) > 0 ) {
-                foreach ( $images as $item ) {
+            if (count($images) > 0) {
+                foreach ($images as $item) {
                     $deleteFile = $item->url ?? null;
-                    if ( !empty($deleteFile) ) {
-                        $fileUnlink = Str::of('/'.$deleteFile)->basename();
-                        @unlink(public_path('storage/products/'.$deleteFile));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_'.$fileUnlink,
-                                $deleteFile)));
-                        @unlink(public_path('storage/products/'.str_replace($fileUnlink, 'thumb_50x50_'.$fileUnlink,
-                                $deleteFile)));
+                    if (!empty($deleteFile)) {
+                        $fileUnlink = Str::of('/' . $deleteFile)->basename();
+                        @unlink(public_path('storage/products/' . $deleteFile));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_' . $fileUnlink,
+                            $deleteFile
+                        )));
+                        @unlink(public_path('storage/products/' . str_replace(
+                            $fileUnlink,
+                            'thumb_50x50_' . $fileUnlink,
+                            $deleteFile
+                        )));
                     }
                     $item->delete();
                 }
@@ -375,13 +397,13 @@ class TestsController extends BackendController
 
             $n = count($request->file('files'));
             $date = date('Y/m/d');
-            foreach ( $request->file('files') as $key => $file ) {
-                $file->store('products/'.$date);
+            foreach ($request->file('files') as $key => $file) {
+                $file->store('products/' . $date);
                 $aImage = $file->hashName();
 
-                $pathOld = public_path('storage/products/'.$date.'/'.$aImage);
-                $fileNew = public_path('storage/products/'.$date.'/thumb_'.$aImage);
-                $fileNewSize = public_path('storage/products/'.$date.'/thumb_50x50_'.$aImage);
+                $pathOld = public_path('storage/products/' . $date . '/' . $aImage);
+                $fileNew = public_path('storage/products/' . $date . '/thumb_' . $aImage);
+                $fileNewSize = public_path('storage/products/' . $date . '/thumb_50x50_' . $aImage);
 
                 // size height 165
                 $img = ImageIntervention::make($pathOld);
@@ -398,7 +420,7 @@ class TestsController extends BackendController
                 $img->save($fileNewSize);
 
                 $photo = new Image();
-                $photo->url = $date.'/'.$aImage;
+                $photo->url = $date . '/' . $aImage;
                 $photo->is_default = ($key == $n - 1) ? 1 : 0;
                 $photo->filename = $file->getClientOriginalName();
                 $post->image()->save($photo);
@@ -410,7 +432,7 @@ class TestsController extends BackendController
     public function destroy($id)
     {
         $post = $this->testRepository->getByID($id);
-        if ( !$post ) {
+        if (!$post) {
             return ResponseHelper::error('Không tìm thấy câu hỏi');
         }
         $post->delete();
@@ -418,15 +440,16 @@ class TestsController extends BackendController
         return ResponseHelper::success('Đã xóa thành công');
     }
 
-    public function searchQuestion(Request $request) {
+    public function searchQuestion(Request $request)
+    {
         $search =  $request->search ?? null;
         $category_id =  $request->category_id ?? null;
         $params  = [
-            'module_id'=>[ModuleType::Quiz],
-            'category_id'=>!empty($category_id) ? [$category_id] : [] ,
-            'search'=>$search,
-            'type'=>$request->type ?? 0,
-            'debug'=>0
+            'module_id' => [ModuleType::Quiz],
+            'category_id' => !empty($category_id) ? [$category_id] : [],
+            'search' => $search,
+            'type' => $request->type ?? 0,
+            'debug' => 0
         ];
 
 
@@ -436,11 +459,12 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
-    public function loadQuestion(Request $request) {
+    public function loadQuestion(Request $request)
+    {
         $questions =  $request->questions ?? null;
         $params  = [
-            'post_id'=>!empty($questions) ? explode(',',$questions) : [] ,
-            'debug'=>0
+            'post_id' => !empty($questions) ? explode(',', $questions) : [],
+            'debug' => 0
         ];
         $posts = $this->postRepository->getAll($params);
         $this->data['questions'] = $posts;
@@ -448,11 +472,12 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
-    public function createPart(Request $request){
+    public function createPart(Request $request)
+    {
         $params = $request->all();
-        $test_id = $params['test_id'] ?? 0 ;
+        $test_id = $params['test_id'] ?? 0;
         $test = $this->testRepository->getByID($test_id);
-        if ( !$test ) {
+        if (!$test) {
             return ResponseHelper::error('Không tìm thấy bài kiểm tra');
         }
 
@@ -470,7 +495,8 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
-    public function updatePart(Request $request){
+    public function updatePart(Request $request)
+    {
         $params = $request->all();
         $part_id = $params['part_id'];
         $part = $this->questionsPartRepository->getById($part_id);
@@ -480,20 +506,21 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công');
     }
 
-    public function addQuestionPart(Request $request) {
+    public function addQuestionPart(Request $request)
+    {
         $params = $request->all();
         $part_id = $params['part_id'] ?? 0;
         $post_id = $params['post_id'] ?? 0;
         $part = $this->questionsPartRepository->getById($part_id);
-        if(!$part) {
+        if (!$part) {
             return ResponseHelper::error('Không tìm thấy Part');
         }
 
         $insert = [
-            'order'=>0,
-            'test_id'=>$part->test_id,
-            'created_at'=>date('Y-m-d H:i:s'),
-            'updated_at'=>date('Y-m-d H:i:s')
+            'order' => 0,
+            'test_id' => $part->test_id,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
         ];
 
         $part->posts()->syncWithoutDetaching([$post_id]);
@@ -503,10 +530,11 @@ class TestsController extends BackendController
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);
     }
 
-    public function updateQuestionPart(Request $request, $id){
+    public function updateQuestionPart(Request $request, $id)
+    {
         $qpq = QuestionsPartQuestion::find($id);
-        if($qpq) {
-            $qpq->update(['order'=>$request->order]);
+        if ($qpq) {
+            $qpq->update(['order' => $request->order]);
         }
         return ResponseHelper::success('thành công');
     }
@@ -515,19 +543,55 @@ class TestsController extends BackendController
     {
         //https://laracoding.com/how-to-clone-a-model-in-laravel-with-or-without-relations/
         $test = $this->testRepository->getByID($request->id);
-        if ( !$test ) {
+        if (!$test) {
             return ResponseHelper::error('Không tìm thấy câu hỏi');
         }
         $testNew = $test->replicate();
         $testNew->save();
+
+        foreach ($test->testquestions()->get() as $part) {
+            $clonedPart = $part->replicate();
+            $clonedPart->test_id = $testNew->id;
+            $clonedPart->save();
+        }
+
+        return ResponseHelper::success('Thành công');
     }
 
-    public function duplicatePart(Request $request) {
+    public function duplicateEnglish(Request $request)
+    {
         $test = $this->testRepository->getByID($request->id);
-        if ( !$test ) {
+        if (!$test) {
             return ResponseHelper::error('Không tìm thấy câu hỏi');
         }
 
-        $testNew = $test->cloneWithPart();
+        $testNew = $test->replicate();
+        $testNew->save();
+
+        if ($test->testpart()->count() > 0) {
+            foreach ($test->testpart()->get() as $part) {
+                $clonedPart = $part->replicate();
+                $clonedPart->test_id = $testNew->id;
+                $clonedPart->save();
+                if( $part->posts->count() > 0){
+            
+                    foreach ($part->posts as $sub) {
+                       
+                        $insert = [
+                            'order' => $sub->pivot->order ?? 0,
+                            'test_id' => $testNew->id,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ];
+                
+                        $clonedPart->posts()->syncWithoutDetaching([$sub->id]);
+                        $clonedPart->posts()->updateExistingPivot($sub->id, $insert);
+
+                    }
+                }
+
+            }
+        }
+        return ResponseHelper::success('Thành công');
     }
 }

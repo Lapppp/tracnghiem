@@ -11,7 +11,6 @@
             }
             div.scrollYX{
                 height:300px;
-                white-space: nowrap;
                 overflow-x: hidden;
                 overflow-y: auto;
             }

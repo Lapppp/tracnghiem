@@ -57,7 +57,7 @@
                                         @endif
                                     </div>
                                     <div class="d-flex justify-content-start flex-column">
-                                        <a href="#" class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{ $item->title }}</a>
+                                        <p contenteditable="true" data-id="{{ $item->id }}" class="text-dark fw-bolder text-hover-primary mb-1 fs-6 changeTextTest">{{ $item->title }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -154,6 +154,27 @@
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
+
+
+
+                $('p.changeTextTest').on('input', function() {
+                    let title = $(this).html();
+                    let id = $(this).data('id');
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        url: baseUrl + "/test/updateText/" + id,
+                        type: 'POST',
+                        data: {
+                            "id": id,
+                            "_token": token,
+                            "title": title,
+                        },
+                        success: function(json) {
+
+                        }
+                    });
+
+                });
 
 
                 $(document).on('click', 'a.copyNoEnglish', function(event) {

@@ -573,25 +573,37 @@ class TestsController extends BackendController
                 $clonedPart = $part->replicate();
                 $clonedPart->test_id = $testNew->id;
                 $clonedPart->save();
-                if( $part->posts->count() > 0){
-            
+                if ($part->posts->count() > 0) {
+
                     foreach ($part->posts as $sub) {
-                       
+
                         $insert = [
                             'order' => $sub->pivot->order ?? 0,
                             'test_id' => $testNew->id,
                             'created_at' => date('Y-m-d H:i:s'),
                             'updated_at' => date('Y-m-d H:i:s')
                         ];
-                
+
                         $clonedPart->posts()->syncWithoutDetaching([$sub->id]);
                         $clonedPart->posts()->updateExistingPivot($sub->id, $insert);
-
                     }
                 }
-
             }
         }
+        return ResponseHelper::success('Thành công');
+    }
+
+    public function updateText(Request $request, $id)
+    {
+
+        $test = $this->testRepository->getByID($id);
+        if (!$test) {
+            return ResponseHelper::error('Không tìm thấy câu hỏi');
+        }
+
+        $title  = $request->title;
+        $test->update(['title' => $title]);
+
         return ResponseHelper::success('Thành công');
     }
 }

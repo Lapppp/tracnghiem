@@ -61,6 +61,11 @@
 
     <form class="multisteps_form bg-white position-relative overflow-hidden" style="max-width: none;background: none" id="wizard" method="POST" action="">
 
+        @if($test->description)
+            <div class="alert alert-light border-bottom" role="alert">
+               {!! $test->description !!}
+            </div>
+        @endif
 
         @foreach($parts as $key => $part)
             <!------------------------- Step-1 ----------------------------->
@@ -195,13 +200,14 @@
             </div>
         @endforeach
 
+            <div class="mt-3 mb-3 border-top">
+                <div class="d-grid gap-2 col-2 mx-auto mt-3">
+                    <button class="btn btn-primary" type="button" id="NopBai">Nộp Bài</button>
+                </div>
+            </div>
     </form>
 
-    <div class="footer_nopbai">
-        <div class="d-grid gap-2 col-2 mx-auto">
-            <button class="btn btn-primary" type="button" id="NopBai">Nộp Bài</button>
-        </div>
-    </div>
+
 
     <button id="scroll__top"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M112 244l144-144 144 144M256 120v292"/></svg></button>
 
@@ -217,12 +223,7 @@
                 -o-user-select: none;
                 user-select: none;
             }
-            .footer_nopbai {
-                position: fixed;
-                left: 0;
-                bottom: 10px;
-                width: 100%;
-            }
+
 
             #scroll__top {
                 position: fixed;
@@ -269,8 +270,6 @@
     </x-slot>
 
     <x-slot name="javascript">
-        <script src="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/prettify.js"></script>
-        <script src="{{ asset('/frontend/questions')}}/assets/vendor/scrollbar/jquery.scrollbar.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js" integrity="sha256-t0FDfwj/WoMHIBbmFfuOtZv1wtA977QCfsFR3p1K4No=" crossorigin="anonymous"></script>
         <script type="text/javascript">
 
@@ -337,7 +336,6 @@
                 disableSelection(document.body);
                 $(document).on('click', '.step_2',function(){
 
-                    $('.scrollbar-macosx').scrollbar();
 
                     let group = $(this).data('group');
                     $("li[data-group='"+group+"']").removeClass("active")

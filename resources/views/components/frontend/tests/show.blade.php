@@ -43,7 +43,7 @@
         </div>
     </x-slot>
 
-    <form class="multisteps_form bg-white position-relative overflow-hidden" id="wizard" method="POST" action="">
+    <form class="multisteps_form bg-white position-relative overflow-hidden" style="max-width: max-content;background-image: none" id="wizard" method="POST" action="">
 
 
         <!------------------------- Step-1 ----------------------------->
@@ -216,6 +216,10 @@
             }
             $(document).ready(function() {
                 disableSelection(document.body);
+
+                let heightContentLoad = $('.multisteps_form_panel').height() + 100;
+                $('#wizard').css({minHeight:heightContentLoad+"px"});
+
                 $(document).on('keydown', function(e) {
                     if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
                         e.cancelBubble = true;
@@ -324,7 +328,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Thông báo',
-                            text: 'Vui lòng click chọn câu hỏi',
+                            text: 'Vui lòng chọn câu trả lời',
                         })
                     }else {
                         let token = $("meta[name='csrf-token']").attr("content");
@@ -334,6 +338,8 @@
                         let test_id = $(this).data('test_id');
                         let question_id = $(this).data('question_id');
                         let test_id_test = $('#test_id_test').val();
+                        let heightContent = $('.multisteps_form_panel').height() + 100;
+                        $('#wizard').css({minHeight:heightContent+"px"});
                         $.ajax({
                             url: "{{ Route('frontend.tests.next',['id'=>$test->id]) }}",
                             type: 'POST',

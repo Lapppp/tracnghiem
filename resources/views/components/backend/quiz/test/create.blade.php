@@ -67,7 +67,7 @@
                                             name="subject_id" data-select2-id="select2-data-10-gou7" tabindex="-1" aria-hidden="true">
                                         @foreach ($subjects as $key => $value)
                                             <option value="{{ $value->id }}"
-                                                {{ old('subject_id', !empty($posts) ? $posts->subject_id : '') == $key ? 'selected' : '' }}>
+                                                {{ old('subject_id', !empty($posts) ? $posts->subject_id : '') == $value->id ? 'selected' : '' }}>
                                                 {{ $value->title ?? '' }}</option>
                                         @endforeach
                                     </select>

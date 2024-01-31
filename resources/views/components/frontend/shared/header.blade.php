@@ -45,7 +45,7 @@
                 </div>
                 <div class="header__search--widget header__sticky--none d-none d-lg-block">
                     <form class="d-flex header__search--form" action="{{ Route('frontend.tests.index') }}">
-                        <div class="header__select--categories select">
+                        <div class="header__select--categories select" style="display: none">
                             <select class="header__select--inner" name="category_id" id="category_id">
                                 <option value="">Tất cả</option>
                                 @foreach($menuCategory as $category)

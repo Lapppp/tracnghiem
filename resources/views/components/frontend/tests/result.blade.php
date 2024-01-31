@@ -36,9 +36,13 @@
             <div class="main__contact--area position__relative">
 
                 <div class="contact__form" style="margin-left: 0px !important;">
-                    <div class="alert alert-info" role="alert">
-                       Tổng số câu đúng là: {{ $questionsCorrect }} câu
-                    </div>
+
+                    @if ($test->show_question_correct == 1)
+                        <div class="alert alert-info" role="alert">
+                        Tổng số câu đúng là: {{ $questionsCorrect }} câu
+                        </div>
+                    @endif
+
                     <form class="contact__form--inner" action="{{ Route('frontend.contact.store') }}">
 
                         @foreach($questions as $key => $question)
@@ -56,13 +60,17 @@
                                                     <li class="list-group-item">
                                                         <b>{{ $alphabet }}.</b> {{ $val->description ?? '' }}
                                                         @if($val->is_correct)
-                                                            <p class="mt-1 mb-1">
+                                                           @if ($test->show_bai_giai == 1)
+                                                           <p class="mt-1 mb-1">
                                                                 <span class="badge bg-success">{{ $alphabet }} . Là câu trả lời đúng</span>
                                                                 <a href="#" data-modal-id="popup" id="showViewBaiGiai_{{ $question->id }}"  title="{{ $question->name ?? '' }}" class="viewBaiGiai" data-id="{{ $question->id }}">
                                                                     <span class="badge bg-primary ">{{ $alphabet }} Xem bài giải</span>
                                                                 </a>
                                                             </p>
                                                             <div hidden  id="viewBaiGiai_{{ $question->id }}">{!! $question->description ?? 'Đang cập nhật' !!}</div>
+
+                                                           @endif
+
                                                         @endif
 
                                                         @if($question->pivot->is_correct == $val->id)
@@ -101,64 +109,14 @@
             user-select: none;
         }
         #scroll__top {
-            position: fixed;
-            bottom: 80px;
-            right: 25px;
-            z-index: 99;
-            outline: none;
             background-color:#FFC061;
-            color: #ffffff;
-            -webkit-box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
-            box-shadow: 0 2px 22px rgba(0, 0, 0, 0.16);
-            cursor: pointer;
-            -webkit-transform: translateY(50px);
-            transform: translateY(50px);
-            opacity: 0;
-            visibility: hidden;
-            -webkit-transition: 0.3s;
-            transition: 0.3s;
-            line-height: 1;
-            width: 3.3rem;
-            height: 3.3rem;
-            line-height: 1;
-            border-radius: 50%;
-            border: 0;
         }
 
-        #scroll__top:hover {
-            background: #061738;
-        }
-
-        #scroll__top.active {
-            visibility: visible;
-            opacity: 1;
-            -webkit-transform: translateY(0);
-            transform: translateY(0);
-        }
-
-        #scroll__top svg {
-            width: 25px;
-            line-height: 1;
-        }
     </style>
 
     <x-slot name="javascript">
         <script type="text/javascript">
 
-            // Back to top
-            const scrollTop = document.getElementById("scroll__top");
-            if (scrollTop) {
-                scrollTop.addEventListener("click", function () {
-                    window.scroll({ top: 0, left: 0, behavior: "smooth" });
-                });
-                window.addEventListener("scroll", function () {
-                    if (window.scrollY > 300) {
-                        scrollTop.classList.add("active");
-                    } else {
-                        scrollTop.classList.remove("active");
-                    }
-                });
-            }
 
             document.addEventListener("copy", (e) => {e.preventDefault();}, false);
             document.addEventListener('contextmenu', event => { event.preventDefault(); });

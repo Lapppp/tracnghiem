@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title> Luyện Thi Công Chức - {{ $title ?? '' }}</title>
-    <meta name="description" content="Morden Bootstrap HTML5 Template">
+    <meta name="description" content="Luyện Thi Công Chức - Luyện thi công chức Thuế Kho bạc Toàn Quốc - {{ $title ?? '' }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ asset('/frontend/') }}/assets/css/plugins/swiper-bundle.min.css">
     <link rel="stylesheet" href="{{ asset('/frontend/') }}/assets/css/plugins/glightbox.min.css">

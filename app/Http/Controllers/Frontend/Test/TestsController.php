@@ -110,6 +110,15 @@ class TestsController extends FrontendController
         View::share('imageSeo', '');
 
         if ($user) {
+
+            if(!empty($user->is_force_login)){
+                return redirect(Route('frontend.user.logoutToLogin'))->with('message', 'Record added successfully!');;
+            }
+
+            if($user->locked == 1){
+                return redirect(Route('frontend.about.locked'));
+            }
+
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
             if (empty($permission)) {
                 return view('components.frontend.tests.permissioncategory', $this->data);
@@ -137,6 +146,15 @@ class TestsController extends FrontendController
         ];
 
         if ($user) {
+
+            if(!empty($user->is_force_login)){
+                return redirect(Route('frontend.user.logoutToLogin'));
+            }
+
+            if($user->locked == 1){
+                return redirect(Route('frontend.about.locked'));
+            }
+
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
             $category_id = [9999999999999999];
             if (!empty($permission)) {
@@ -177,9 +195,6 @@ class TestsController extends FrontendController
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
 
-        if(empty($user->status)){
-            return view('components.frontend.tests.permission');
-        }
 
         View::share('title', $test->title ?? '');
         View::share('description', $test->title ?? '');
@@ -194,7 +209,26 @@ class TestsController extends FrontendController
         $this->data['test'] = $test;
         $user = Auth::guard('web')->user();
         $this->data['checkUserTest'] = [];
-        if ($user) {
+        if ($user)
+        {
+
+            if(!empty($user->is_force_login)){
+                return redirect(Route('frontend.user.logoutToLogin'));
+            }
+
+            if($user->locked == 1){
+                return redirect(Route('frontend.about.locked'));
+            }
+
+            $listUpdate = $this->testUsersRepository->checkUserTest([
+                'user_id' => $user->id,
+                'test_id' => $test->id])->get();
+            if($listUpdate->count() > 0) {
+                foreach ($listUpdate as $value) {
+                    $value->update(['is_reset'=>0]);
+                }
+            }
+
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
             if (empty($permission)) {
                 return view('components.frontend.tests.phanquyen', $this->data);
@@ -209,6 +243,8 @@ class TestsController extends FrontendController
                 'test_id' => $test->id,
                 'question_id' => $this->data['question']->id
             ]);
+
+
 
             $this->data['checkUserTest'] = $this->testUsersTestsRepository->checkUserTest([
                 'test_id' => $test->id,
@@ -364,9 +400,6 @@ class TestsController extends FrontendController
             return redirect()->route('frontend.home.index')->with('error', 'Bài kiểm tra không tồn tại');
         }
 
-        if(empty($user->status)){
-            return view('components.frontend.tests.permission');
-        }
 
         $this->data['parts'] = $test->testpart()->get();
         $this->data['test'] = $test;
@@ -378,6 +411,15 @@ class TestsController extends FrontendController
         View::share('imageSeo', '');
 
         if ($user) {
+
+            if(!empty($user->is_force_login)){
+                return redirect(Route('frontend.user.logoutToLogin'));
+            }
+
+            if($user->locked == 1){
+                return redirect(Route('frontend.about.locked'));
+            }
+
             $permission = !empty($user->permission_category) ? explode(',', $user->permission_category) : [];
             if (empty($permission)) {
                 return view('components.frontend.tests.phanquyen', $this->data);
@@ -489,9 +531,6 @@ class TestsController extends FrontendController
             return ResponseHelper::error('Câu hỏi không tồn tại');
         }
 
-        if (!$answer) {
-            return ResponseHelper::error('Câu trả lời không tồn tại');
-        }
 
         if (!$user) {
             $strTestQuestion = $question_id . '-' . $test_id;
@@ -517,7 +556,6 @@ class TestsController extends FrontendController
             }
         }
 
-        $pivot_id = $request->pivot_id ?? 0;
         $order_by = $request->order_by ?? 0;
         $this->data['AllTest'] = $test->testAllquestions()->get();
         $this->data['question'] = $test->PreviousTestAllquestions($order_by);
@@ -631,6 +669,7 @@ class TestsController extends FrontendController
                     'is_correct_temp' => $correct_answer->id == $answer->id ? 1 : 0,
                     'test_id_test' => $test_id_test,
                     'order_by' => $sort->order_by,
+                    'is_reset' => 1
                 ];
                 $this->testUsersRepository->create($aInsert);
             } else {
@@ -641,7 +680,8 @@ class TestsController extends FrontendController
                     'user_id' => $user->id,
                     'updated_at' => date('Y-m-d H:i:s'),
                     'test_id_test' => $test_id_test,
-                    'order_by' => $sort->order_by
+                    'order_by' => $sort->order_by,
+                    'is_reset' => 1
                 ]);
             }
 

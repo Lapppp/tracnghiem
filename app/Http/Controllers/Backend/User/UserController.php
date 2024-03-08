@@ -82,6 +82,7 @@ class UserController extends BackendController
             $params['id'] = count($lsCustomer) > 0 ? $lsCustomer->toArray() : [0];
         }
         $params['status'] = [1];
+        $params['locked'] = [0];
         $p['status'] = 1;
         $post = $this->userRepository->getAll($params, 20);
         $this->data['title'] = 'Users';
@@ -138,6 +139,55 @@ class UserController extends BackendController
         return view('components.backend.user.index', $this->data);
     }
 
+    public function locked(Request $request)
+    {
+        $params = $request->all();
+        $p = $request->all();
+        // Role::create(['name' => 'admin', 'team_id' => null]);
+        $user = Auth::guard('backend')->user();
+        $roles = $user->getRoleNames()->toArray();
+        $flag = false;
+        if (count($roles) > 0) {
+            if (
+                in_array(RoleType::manager, $roles) ||
+                in_array(RoleType::employee_main, $roles) ||
+                in_array(RoleType::employee_sub, $roles)
+            ) {
+                $flag = true;
+            }
+        }
+
+        // Nếu là trưởng phòng, nhân viên chính, nhân viên phụ
+        if ($flag) {
+            $lsCustomer = $user->managementUser()->pluck('user_id');
+            $params['id'] = count($lsCustomer) > 0 ? $lsCustomer->toArray() : [0];
+        }
+
+        $params['locked'] = [1];
+        $p['locked'] = 1;
+        $this->data['deactivated'] = 2;
+        $post = $this->userRepository->getAll($params, 20);
+        $this->data['title'] = 'Users';
+        $this->data['items'] = $post;
+        $this->data['params'] = $params;
+        $total = !empty($post->total()) ? $post->total() : 0;
+        $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
+
+        $page = !empty($request->page) ? $request->page : 1;
+        unset($p['page']);
+        $url = route('backend.users.index') . '?' . Arr::query($p).'&';
+        $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
+        return view('components.backend.user.index', $this->data);
+    }
+
+    public function lockedAccount(Request $request,$id){
+        $admin = $this->userRepository->getByID($id);
+        if (!$admin) {
+            return redirect()->route('backend.users.index')->with('error', 'Không tìm thấy dữ liệu');
+        }
+        $admin->update(['locked'=>1]);
+        return ResponseHelper::success('Đã xóa thành công');
+    }
     public function create(Request $request)
     {
         $this->data['isEdit'] = 0;
@@ -397,6 +447,22 @@ class UserController extends BackendController
             'id'=>$id
         ];
         return ResponseHelper::success('Cập nhật thành công',$data);
+    }
+
+    public function active(Request $request,$id = 0) {
+        $admin = $this->userRepository->getByID($id);
+        if (!$admin) {
+            return ResponseHelper::error('Không tìm thấy tài khoản');
+        }
+        $admin->status = 1 ;
+        $admin->locked = 0 ;
+        $admin->save();
+        $items = $admin->userAgent()->get() ;
+        foreach ( $items as $key =>$value ){
+            $value->delete();
+        }
+
+        return ResponseHelper::success('Cập nhật thành công',$admin);
     }
 
     public function search(Request $request)

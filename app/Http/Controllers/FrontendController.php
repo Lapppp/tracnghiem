@@ -21,20 +21,21 @@ use Illuminate\Support\Facades\Route;
 //use View;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
 
 
 class FrontendController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $_ref,$footerCompany;
+    public $_ref,$footerCompany,$keyVersion,$deviceVersion,$deviceType,$descriptionType;
     private $modulesControllerAdminRepos;
     protected $user;
 
     public function __construct()
     {
         $this->_ref = Request()->get('_ref', null);
-
         $this->category_id = Request()->get('category_id', null);
         $this->search = Request()->get('search', null);
         $route = Route::current();
@@ -94,12 +95,39 @@ class FrontendController extends BaseController
         View::share('BGBanner', $BGBanner);
 
         $detect = new MobileDetectHelper();
+        $str = $detect->getUserAgent();
+        $this->descriptionType = $str;
+        $this->keyVersion = Str::slug($str);
         $isMobile = 0 ;
         if ( $detect->isMobile() ) {
             $isMobile = 1;
         }
-        View::share('isMobile', $isMobile);
 
+        $deviceVersion = 0;
+        if($detect->isMobile()){
+            // Detect mobile/tablet
+            if($detect->isTablet()){
+                $this->deviceVersion =   $detect->version('iPad');
+            }else{
+                //echo $detect->version('Android');
+               // echo $detect->version('iPhone'); /* 3.1 (float) */
+            }
+
+            if($detect->isiOS()){
+               // echo 'IOS';
+                $this->deviceVersion =  $detect->version('iPhone');
+            }elseif($detect->isAndroidOS()){
+                $this->deviceVersion =  $detect->version('Android');
+            }
+        }else{
+            $this->deviceVersion = 'Desktop';
+        }
+
+        $this->deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+        View::share('keyVersion', $this->keyVersion);
+        View::share('deviceVersion', $this->deviceVersion);
+        View::share('deviceType', $this->deviceType);
+        View::share('isMobile', $isMobile);
     }
 
     public function errors()

@@ -21,4 +21,10 @@ class TestUsersRepository extends BaseRepository
             ->where('question_id', '=', $params['question_id'])
             ->first();
     }
+
+    public function checkUserTest($params = [])
+    {
+        return  TestUser::where('user_id', '=', $params['user_id'])
+            ->where('test_id', '=', $params['test_id']);
+    }
 }

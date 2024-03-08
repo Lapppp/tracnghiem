@@ -71,14 +71,17 @@ class TestsController extends BackendController
 
     public function index(Request $request)
     {
-        $params = $request->only(['username', 'password']);
+        $params = $request->only(['search']);
+        $p = $request->all();
         $status = !empty($request->status) ? explode(',', $request->status) : [];
-        $post = $this->testRepository->getAll([]);
+
+        $post = $this->testRepository->getAll($params);
         $this->data['items'] = $post;
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.test.index') . '?' . Arr::query($params);
+        unset($p['page']);
+        $url = route('backend.test.index') . '?' . Arr::query($p).'&';
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
         return view('components.backend.quiz.test.index', $this->data);
@@ -282,7 +285,7 @@ class TestsController extends BackendController
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
-        $post->testquestions()->delete();
+       // $post->testquestions()->delete();
 
         if (!empty($questions)) {
             $questions = explode(',', $params['questions']);
@@ -291,12 +294,12 @@ class TestsController extends BackendController
                     'post_id' => $question
                 ];
 
-                //                if(!$post->testquestions()->wherePivot('post_id', $question)->exists()){
-                //                    $post->testquestions()->createMany([$insert]);
-                //                }
+                if(!$post->testquestions()->where('post_id', $question)->exists()){
+                    $post->testquestions()->createMany([$insert]);
+                }
                 //$post->testquestions()->syncWithoutDetaching([$question]);
                 //$post->testquestions()->updateExistingPivot($question, $insert);
-                $post->testquestions()->createMany([$insert]);
+               // $post->testquestions()->createMany([$insert]);
             }
         }
 

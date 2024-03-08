@@ -32,6 +32,7 @@ Route::prefix('adminkiwi')->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\User\UserController::class, 'index'])->name('backend.users.index');
             Route::get('/deactivated', [\App\Http\Controllers\Backend\User\UserController::class, 'deactivated'])->name('backend.deactivated.index');
+            Route::get('/locked', [\App\Http\Controllers\Backend\User\UserController::class, 'locked'])->name('backend.locked.index');
             Route::get('/export', [\App\Http\Controllers\Backend\User\UserController::class, 'export'])->name('backend.users.export');
             Route::get('/search', [\App\Http\Controllers\Backend\User\UserController::class, 'search'])->name('backend.users.search');
             Route::post('/ajax', [\App\Http\Controllers\Backend\User\UserController::class, 'ajaxLoadApprovedUsers'])->name('backend.users.ajax');
@@ -43,6 +44,8 @@ Route::prefix('adminkiwi')->group(function () {
             Route::put('/update/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'update'])->name('backend.users.update');
             Route::delete('/delete/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'destroy'])->name('backend.users.destroy');
             Route::post('/updateVip/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'updateVip'])->name('backend.users.updateVip');
+            Route::delete('/active/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'active'])->name('backend.users.active');
+            Route::delete('/lockedAccount/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'lockedAccount'])->name('backend.users.lockedAccount');
             Route::post('/store', [\App\Http\Controllers\Backend\User\UserController::class, 'store'])->name('backend.users.store');
             Route::post('/showTest', [\App\Http\Controllers\Backend\User\UserController::class, 'showTest'])->name('backend.users.showTest');
         });

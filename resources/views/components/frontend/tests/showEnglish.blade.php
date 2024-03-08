@@ -36,7 +36,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-6 d-none d-sm-block">
+                <div class="col-sm-6  d-sm-block">
                     <div class="count_box d-flex float-end pt-5">
                         <div class="count_clock countdown_timer d-flex align-items-center" data-countdown="{{ !empty($test->start_date) ? date("Y/m/d",strtotime($test->start_date)) : '' }}">
                         </div>
@@ -94,9 +94,9 @@
                                 @php
                                     $alphabet = 'A';
                                 @endphp
-                                <div class="row pt-2 mt-1 form_items me-3 ms-3">
+                                <div class="row @if(empty($isMobile)) pt-2 @endif mt-1 form_items me-3 ms-3" @if($isMobile) style="padding-left: 0px" @endif>
                                      @foreach($questions->answers()->get() as $q => $answer)
-                                        <div class="col-6">
+                                        <div class="@if($isMobile) col-12 @else col-6 @endif">
                                             <ul class="list-unstyled p-0">
                                                 <li class="step_1 animate__animated animate__fadeInRight" style="white-space:normal"
                                                     data-answer_id="{{ $answer->id }}"
@@ -124,7 +124,7 @@
                         <div class="row me-3 ms-3">
                         @foreach($part->posts()->get() as $k => $questions)
 
-                                <div class="col-md-6">
+                                <div class="@if($isMobile) col-md-12 @else col-md-6 @endif">
                             <div class="alert alert-warning " role="alert">
                                 <span class="fw-bold">Câu {{ $k + $iq }}:</span> {{ $questions->name ?? '' }}
                             </div>

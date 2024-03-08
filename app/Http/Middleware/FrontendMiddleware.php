@@ -17,11 +17,23 @@ class FrontendMiddleware
      */
     public function handle( Request $request, Closure $next )
     {
-        if ( !Auth::guard('web')->user() ) {
+        $user = Auth::guard('web')->user();
+        if ( !$user ) {
             $url = $request->url();
             session(['url' => $url]);
             return redirect(Route('frontend.auth.login'));
         }
+
+        if ( $user ) {
+            if(!empty($user->is_force_login)){
+                return redirect(Route('frontend.user.logout'));
+            }
+
+            if($user->locked == 1){
+                return redirect(Route('frontend.about.locked'));
+            }
+        }
+
         return $next($request);
 
     }

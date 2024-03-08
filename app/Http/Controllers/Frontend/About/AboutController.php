@@ -58,4 +58,8 @@ class AboutController extends FrontendController
 
         return view('components.frontend.about.index',$this->data);
     }
+
+    public function locked() {
+        return view('components.frontend.about.locked',$this->data);
+    }
 }

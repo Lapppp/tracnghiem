@@ -47,37 +47,37 @@ class Test extends Model
 
     public function testquestions()
     {
-         return $this->hasMany(TestQuestions::class,'test_id','id');
+        return $this->hasMany(TestQuestions::class, 'test_id', 'id');
     }
 
     public function testquestionSort($question_id = 0)
     {
-        return $this->hasMany(TestQuestions::class,'test_id','id')
-            ->where('post_id',$question_id);
+        return $this->hasMany(TestQuestions::class, 'test_id', 'id')
+            ->where('post_id', $question_id);
     }
 
     public function testAllquestions()
     {
-        return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
-            ->withPivot(['id','order_by'])->orderBy('test_questions.order_by','asc');
+        return $this->belongsToMany(Post::class, 'test_questions', 'test_id', 'post_id')
+            ->withPivot(['id', 'order_by'])->orderBy('test_questions.order_by', 'asc');
     }
 
     public function nextTestAllquestions($id)
     {
-        return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
-            ->withPivot(['id','order_by'])
+        return $this->belongsToMany(Post::class, 'test_questions', 'test_id', 'post_id')
+            ->withPivot(['id', 'order_by'])
             ->where('test_questions.order_by', '>', $id)
-            ->orderBy('test_questions.order_by','asc')
+            ->orderBy('test_questions.order_by', 'asc')
             ->first();
     }
 
 
     public function PreviousTestAllquestions($id)
     {
-        return $this->belongsToMany(Post::class,'test_questions','test_id','post_id')
-            ->withPivot(['id','order_by'])
+        return $this->belongsToMany(Post::class, 'test_questions', 'test_id', 'post_id')
+            ->withPivot(['id', 'order_by'])
             ->where('test_questions.order_by', '<', $id)
-            ->orderBy('test_questions.order_by','desc')
+            ->orderBy('test_questions.order_by', 'desc')
             ->first();
     }
 
@@ -93,23 +93,23 @@ class Test extends Model
 
     public function topic()
     {
-        return $this->belongsTo(Subject::class,'subject_id','id')->withDefault(['title' =>'']);
+        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault(['title' => '']);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class,'category_id','id')->withDefault(['name' =>'']);
+        return $this->belongsTo(Category::class, 'category_id', 'id')->withDefault(['name' => '']);
     }
 
     public function testpart()
     {
-        return $this->hasMany(QuestionsPart::class,'test_id','id')
-            ->orderBy('order','asc');
+        return $this->hasMany(QuestionsPart::class, 'test_id', 'id')
+            ->orderBy('order', 'asc');
     }
 
     public function testpartOne($id)
     {
-        return $this->hasMany(QuestionsPart::class,'test_id','id')->where('id',$id);
+        return $this->hasMany(QuestionsPart::class, 'test_id', 'id')->where('id', $id);
     }
 
     public function cloneWithPart()
@@ -126,7 +126,8 @@ class Test extends Model
         return $clone;
     }
 
-    public static function getById($id = 0) {
+    public static function getById($id = 0)
+    {
         return self::find($id);
     }
 }

@@ -14,11 +14,10 @@ class CategoryController extends BackendController
     protected $data = [];
     protected $categoryRepos;
 
-    public function __construct( CategoryRepository $categoryRepos )
+    public function __construct(CategoryRepository $categoryRepos)
     {
         parent::__construct();
         $this->categoryRepos = $categoryRepos;
-
     }
 
     public function index(Request $request)
@@ -31,16 +30,17 @@ class CategoryController extends BackendController
         $perPage = !empty($users->perPage) ? $users->perPage : 20;
         $page = !empty($request->page) ? $request->page :  1;
         $url = '?';
-        $this->data['pager'] = PaginationHelper::BackendPagination($total,$perPage,$page,$url);
+        $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
         View::share('title', $this->data['title']);
         return view('components.backend.category.index', $this->data);
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         return view('components.backend.category.create', $this->data);
     }
 
-    public function store(CategoryRequest $request){
-
+    public function store(CategoryRequest $request)
+    {
     }
 }

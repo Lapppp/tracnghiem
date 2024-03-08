@@ -10,7 +10,7 @@ class CookiesHelper
     public static function setCookies($cookiesValue)
     {
         $cookies = Cookie::get('products');
-        if ( $cookies ) {
+        if ($cookies) {
             $json = json_decode($cookies, true);
             array_push($json, $cookiesValue);
             $result = array_unique($json);
@@ -25,7 +25,7 @@ class CookiesHelper
     public static function setCookiesOrder($cookiesValue)
     {
         $cookies = Cookie::get('order_id');
-        if ( $cookies ) {
+        if ($cookies) {
             Cookie::queue(cookie('order_id', $cookiesValue, config('cookies_config.cookies')));
         } else {
             Cookie::queue(cookie('order_id', $cookiesValue, config('cookies_config.cookies')));

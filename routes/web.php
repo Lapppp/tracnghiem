@@ -37,6 +37,7 @@ Route::any('googleCallback', [\App\Http\Controllers\Auth\GoogleLoginController::
 Route::any('login.html', [\App\Http\Controllers\Auth\FrontendLoginController::class, 'ajaxLogin'])->name('frontend.auth.ajaxLogin');
 Route::get('register', [\App\Http\Controllers\Auth\FrontendLoginController::class, 'register'])->name('frontend.auth.register');
 Route::get('logout', [\App\Http\Controllers\Auth\FrontendLoginController::class, 'logout'])->name('frontend.user.logout');
+Route::get('logoutToLogin', [\App\Http\Controllers\Auth\FrontendLoginController::class, 'logoutToLogin'])->name('frontend.user.logoutToLogin');
 Route::post('store', [\App\Http\Controllers\Auth\FrontendLoginController::class, 'store'])->name('frontend.auth.store');
 
 //Route::any('test', [\App\Http\Controllers\Frontend\User\UserController::class, 'index'])->name('frontend.user.index');
@@ -214,7 +215,7 @@ Route::get('/about', [\App\Http\Controllers\Frontend\About\AboutController::clas
 Route::get('/lien-he.html', [\App\Http\Controllers\Frontend\Contact\ContactController::class, 'index'])->name('frontend.contact.index');
 Route::get('/contact/store', [\App\Http\Controllers\Frontend\Contact\ContactController::class, 'store'])->name('frontend.contact.store');
 Route::post('/contact/receive', [\App\Http\Controllers\Frontend\Contact\ContactController::class, 'receive'])->name('frontend.contact.receive');
-
+Route::get('/locked', [\App\Http\Controllers\Frontend\About\AboutController::class, 'locked'])->name('frontend.about.locked');
 
 
 Route::get('/clear', function () {

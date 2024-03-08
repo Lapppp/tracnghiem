@@ -6,6 +6,7 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FrontendController;
 use App\Http\Requests\Frontend\User\StoreUserRequest;
+use App\Repositories\Users\UserAgentRepository;
 use App\Repositories\Users\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -17,12 +18,13 @@ class FrontendLoginController extends FrontendController
 {
 
     private $data = [];
-    private $userRepository;
+    private $userRepository,$userAgentRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository,UserAgentRepository $userAgentRepository)
     {
         $this->guard = "web";
         $this->userRepository = $userRepository;
+        $this->userAgentRepository = $userAgentRepository;
         parent::__construct();
     }
 
@@ -49,6 +51,24 @@ class FrontendLoginController extends FrontendController
 
             if ( Auth::guard('web')->attempt($credentials, true) ) {
                 $value = $request->session()->get('url');
+                $user = Auth::guard('web')->user();
+
+                $this->userAgentRepository->create([
+                    'user_id'=>$user->id,
+                    'keyVersion'=>$this->keyVersion,
+                    'deviceVersion'=>$this->deviceVersion,
+                    'deviceType'=>$this->deviceType,
+                    'description'=>$this->descriptionType,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s')
+                ]);
+
+                $checkBan = $this->userAgentRepository->getTotalUserAgentUserId(['user_id'=>$user->id]);
+                if ($checkBan > 2) {
+                    $user->update(['locked'=>1]);
+                    return redirect(Route('frontend.about.locked'));
+                }
+
                 if ( $value ) {
                     return redirect($value);
                 }
@@ -57,6 +77,22 @@ class FrontendLoginController extends FrontendController
 
             if ( Auth::guard('web')->attempt($credentialsPhone, true) ) {
                 $value = $request->session()->get('url');
+                $this->userAgentRepository->create([
+                    'user_id'=>$user->id,
+                    'keyVersion'=>$this->keyVersion,
+                    'deviceVersion'=>$this->deviceVersion,
+                    'deviceType'=>$this->deviceType,
+                    'description'=>$this->descriptionType,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s')
+                ]);
+
+                $checkBan = $this->userAgentRepository->getTotalUserAgentUserId(['user_id'=>$user->id]);
+                if ($checkBan > 2) {
+                    $user->update(['locked'=>1]);
+                    return redirect(Route('frontend.about.locked'));
+                }
+
                 if ( $value ) {
                     return redirect($value);
                 }
@@ -138,5 +174,12 @@ class FrontendLoginController extends FrontendController
         return redirect(Route('frontend.home.index'));
     }
 
+    public function logoutToLogin()
+    {
+        if ( Auth()->guard('web')->user()->id ) {
+            Auth()->guard('web')->logout();
+        }
+        return redirect(Route('frontend.auth.login'));
+    }
 
 }

@@ -57,6 +57,7 @@ class NewsController extends BackendController
     public function index( Request $request )
     {
         $params = $request->only(['username', 'password']);
+        $p = $request->all();
         $status = !empty($request->status) ?  explode(',', $request->status) : [];
         $post = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'search'=>$request->search,'status'=>$status]);
 
@@ -65,7 +66,9 @@ class NewsController extends BackendController
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.news.index') . '?' . Arr::query($params);
+        unset($p['page']);
+        $url = route('backend.news.index') . '?' . Arr::query($p).'&';
+
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
 

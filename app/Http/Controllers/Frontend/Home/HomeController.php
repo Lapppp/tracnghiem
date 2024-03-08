@@ -74,10 +74,10 @@ class HomeController extends FrontendController
             'status'=>[1]
         ];
 
-        $this->data['news'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'status'=>[1]],16);
-        $this->data['featured'] = $this->testRepository->getAll($aFeatured,25);
-        $this->data['trending'] = $this->testRepository->getAll($aTrending,25);
-        $this->data['newarrival'] = $this->testRepository->getAll($aNewarrival,25);
+        $this->data['news'] = $this->postRepository->getAll(['module_id'=>[ModuleType::News],'status'=>[1]],8);
+        $this->data['featured'] = $this->testRepository->getAll($aFeatured,10);
+        $this->data['trending'] = $this->testRepository->getAll($aTrending,10);
+        $this->data['newarrival'] = $this->testRepository->getAll($aNewarrival,10);
         return view('components.frontend.home.tests.index',$this->data);
     }
 

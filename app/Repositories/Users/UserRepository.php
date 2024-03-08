@@ -14,46 +14,53 @@ class UserRepository extends BaseRepository
         return User::class;
     }
 
+    /**
+     * getAll user
+     */
     public function getAll($params = [], $limit = 20)
     {
         $params = array_merge([
             'id' => [],
             'status' => [],
+            'locked' => [],
             'parent_id' => [],
             'user_id' => null,
             'search' => null,
         ], $params);
 
         $result = User::select(
-            User::TABLE.'.*'
+            User::TABLE . '.*'
         );
 
-        if ( !empty($params['search']) ) {
-            $sql = "(".User::TABLE.".name LIKE '%".$params['search']."%' OR ".User::TABLE.".email LIKE '%".$params['search']."%')";
+        if (!empty($params['search'])) {
+            $sql = "(" . User::TABLE . ".name LIKE '%" . $params['search'] . "%' OR " . User::TABLE . ".email LIKE '%" . $params['search'] . "%')";
             $result->whereRaw($sql);
         }
 
-        if ( !empty($params['status']) && is_array($params['status']) ) {
+        if (!empty($params['status']) && is_array($params['status'])) {
             $params['status'] = implode(',', $params['status']);
-            $result->whereRaw("FIND_IN_SET(".User::TABLE.".status,'".$params['status']."')");
+            $result->whereRaw("FIND_IN_SET(" . User::TABLE . ".status,'" . $params['status'] . "')");
         }
 
-        if ( !empty($params['id']) && is_array($params['id']) ) {
-            $result->whereIn(User::TABLE.'.id', $params['id']);
+        if (!empty($params['id']) && is_array($params['id'])) {
+            $result->whereIn(User::TABLE . '.id', $params['id']);
         }
 
-        if ( !empty($params['parent_id']) && is_array($params['parent_id']) ) {
-            $result->whereIn(User::TABLE.'.parent_id', $params['parent_id']);
+        if (!empty($params['parent_id']) && is_array($params['parent_id'])) {
+            $result->whereIn(User::TABLE . '.parent_id', $params['parent_id']);
         }
 
 
-        if ( !empty($params['user_id']) ) {
-            $result->where(User::TABLE.'.id', (int) $params['user_id'])
-                ->orWhere(User::TABLE.'.parent_id', $params['user_id']);
+        if (!empty($params['locked']) && is_array($params['locked'])) {
+            $result->whereIn(User::TABLE . '.locked', $params['locked']);
         }
 
-        $result->orderBy(User::TABLE.'.id', 'desc');
+        if (!empty($params['user_id'])) {
+            $result->where(User::TABLE . '.id', (int) $params['user_id'])
+                ->orWhere(User::TABLE . '.parent_id', $params['user_id']);
+        }
 
+        $result->orderBy(User::TABLE . '.id', 'desc');
         $per_page = !empty($limit) ? $limit : config('pagination.per_page');
 
         return empty($limit) ? $result->get() : $result->paginate($per_page);
@@ -74,40 +81,40 @@ class UserRepository extends BaseRepository
         ], $params);
 
         $result = User::select(
-            User::TABLE.'.*'
+            User::TABLE . '.*'
         );
 
-        if ( !empty($params['search']) ) {
-            $result->where(User::TABLE.'.name', 'LIKE', '%'.$params['search'].'%');
+        if (!empty($params['search'])) {
+            $result->where(User::TABLE . '.name', 'LIKE', '%' . $params['search'] . '%');
         }
 
-        if ( !empty($params['status']) && is_array($params['status']) ) {
+        if (!empty($params['status']) && is_array($params['status'])) {
             $params['status'] = implode(',', $params['status']);
-            $result->whereRaw("FIND_IN_SET(".User::TABLE.".status,'".$params['status']."')");
+            $result->whereRaw("FIND_IN_SET(" . User::TABLE . ".status,'" . $params['status'] . "')");
         }
 
-        if ( !empty($params['sevenDays']) ) {
+        if (!empty($params['sevenDays'])) {
             $result->whereDate('created_at', '>=', Carbon::now()->subDays(7));
         }
 
 
-        if ( !empty($params['today']) ) {
+        if (!empty($params['today'])) {
             $result->whereDate('created_at', '=', date('Y-m-d'));
         }
 
-        $result->orderBy(User::TABLE.'.id', 'desc');
+        $result->orderBy(User::TABLE . '.id', 'desc');
 
         return $result->get()->count();
     }
 
     public function getAccountGoogle($google_id)
     {
-        return User::where('google_id',$google_id)->first();
+        return User::where('google_id', $google_id)->first();
     }
 
     public function getAccountFacebook($facebook_id)
     {
-        return User::where('facebook_id',$facebook_id)->first();
+        return User::where('facebook_id', $facebook_id)->first();
     }
 
     public function getEmail($email)

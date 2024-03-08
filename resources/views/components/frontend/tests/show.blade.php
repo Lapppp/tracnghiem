@@ -20,7 +20,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-6 d-none d-sm-block">
+                <div class="col-sm-6  d-sm-block">
                     <div class="count_box d-flex float-end pt-5">
                         <div class="count_clock countdown_timer d-flex align-items-center" data-countdown="{{ !empty($test->start_date) ? date("Y/m/d",strtotime($test->start_date)) : '' }}">
                         </div>
@@ -60,11 +60,12 @@
                 @if(count($answers) > 0)
                     @php
                         $alphabet = 'A';
+                        $date = !empty($checkTest->updated_at) ? date('Y-m-d',strtotime($checkTest->updated_at)) : 0;
                     @endphp
                     @foreach($answers as $key => $value)
                         <div class="col-6">
                             <ul class="list-unstyled p-0">
-                                <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id) active @endif "
+                                <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id && $checkTest->is_reset == 1) active @endif "
                                     data-answer_id="{{ $value->id }}"
                                     data-pivot_id="{{ $question->pivot->id}}"
                                     data-order_by="{{ $question->pivot->order_by}}"
@@ -180,6 +181,11 @@
                 });
             }
 
+            // window.addEventListener('beforeunload', (e) => {
+            //     e.preventDefault()
+            //     return (e.returnValue = 'Bạn có muốn kết thúc bài kiểm tra?')
+            // })
+
             document.addEventListener("copy", (e) => {e.preventDefault();}, false);
             document.addEventListener('contextmenu', event => { event.preventDefault(); });
             document.addEventListener("keyup", function (event) {
@@ -217,7 +223,7 @@
             $(document).ready(function() {
                 disableSelection(document.body);
 
-                let heightContentLoad = $('.multisteps_form_panel').height() + 100;
+                let heightContentLoad = $('.multisteps_form_panel').height() + 200;
                 $('#wizard').css({minHeight:heightContentLoad+"px"});
 
                 $(document).on('keydown', function(e) {
@@ -283,6 +289,7 @@
                             "_token": token,
                         },
                         success: function (dataJson) {
+
                             if(dataJson.status == 'fail') {
                                 if(dataJson.code == 403){
 
@@ -310,11 +317,13 @@
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Thông báo',
-                                        text: 'Không quay trở lại nữa',
+                                        text: 'Chưa quay trở lại vì câu hỏi đầu tiên',
                                     })
 
                                 }else {
                                     $('#wizard').html(dataJson.data.responseJson)
+                                    let heightContentLoad = $('.multisteps_form_panel').height() + 200;
+                                    $('#wizard').css({minHeight:heightContentLoad+"px"});
                                 }
 
                             }
@@ -338,8 +347,7 @@
                         let test_id = $(this).data('test_id');
                         let question_id = $(this).data('question_id');
                         let test_id_test = $('#test_id_test').val();
-                        let heightContent = $('.multisteps_form_panel').height() + 100;
-                        $('#wizard').css({minHeight:heightContent+"px"});
+
                         $.ajax({
                             url: "{{ Route('frontend.tests.next',['id'=>$test->id]) }}",
                             type: 'POST',
@@ -354,6 +362,9 @@
                                 "_token": token,
                             },
                             success: function (dataJson) {
+                                let heightContent = $('.multisteps_form_panel').height() + 200;
+                                $('#wizard').css({minHeight:heightContent+"px"});
+
                                 if(dataJson.status == 'fail') {
                                     if(dataJson.code == 403){
 
@@ -392,6 +403,9 @@
 
                                     }else {
                                         $('#wizard').html(dataJson.data.responseJson)
+                                        let heightContentLoad = $('.multisteps_form_panel').height() + 200;
+                                        $('#wizard').css({minHeight:heightContentLoad+"px"});
+
                                     }
 
                                 }

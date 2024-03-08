@@ -28,17 +28,29 @@
                 </div>
             @endif
 
-                @if(Auth::guard('backend')->user()->can(['list_user_all']))
-                    <div class="menu-item">
-                        <a class="menu-link @if($actionName =='deactivated' && $controller =='UserController' ) active @endif "
-                           href="{{ Route('backend.deactivated.index') }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                            <span class="menu-title">Danh sách chờ duyệt</span>
-                        </a>
-                    </div>
-                @endif
+            @if(Auth::guard('backend')->user()->can(['list_user_all']))
+                <div class="menu-item">
+                    <a class="menu-link @if($actionName =='deactivated' && $controller =='UserController' ) active @endif "
+                       href="{{ Route('backend.deactivated.index') }}">
+                    <span class="menu-bullet">
+                        <span class="bullet bullet-dot"></span>
+                    </span>
+                        <span class="menu-title">Danh sách chờ duyệt</span>
+                    </a>
+                </div>
+            @endif
+
+            @if(Auth::guard('backend')->user()->can(['list_user_all']))
+                <div class="menu-item">
+                    <a class="menu-link @if($actionName =='locked' && $controller =='UserController' ) active @endif "
+                       href="{{ Route('backend.locked.index') }}">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                        <span class="menu-title">Tài khoản bị khóa</span>
+                    </a>
+                </div>
+            @endif
 
             @if(Auth::guard('backend')->user()->can(['create_user']))
                 <div class="menu-item">

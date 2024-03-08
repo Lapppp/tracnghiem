@@ -400,7 +400,8 @@ button {
 @media screen and (max-width: 767.98px) {
   .count_clock {
     display: none;
-    padding-right: 1rem !important;
+    padding-right: 2rem !important;
+      margin-top: -39px;
   }
 
   .multisteps_form {

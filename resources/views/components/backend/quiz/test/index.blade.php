@@ -8,6 +8,16 @@
             <h3 class="card-title align-items-start flex-column">
                 <span class="card-label fw-bolder fs-3 mb-1">Danh sách câu hỏi</span>
             </h3>
+            <div class="card-title">
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="text" value="{{ $params['search'] ?? '' }}" id="search" name="search" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-500px ps-12 form-control-sm" placeholder="Tìm kiếm tên bài kiểm tra">
+                </div>
+                <div class="d-flex align-items-center position-relative me-2">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
+                    <a href="#" class="btn btn-primary btn-sm" id="searchUser">Tìm kiếm</a>
+                </div>
+            </div>
             <div class="card-toolbar">
                 @if (Auth::guard('backend')->user()->can(['test_create']))
                 <a href="{{ Route('backend.test.create') }}" class="btn btn-sm btn-light-primary">
@@ -156,7 +166,13 @@
             $(document).ready(function() {
 
 
+                $(document).on('click','a#searchUser',function(event) {
+                    event.preventDefault();
 
+                    let search = $('#search').val();
+                    window.location.href = '{{ Route('backend.test.index')}}?search='+search;
+                    return false;
+                });
                 $('p.changeTextTest').on('input', function() {
                     let title = $(this).html();
                     let id = $(this).data('id');

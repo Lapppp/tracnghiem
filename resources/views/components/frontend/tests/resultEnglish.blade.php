@@ -30,7 +30,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-6 d-none d-sm-block">
+                <div class="col-sm-6  d-sm-block">
                     <div class="count_box d-flex float-end pt-5">
                         <div class="count_clock countdown_timer d-flex align-items-center" data-countdown="{{ !empty($test->start_date) ? date("Y/m/d",strtotime($test->start_date)) : '' }}">
                         </div>

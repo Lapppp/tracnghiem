@@ -53,8 +53,6 @@
                     <tr class="fw-bolder text-muted bg-light">
                         <th class="ps-4 min-w-250px rounded-start">Họ tên</th>
                         <th>Email</th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày cập nhật</th>
                         <th>Trạng thái</th>
                         <th>Ngày hết hạn</th>
                         <th>VIP</th>
@@ -89,17 +87,7 @@
                                 <td>
                                     <span class="text-muted fw-bold text-muted d-block fs-7">{{ $item->email }}</span>
                                 </td>
-                                <td>
-                                    <span class="text-muted fw-bold text-muted d-block fs-7">
-                                        {{ $item->created_at ? date('d-m-Y',strtotime($item->created_at)) : '' }}
-                                    </span>
 
-                                </td>
-                                <td>
-                                     <span class="text-muted fw-bold text-muted d-block fs-7">
-                                        {{ $item->updated_at ? date('d-m-Y',strtotime($item->updated_at)) : '' }}
-                                    </span>
-                                </td>
                                 <td>
                                     @if($item->status)
                                         <span class="badge badge-light-primary fs-7 fw-bold">Đang hoạt động</span>
@@ -150,6 +138,22 @@
                                         <i class="bi bi-trash"></i>
                                         <!--end::Svg Icon-->
                                     </a>
+                                    @endif
+
+
+                                    @if(Auth::guard('backend')->user()->can(['delete_user']) && $item->status == 1 && $item->locked == 0 )
+                                        <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Khóa tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm lockedAccount">
+                                            <i class="bi bi-lock"></i>
+                                            <!--end::Svg Icon-->
+                                        </a>
+                                    @endif
+
+
+                                    @if($item->getTotalKey()->get()->count() >= 3)
+                                        <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Kích hoạt tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm activeAction">
+                                            <i class="bi bi-cursor"></i>
+                                            <!--end::Svg Icon-->
+                                        </a>
                                     @endif
 
                                 </td>
@@ -334,8 +338,10 @@
                     let search = $('#search').val();
                     @if($deactivated == 0)
                         window.location.href = '{{ Route('backend.users.index')}}?search='+search;
-                    @else
+                    @elseif($deactivated == 1)
                         window.location.href = '{{ Route('backend.deactivated.index')}}?search='+search;
+                    @else
+                        window.location.href = '{{ Route('backend.locked.index')}}?search='+search;
                     @endif
 
                     return false;
@@ -544,6 +550,126 @@
                             $.ajax(
                                 {
                                     url: baseUrl+"/users/delete/"+id,
+                                    type: 'DELETE',
+                                    data: {
+                                        "id": id,
+                                        "_token": token,
+                                    },
+                                    success: function (json) {
+                                        if(json.status == 'success'){
+
+                                            let timerInterval;
+                                            Swal.fire({
+                                                title: 'Vui lòng đợi...',
+                                                html: '',
+                                                timer: 1000,
+                                                timerProgressBar: true,
+                                                didOpen: () => {
+                                                    Swal.showLoading()
+                                                    timerInterval = setInterval(() => {
+                                                    }, 100)
+                                                },
+                                                willClose: () => {
+                                                    clearInterval(timerInterval)
+                                                }
+                                            }).then((result) => {
+                                                if (result.dismiss === Swal.DismissReason.timer) {
+                                                    window.location.reload();
+                                                }
+                                            })
+
+                                        }else {
+                                            Swal.fire(json.message, '', 'danger')
+                                        }
+                                    }
+                                });
+
+                            //Swal.fire('Saved!', '', 'success')
+                        }
+                    })
+                });
+
+
+                $(document).on('click','.activeAction',function(event)
+                {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Bạn có muốn kích hoạt tài khoản bị khóa này trở lại không?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        denyButtonText: `Không`,
+                        customClass: {
+                            confirmButton: "btn btn-primary btn-sm",
+                            denyButton: "btn btn-danger btn-sm"
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed)
+                        {
+                            let id = $(this).data("id");
+                            let token = $("meta[name='csrf-token']").attr("content");
+                            $.ajax(
+                                {
+                                    url: baseUrl+"/users/active/"+id,
+                                    type: 'DELETE',
+                                    data: {
+                                        "id": id,
+                                        "_token": token,
+                                    },
+                                    success: function (json) {
+                                        if(json.status == 'success'){
+
+                                            let timerInterval;
+                                            Swal.fire({
+                                                title: 'Vui lòng đợi...',
+                                                html: '',
+                                                timer: 1000,
+                                                timerProgressBar: true,
+                                                didOpen: () => {
+                                                    Swal.showLoading()
+                                                    timerInterval = setInterval(() => {
+                                                    }, 100)
+                                                },
+                                                willClose: () => {
+                                                    clearInterval(timerInterval)
+                                                }
+                                            }).then((result) => {
+                                                if (result.dismiss === Swal.DismissReason.timer) {
+                                                    window.location.reload();
+                                                }
+                                            })
+
+                                        }else {
+                                            Swal.fire(json.message, '', 'danger')
+                                        }
+                                    }
+                                });
+
+                            //Swal.fire('Saved!', '', 'success')
+                        }
+                    })
+                });
+
+
+                $(document).on('click','.lockedAccount',function(event)
+                {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Bạn có muốn khóa tài khoản này không?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        denyButtonText: `Không`,
+                        customClass: {
+                            confirmButton: "btn btn-primary btn-sm",
+                            denyButton: "btn btn-danger btn-sm"
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed)
+                        {
+                            let id = $(this).data("id");
+                            let token = $("meta[name='csrf-token']").attr("content");
+                            $.ajax(
+                                {
+                                    url: baseUrl+"/users/lockedAccount/"+id,
                                     type: 'DELETE',
                                     data: {
                                         "id": id,

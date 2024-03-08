@@ -64,6 +64,7 @@ class QuestionsController extends BackendController
 
     public function index(Request $request)
     {
+        $p = $request->all();
         $params = $request->only(['username', 'password','search']);
         $status = !empty($request->status) ? explode(',', $request->status) : [];
         $post = $this->postRepository->getAll([
@@ -78,7 +79,8 @@ class QuestionsController extends BackendController
         $total = !empty($post->total()) ? $post->total() : 0;
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
-        $url = route('backend.questions.index') . '?' . Arr::query($params);
+        unset($p['page']);
+        $url = route('backend.questions.index') . '?' . Arr::query($p).'&';
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
         return view('components.backend.quiz.questions.index', $this->data);

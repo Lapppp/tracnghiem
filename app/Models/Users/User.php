@@ -53,6 +53,8 @@ class User extends Authenticatable implements JWTSubject
         'vip',
         'description',
         'permission_category',
+        'is_force_login',
+        'locked',
     ];
 
     /**
@@ -136,5 +138,13 @@ class User extends Authenticatable implements JWTSubject
     public function tests()
     {
         return $this->hasMany(TestUsersTests::class, 'user_id', 'id');
+    }
+
+    public function userAgent(){
+        return $this->hasMany(UserAgent::class,'user_id','id');
+    }
+
+    public function getTotalKey() {
+        return $this->userAgent()->groupBy('keyVersion');
     }
 }

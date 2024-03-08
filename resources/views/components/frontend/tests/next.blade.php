@@ -11,11 +11,12 @@
         @if(count($answers) > 0)
             @php
                 $alphabet = 'A';
+                $date = !empty($checkTest->updated_at) ? date('Y-m-d',strtotime($checkTest->updated_at)) : 0;
             @endphp
             @foreach($answers as $key => $value)
                 <div class="col-6">
                     <ul class="list-unstyled p-0">
-                        <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id) active @endif"
+                        <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id && $checkTest->is_reset == 1) active @endif"
                             data-answer_id="{{ $value->id }}"
                             data-pivot_id="{{ $question->pivot->id}}"
                             data-order_by="{{ $question->pivot->order_by}}"

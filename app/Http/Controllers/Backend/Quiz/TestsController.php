@@ -81,7 +81,7 @@ class TestsController extends BackendController
         $perPage = !empty($post->perPage()) ? $post->perPage() : 2;
         $page = !empty($request->page) ? $request->page : 1;
         unset($p['page']);
-        $url = route('backend.test.index') . '?' . Arr::query($p).'&';
+        $url = route('backend.test.index') . '?' . Arr::query($p) . '&';
         $this->data['pager'] = PaginationHelper::BackendPagination($total, $perPage, $page, $url);
 
         return view('components.backend.quiz.test.index', $this->data);
@@ -285,7 +285,7 @@ class TestsController extends BackendController
             return redirect()->route('backend.test.index')->with('error', 'Không tìm thấy dữ liệu');
         }
         $post->update($params);
-       // $post->testquestions()->delete();
+        // $post->testquestions()->delete();
 
         if (!empty($questions)) {
             $questions = explode(',', $params['questions']);
@@ -294,12 +294,12 @@ class TestsController extends BackendController
                     'post_id' => $question
                 ];
 
-                if(!$post->testquestions()->where('post_id', $question)->exists()){
+                if (!$post->testquestions()->where('post_id', $question)->exists()) {
                     $post->testquestions()->createMany([$insert]);
                 }
                 //$post->testquestions()->syncWithoutDetaching([$question]);
                 //$post->testquestions()->updateExistingPivot($question, $insert);
-               // $post->testquestions()->createMany([$insert]);
+                // $post->testquestions()->createMany([$insert]);
             }
         }
 
@@ -469,7 +469,7 @@ class TestsController extends BackendController
             'post_id' => !empty($questions) ? explode(',', $questions) : [],
             'debug' => 0
         ];
-        $posts = $this->postRepository->getAll($params);
+        $posts = $this->postRepository->getAll($params,null);
         $this->data['questions'] = $posts;
         $html = view('components.backend.quiz.test.load_questions', $this->data)->render();
         return ResponseHelper::success('thành công', ['jsonResult' => $html]);

@@ -32,6 +32,8 @@ Route::prefix('adminkiwi')->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [\App\Http\Controllers\Backend\User\UserController::class, 'index'])->name('backend.users.index');
             Route::get('/deactivated', [\App\Http\Controllers\Backend\User\UserController::class, 'deactivated'])->name('backend.deactivated.index');
+            Route::get('/test', [\App\Http\Controllers\Backend\User\UserController::class, 'test'])->name('backend.test.userxx.index');
+            Route::get('/test-export', [\App\Http\Controllers\Backend\User\UserController::class, 'exportTest'])->name('backend.user.exportTest.index');
             Route::get('/locked', [\App\Http\Controllers\Backend\User\UserController::class, 'locked'])->name('backend.locked.index');
             Route::get('/export', [\App\Http\Controllers\Backend\User\UserController::class, 'export'])->name('backend.users.export');
             Route::get('/search', [\App\Http\Controllers\Backend\User\UserController::class, 'search'])->name('backend.users.search');
@@ -46,6 +48,7 @@ Route::prefix('adminkiwi')->group(function () {
             Route::post('/updateVip/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'updateVip'])->name('backend.users.updateVip');
             Route::delete('/active/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'active'])->name('backend.users.active');
             Route::delete('/lockedAccount/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'lockedAccount'])->name('backend.users.lockedAccount');
+            Route::post('/ajaxLoadPreviewWebsite/{id}', [\App\Http\Controllers\Backend\User\UserController::class, 'ajaxLoadPreviewWebsite'])->name('backend.users.ajaxLoadPreviewWebsite');
             Route::post('/store', [\App\Http\Controllers\Backend\User\UserController::class, 'store'])->name('backend.users.store');
             Route::post('/showTest', [\App\Http\Controllers\Backend\User\UserController::class, 'showTest'])->name('backend.users.showTest');
         });

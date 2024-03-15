@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Users\DemoUserRequest;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -13,8 +14,11 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(DemoUserRequest $request)
     {
+        $params = $request->all();
+        foreach ($params as $key => $value) {
+        }
         return ResponseHelper::success('sss');
     }
 

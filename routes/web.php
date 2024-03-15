@@ -199,7 +199,7 @@ Route::prefix('orders')->group(function () {
 });
 
 Route::prefix('users')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Frontend\User\UserController::class, 'index'])->name('frontend.users.index');
+    Route::get('/', [\App\Http\Controllers\Frontend\User\UserController::class, 'index'])->name('frontend.users.indexx');
     Route::get('/orders', [\App\Http\Controllers\Frontend\User\UserController::class, 'order'])->name('frontend.users.orders');
     Route::get('/favorite', [\App\Http\Controllers\Frontend\User\UserController::class, 'favorite'])->name('frontend.users.favorite');
     Route::get('/favorite', [\App\Http\Controllers\Frontend\User\UserController::class, 'favorite'])->name('frontend.users.favorite');

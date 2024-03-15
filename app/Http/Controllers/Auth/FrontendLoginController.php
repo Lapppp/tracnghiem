@@ -60,7 +60,8 @@ class FrontendLoginController extends FrontendController
                     'deviceType'=>$this->deviceType,
                     'description'=>$this->descriptionType,
                     'created_at'=>date('Y-m-d H:i:s'),
-                    'updated_at'=>date('Y-m-d H:i:s')
+                    'updated_at'=>date('Y-m-d H:i:s'),
+                    'ip_login'=>$request->ip() // $clientIpAddress = $request->getClientIp();
                 ]);
 
                 $checkBan = $this->userAgentRepository->getTotalUserAgentUserId(['user_id'=>$user->id]);
@@ -84,7 +85,8 @@ class FrontendLoginController extends FrontendController
                     'deviceType'=>$this->deviceType,
                     'description'=>$this->descriptionType,
                     'created_at'=>date('Y-m-d H:i:s'),
-                    'updated_at'=>date('Y-m-d H:i:s')
+                    'updated_at'=>date('Y-m-d H:i:s'),
+                    'ip_login'=>$request->ip()
                 ]);
 
                 $checkBan = $this->userAgentRepository->getTotalUserAgentUserId(['user_id'=>$user->id]);

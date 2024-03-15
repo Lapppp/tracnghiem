@@ -14,7 +14,7 @@
                 $date = !empty($checkTest->updated_at) ? date('Y-m-d',strtotime($checkTest->updated_at)) : 0;
             @endphp
             @foreach($answers as $key => $value)
-                <div class="col-6">
+                <div class="col-12">
                     <ul class="list-unstyled p-0">
                         <li class="step_1 animate__animated animate__fadeInRight {{ \App\Helpers\StringHelper::getAnimation($key) }} @if(!empty($checkTest) && $checkTest->is_correct == $value->id && $checkTest->is_reset == 1) active @endif"
                             data-answer_id="{{ $value->id }}"
@@ -23,7 +23,7 @@
                             data-test_id="{{ $test->id }}"
                             data-question_id="{{ $question->id }}">
                             <input id="opt_{{ $value->id }}" type="radio" name="stp_1_select_option" value="{{ $value->id }}">
-                            <label for="opt_{{ $value->id }}"><b>{{ $alphabet }}.</b> {{ $value->description ?? '' }} </label>
+                            <label for="opt_{{ $value->id }}"><b><span style="-webkit-text-fill-color:white" class="badge bg-primary">{{ $alphabet }}</span></b> {{ $value->description ?? '' }} </label>
                         </li>
                     </ul>
                 </div>

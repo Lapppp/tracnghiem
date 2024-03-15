@@ -149,11 +149,17 @@
                                     @endif
 
 
-                                    @if($item->getTotalKey()->get()->count() >= 3)
+                                    @if($item->getTotalKey()->get()->count() > 2)
                                         <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Kích hoạt tài khoản" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm activeAction">
                                             <i class="bi bi-cursor"></i>
                                             <!--end::Svg Icon-->
                                         </a>
+
+                                        <a href="#" data-bs-toggle="tooltip" data-id="{{ $item->id }}" data-bs-placement="top" title="Lịch sử đăng nhập" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm actionPreviewWebsite">
+                                            <i class="bi bi-calendar-date"></i>
+                                            <!--end::Svg Icon-->
+                                        </a>
+
                                     @endif
 
                                 </td>
@@ -315,6 +321,7 @@
         </div>
     </div>
 
+    @include('components.backend.user.modalPreviewWeb')
     <x-slot name="javascript">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -403,6 +410,21 @@
 
                 });
 
+                $(document).on('click','a.actionPreviewWebsite',function(event) {
+                    event.preventDefault();
+                    let id = $(this).data('id');
+                    let token = $("meta[name='csrf-token']").attr("content");
+                    $.ajax({
+                        url: baseUrl+"/users/ajaxLoadPreviewWebsite/"+id,
+                        type: 'POST',
+                        data: {id:id,_token:token},
+                        success: function (json) {
+                            $('#loadingPreviewWebsite').html(json.data.responseJson);
+                            $('#kt_modal_loadingPreviewWebsite').modal('show');
+                        }
+                    });
+
+                });
 
                 $(document).on('change','select.updateVIP',function(event) {
                     let vip = $(this).val();

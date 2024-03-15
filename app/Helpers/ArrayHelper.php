@@ -19,4 +19,3 @@ class ArrayHelper
         return true;
     }
 }
-

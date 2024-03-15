@@ -18,8 +18,8 @@ class ImageRepository extends BaseRepository
         return Image::find($id);
     }
 
-    public function updateImageDefault(){
+    public function updateImageDefault()
+    {
         return Image::where('votes', '>', 100)->update(array('status' => 2));
     }
-
 }

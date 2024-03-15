@@ -56,13 +56,13 @@ class CategoryRepository extends BaseRepository
     public function getParentsActive($module_id)
     {
         return Category::with('categoriesParents')
-            ->where('module_id',(int)$module_id)
-            ->where('status',1)
+            ->where('module_id', (int)$module_id)
+            ->where('status', 1)
             ->get();
     }
 
     public function getSlug($slug)
     {
-        return Category::where('slug',$slug)->first();
+        return Category::where('slug', $slug)->first();
     }
 }

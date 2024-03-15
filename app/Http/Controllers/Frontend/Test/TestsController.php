@@ -268,6 +268,14 @@ class TestsController extends FrontendController
         $this->data['test'] = $test;
         $this->data['user'] = $user;
         $this->data['so_cau_dung'] = $this->testPartUserRepository->totalTestPart($id,$user->id);
+        $so_cau_dung = $this->data['so_cau_dung']->total ?? 0;
+
+        $p = [
+            'test_id' => $test->id,
+            'user_id' => $user->id
+        ];
+        $checkUserTest = $this->testUsersTestsRepository->checkUserTest($p);
+        $checkUserTest->update(['score'=>$so_cau_dung]);
 
         View::share('title', $test->title ?? '');
         View::share('description', $test->title ?? '');
@@ -328,7 +336,7 @@ class TestsController extends FrontendController
                     'subject_id' => $test->subject_id ?? '',
                     'status' => $test->status ?? '',
                     'score_time' => $score_time,
-                    'start_date' => $test->start_date ?? '',
+                    'start_date' => !empty($test->start_date) ? $test->start_date :  date('Y-m-d',strtotime($score_time)),
                     'end_date' => $test->end_date ?? '',
                     'times' => $test->times ?? '',
                     'position' => $test->position ?? '',
@@ -509,6 +517,10 @@ class TestsController extends FrontendController
             ];
             $checkUserTest = $this->testUsersTestsRepository->checkUserTest($p);
             $checkUserTestId = $checkUserTest->id;
+            if($html =='xemketqua'){
+                $questionsCorrect = $checkUserTest->questionsCorrect()->count();
+                $checkUserTest->update(['score'=>$questionsCorrect]);
+            }
         }
 
         return ResponseHelper::success('Thành công', ['responseJson' => $html, 'tesyusertest_id' => $checkUserTestId]);
@@ -639,7 +651,7 @@ class TestsController extends FrontendController
                     'subject_id' => $test->subject_id ?? '',
                     'status' => $test->status ?? '',
                     'score_time' => $score_time,
-                    'start_date' => $test->start_date ?? '',
+                    'start_date' => !empty($test->start_date) ? $test->start_date : date('Y-m-d',strtotime($start_time)),
                     'end_date' => $test->end_date ?? '',
                     'times' => $test->times ?? '',
                     'position' => $test->position ?? '',
@@ -711,7 +723,7 @@ class TestsController extends FrontendController
         $questions = $testUserTest->questions()->get();
         $this->data['questions'] = $questions;//$test->testAllquestions()->get();
         $this->data['questionsCorrect'] = $testUserTest->questionsCorrect()->count();//$test->testAllquestions()->get();
-
+        $testUserTest->update(['score'=>$this->data['questionsCorrect']]);
         $this->data['test'] = $test;
         return view('components.frontend.tests.result', $this->data);
     }

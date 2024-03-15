@@ -60,6 +60,7 @@ class UserRepository extends BaseRepository
                 ->orWhere(User::TABLE . '.parent_id', $params['user_id']);
         }
 
+
         $result->orderBy(User::TABLE . '.id', 'desc');
         $per_page = !empty($limit) ? $limit : config('pagination.per_page');
 

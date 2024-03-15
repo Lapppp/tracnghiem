@@ -13,7 +13,7 @@ class ModuleRepository extends BaseRepository
         return Module::class;
     }
 
-    public function getAll( $params = [], $limit = 20 )
+    public function getAll($params = [], $limit = 20)
     {
         $params = array_merge([
             'status' => [],
@@ -24,7 +24,7 @@ class ModuleRepository extends BaseRepository
             Module::TABLE . '.*'
         );
 
-        if ( !empty($params['search']) ) {
+        if (!empty($params['search'])) {
             $result->where('search', 'LIKE', '%' . $params['search'] . '%');
         }
 
@@ -32,7 +32,7 @@ class ModuleRepository extends BaseRepository
         return empty($limit) ? $result->get() : $result->paginate($limit);
     }
 
-    public function getById( $id )
+    public function getById($id)
     {
         return Module::find($id);
     }

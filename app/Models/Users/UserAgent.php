@@ -18,6 +18,7 @@ class UserAgent extends Model
         'deviceType',
         'description',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'ip_login',
     ];
 }
